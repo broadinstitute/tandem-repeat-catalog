@@ -15,3 +15,19 @@ git clone git@github.com:broadinstitute/colab-repeat-finder.git
 cd colab-repeat-finder/python
 python3 perfect_repeat_finder.py --min-repeats 3 --min-span 9 --min-motif-size 1 --max-motif-size 50  --show-progress-bar /path/to/hg38.fa   --output-prefix perfect_repeats.hg38
 ```
+
+
+### Step 2: Combine perfect_repeat_finder.py output with any available empirically-defined polymorphic tandem repeat catalogs
+
+While the perfect_repeat_finder.py catalog from step 1 includes all tandem repeat loci that have at least 3 repeats of some motif and span at least 9bp in the reference genome, it misses loci that have 2 or fewer repeats in the reference (while having 3 or more repeats in other genomes within the population). To capture these loci as well, we can merge the catalog from step 1 with catalogs of polymorphic tandem repeat loci that were generated via 
+orthogonal methods. 
+
+
+While doing this, we also fix some representation issues by doing the following:
+- collapsing adjacent loci that have the motif but were separated due to a single interruption.
+- filtering out repeats that include not A,C,G,T characters (such as repeats of 'N' bases)
+
+
+### Step 3: Annotate loci with gene names, etc.
+
+### Step 4: Convert the combined catalog into tool-specific catalog formats, while adding tool-specific optimizations to the locus definitions 
