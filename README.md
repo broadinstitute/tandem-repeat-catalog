@@ -30,4 +30,6 @@ While doing this, we also fix some representation issues by doing the following:
 
 ### Step 3: Annotate loci with gene names, etc.
 
+Use the `python3 -u -m str_analysis.annotate_and_filter_str_catalog` script.
+
 ### Step 4: Convert the combined catalog into tool-specific catalog formats, while adding tool-specific optimizations to the locus definitions 
