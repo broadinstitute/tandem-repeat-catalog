@@ -25,8 +25,8 @@ orthogonal methods.
 
 
 While doing this, we also fix some representation issues by doing the following:
-- collapsing adjacent loci that have the same motif but were separated due to a single interruption.
-- filtering out repeats that include not A,C,G,T characters (such as repeats of 'N' bases)
+- collapsing adjacent loci that have the same motif but were reported as two separate loci by colab-repeat-finder due to a single base pair interruption between them.
+- filtering out repeats that include non-A,C,G,T characters (such as homopolymer repeats of 'N')
 
 
 ### Step 3: Annotate loci with gene names, etc.
