@@ -51,7 +51,7 @@ Here, we fix some representation issues in the catalog from step 1:
 Optionally, we can augment our catalog with loci from other sources. Specifically, while the catalog from step 1 includes all perfect tandem repeats loci that have at least 3 repeats of some motif and span at least 9bp in the reference genome, it misses polymorphic loci that coincidentally have 2 or fewer repeats in the reference (with larger TR alleles segregating in the population). To capture these loci, we can merge the catalog from step 1 with any available catalogs of polymorphic tandem repeat loci that were generated via orthogonal methods. For the human genome, these include:
 
 * [Illumina catalog](https://github.com/Illumina/RepeatCatalogs) of 174k TR loci that are polymporphic in 2.4k diverse population samples from 1kGP.  
-* Truth set from [weisburd 2023] that has now been updated to include polymorphic TR loci in 51 samples from the HPRC. 
+* Truth set from [[weisburd 2023](https://www.biorxiv.org/content/10.1101/2023.05.05.539588v1)] that has now been updated to include polymorphic TR loci in 51 samples from the HPRC. 
 
 
 The following commands should be run even if you only have the one catalog from step1 and did not add any other catalogs:
