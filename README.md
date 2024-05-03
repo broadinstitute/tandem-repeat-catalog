@@ -1,17 +1,25 @@
-This repo provides methods and best practices for defining genome-wide tandem repeat (TR) catalogs. 
-The catalogs are provided in multiple formats, including the input formats of:
+### Authors
+
+* Ben Weisburd, Broad Institute
+* Egor Dolzhenko, PacBio
+
+### Introduction
+
+Tandem repeats are regions of the genome that consist of consecutive copies of some motif sequence. For example, CAGCAGCAG is a tandem repeats with motif CAG. Many types of genomic studies require annotations of tandem repeats in the reference genome, called repeat catalogs. Repeat catalogs typically consist of the repeat reference coordinates and one or multiple motif sequences that the repeat is composed of.
+
+The purpose of this repo is to provides methods and best practices for defining high-quality repeat catalogs. Our initial focus will be on the human genome, however the tutorial should also be applicable to other closely-related genomes. We'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
+
+### Defining a genome-wide tandem repeat catalog
+
+The steps below start with a reference genome fasta file and proceed to generate a comprehensive genome-wide TR catalog that can be used as input to the following TR genotyping tools:
 - ExpansionHunter
 - GangSTR
 - HipSTR
 - TRGT
 - LongTR
 
----
-### Defining a genome-wide tandem repeat catalog
 
-The steps below use examples based on the hg38 human reference, but are also applicable to other reference genomes. 
-
-#### Step 1: Detect all perfect (ie. non-interrupted) tandem repeats in the reference genome
+### Step 1: Detect all perfect (ie. non-interrupted) tandem repeats in the reference genome
 
 Run [colab-repeat-finder](https://github.com/broadinstitute/colab-repeat-finder) on the reference genome: 
 
