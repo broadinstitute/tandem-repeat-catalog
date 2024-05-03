@@ -71,9 +71,9 @@ python3 -u -m str_analysis.merge_loci --verbose \
   --merge-adjacent-loci-with-same-motif \
   --output-format JSON \
   --output-prefix merged_catalog \
-  $(basename ALL_PERFECT_REPEATS_CATALOG_URL) \
-  $(basename $ILLUMINA_CATALOG_URL) \
-  $(basename TRUTH_SET_CATALOG_URL)
+  $(basename ${ALL_PERFECT_REPEATS_CATALOG_URL}) \
+  $(basename ${ILLUMINA_CATALOG_URL}) \
+  $(basename ${TRUTH_SET_CATALOG_URL})
 
 python3 -u -m str_analysis.annotate_and_filter_str_catalog \
    --reference ${REFERENCE_FASTA_PATH} \
