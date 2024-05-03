@@ -87,7 +87,7 @@ python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose \
 
 ### Step 3: Convert the combined catalog into tool-specific catalog formats
 
-The merged_catalog.json.gz file from step2 is in in a format that can be gunzipped and used as input to [ExpansionHunter](https://github.com/Illumina/ExpansionHunter) (or to [this fork of ExpansionHunter](https://github.com/bw2/ExpansionHunter) which can read the gzipped JSON file directly). The commands below convert this file to formats which can be passed as input to:
+The `merged_catalog.json.gz` file from step2 is already in a format that can be gunzipped and passed as input to [ExpansionHunter](https://github.com/Illumina/ExpansionHunter) (or to [this fork of ExpansionHunter](https://github.com/bw2/ExpansionHunter) which can read the gzipped JSON file directly). The commands below convert `merged_catalog.json.gz` to formats which can be passed as input to:
 * [TRGT](https://github.com/PacificBiosciences/trgt)
 * [LongTR](https://github.com/gymrek-lab/LongTR)
 * [HipSTR](https://github.com/HipSTR-Tool/HipSTR)
@@ -96,9 +96,9 @@ The merged_catalog.json.gz file from step2 is in in a format that can be gunzipp
 **Commands:**
 
 ```
-python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_trgt_catalog   merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.TRGT.bed 
-python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_longtr_format  merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.LongTR.bed
-python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_hipstr_format  merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.HipSTR.bed
-python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_gangstr_spec   merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.GangSTR.bed
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_trgt_catalog   --output-file merged_and_annotated_catalog.TRGT.bed     merged_and_annotated_catalog.json.gz  
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_longtr_format  --output-file merged_and_annotated_catalog.LongTR.bed   merged_and_annotated_catalog.json.gz  
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_hipstr_format  --output-file merged_and_annotated_catalog.HipSTR.bed   merged_and_annotated_catalog.json.gz  
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_gangstr_spec   --output-file merged_and_annotated_catalog.GangSTR.bed  merged_and_annotated_catalog.json.gz  
 ```
 
