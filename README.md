@@ -23,7 +23,7 @@ The steps below start with a reference genome fasta file and proceed to generate
 
 Run [colab-repeat-finder](https://github.com/broadinstitute/colab-repeat-finder) to detect perfect (ie. non-interrupted) tandem repeats in the reference genome that satisfy the following two criteria:
 * Have a repeat motif that's between 1bp and 50bp, including all STRs (1-6bp) and many VNTR sizes (7-50bp)
-* Have 3 or more consencutive repeats in the reference genome that span at least 9bp 
+* Have 3 or more consecutive repeats in the reference genome that span at least 9bp 
 
 
 **Commands:**
@@ -42,15 +42,14 @@ https://storage.cloud.google.com/str-truth-set/hg38/ref/other/colab-repeat-finde
 
 ### Step 2: Merge loci from step 1 (and optionally add other repeat catalogs)
 
-Here, we fix some representation issues in the catalog from step1:
+Here, we fix some representation issues in the catalog from step 1:
 - collapse adjacent loci that have the same motif but were reported as two separate loci by colab-repeat-finder due to a single base pair interruption between them.
 - filter out repeats that include non-A,C,G,T characters (such as homopolymer repeats of 'N')
 
-Also, we can optionally augment our catalog with loci from additional sources. Specifically, while the catalog from step 1 includes all tandem repeat loci that have at least 3 repeats of some motif and span at least 9bp in the reference genome, it misses loci that have 2 or fewer repeats in the reference (while having 3 or more repeats in other genomes within the population). To capture these loci as well, we can merge the catalog from step 1 with any available catalogs of polymorphic tandem repeat loci that were generated via 
-orthogonal methods. For the human genome, these include the following catalogs:
+Optionally, we can augment our catalog with loci from other sources. Specifically, while the catalog from step 1 includes all perfect tandem repeats loci that have at least 3 repeats of some motif and span at least 9bp in the reference genome, it misses polymorphic loci that coincidentally have 2 or fewer repeats in the reference (with larger TR alleles segregating in the population). To capture these loci, we can merge the catalog from step 1 with any available catalogs of polymorphic tandem repeat loci that were generated via orthogonal methods. For the human genome, these include:
 
-* Illumina catalog of 174k TR loci that are polymporphic in 2.4k diverse population samples from 1kGP.  
-* Truth set from [weisburd 2023] of polymorphic TR loci in 51 samples from the HPRC. 
+* [Illumina catalog](https://github.com/Illumina/RepeatCatalogs) of 174k TR loci that are polymporphic in 2.4k diverse population samples from 1kGP.  
+* Truth set from [weisburd 2023] that has now been updated to include polymorphic TR loci in 51 samples from the HPRC. 
 
 
 The following commands should be run even if you only have the one catalog from step1 and did not add any other catalogs:
