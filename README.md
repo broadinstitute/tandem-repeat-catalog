@@ -12,11 +12,11 @@ The purpose of this repo is to provides methods and best practices for defining 
 ### Defining a genome-wide tandem repeat catalog
 
 The steps below start with a reference genome fasta file and proceed to generate a comprehensive genome-wide TR catalog that can be used as input to the following TR genotyping tools:
-- ExpansionHunter
-- GangSTR
-- HipSTR
-- TRGT
-- LongTR
+* [ExpansionHunter](https://github.com/Illumina/ExpansionHunter)
+* [TRGT](https://github.com/PacificBiosciences/trgt)
+* [LongTR](https://github.com/gymrek-lab/LongTR)
+* [HipSTR](https://github.com/HipSTR-Tool/HipSTR)
+* [GangSTR](https://github.com/gymreklab/GangSTR)
 
 
 ### Step 1: Detect all perfect (ie. non-interrupted) tandem repeats in the reference genome
@@ -87,13 +87,18 @@ python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose \
 
 ### Step 3: Convert the combined catalog into tool-specific catalog formats
 
-Use the scrips in the str_analysis repo.
+The merged_catalog.json.gz file from step2 is in in a format that can be gunzipped and used as input to [ExpansionHunter](https://github.com/Illumina/ExpansionHunter) (or to [this fork of ExpansionHunter](https://github.com/bw2/ExpansionHunter) which can read the gzipped JSON file directly). The commands below convert this file to formats which can be passed as input to:
+* [TRGT](https://github.com/PacificBiosciences/trgt)
+* [LongTR](https://github.com/gymrek-lab/LongTR)
+* [HipSTR](https://github.com/HipSTR-Tool/HipSTR)
+* [GangSTR](https://github.com/gymreklab/GangSTR)
 
 **Commands:**
 
 ```
 python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_trgt_catalog   merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.TRGT.bed 
 python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_longtr_format  merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.LongTR.bed
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_hipstr_format  merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.HipSTR.bed
 python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_gangstr_spec   merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.GangSTR.bed
 ```
 
