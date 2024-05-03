@@ -85,7 +85,7 @@ python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose \
    merged_catalog.json.gz
 ```
 
-### Step 4: Convert the combined catalog into tool-specific catalog formats
+### Step 3: Convert the combined catalog into tool-specific catalog formats
 
 Use the scrips in the str_analysis repo.
 
