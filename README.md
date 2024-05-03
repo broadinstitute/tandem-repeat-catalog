@@ -49,6 +49,8 @@ orthogonal methods. For the human genome, these include the following catalogs:
 * Truth set from [weisburd 2023] of polymorphic TR loci in 51 samples from the HPRC. 
 
 
+These are the commands for this step, and should be run even if you only have the catalog from step1 and are not adding any other catalogs:
+
 ```
 ALL_PERFECT_REPEATS_CATALOG_URL=https://storage.cloud.google.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp.bed.gz
 ILLUMINA_CATALOG_URL=https://storage.cloud.google.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz
@@ -59,10 +61,9 @@ wget $ALL_PERFECT_REPEATS_CATALOG_URL
 wget $ILLUMINA_CATALOG_URL
 wget $TRUTH_SET_CATALOG_URL
 
-# TODO rename to merge_loci
 python3 -u -m str_analysis.merge_loci --verbose \
   --merge-adjacent-loci-with-same-motif \
-  $(ALL_PERFECT_REPEATS_CATALOG_URL) \
+  $(basename ALL_PERFECT_REPEATS_CATALOG_URL) \
   $(basename $ILLUMINA_CATALOG_URL) \
   $(basename TRUTH_SET_CATALOG_URL)
 ```
