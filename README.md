@@ -80,6 +80,7 @@ python3 -u -m str_analysis.annotate_and_filter_str_catalog \
    --discard-loci-with-non-acgt-bases \
    --output-path merged_and_annotated_catalog.json \
    --verbose
+```
 
 ### Step 4: Convert the combined catalog into tool-specific catalog formats
 
