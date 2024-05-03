@@ -1,21 +1,27 @@
-This repo provides steps and tools for defining genome-wide tandem repeat catalogs for use with tools like ExpansionHunter, GangSTR, HipSTR, TRGT, and LongTR. 
+This repo provides methods and best practices for defining genome-wide tandem repeat (TR) catalogs. 
+The catalogs are provided in multiple formats, including the input formats of:
+- ExpansionHunter
+- GangSTR
+- HipSTR
+- TRGT
+- LongTR
 
 ---
 ### Defining a genome-wide tandem repeat catalog
 
-The steps below use examples based on the hg38 human reference, but are applicable to other reference genomes. 
+The steps below use examples based on the hg38 human reference, but are also applicable to other reference genomes. 
 
 #### Step 1: Detect all perfect (ie. non-interrupted) tandem repeats in the reference genome
 
-We use [colab-repeat-finder](https://github.com/broadinstitute/colab-repeat-finder) - a simple algorithm designed to detect all perfect repeats that satisfy user-specified criteria. 
+Run [colab-repeat-finder](https://github.com/broadinstitute/colab-repeat-finder) on the reference genome: 
 
 ```
 git clone git@github.com:broadinstitute/colab-repeat-finder.git
 cd colab-repeat-finder/python
-python3 perfect_repeat_finder.py --min-repeats 3 --min-span 9 --min-motif-size 1 --max-motif-size 50  --show-progress-bar /path/to/hg38.fa   --output-prefix perfect_repeats.hg38
+python3 perfect_repeat_finder.py  --min-repeats 3  --min-span 9  --min-motif-size 1  --max-motif-size 50  --output-prefix perfect_repeats.hg38  --show-progress-bar   /path/to/hg38.fa   
 ```
 
-*NOTE:* We could have, instead, run TandemRepeatFinder (TRF) with very large mismatch and indel penalties to make it return only perfect repeats, but we found that TRF fails to detect ~3% of perfect repeats (2-50bp motifs) for unclear reasons. We therefore use colab-repeat-finder to maximise sensitivity. 
+*NOTE:* colab-repeat-finder is a new, simple tool that finds all perfect repeats in a given input sequence that satify user parameters. We could have, instead, run TandemRepeatFinder (TRF) with very large mismatch and indel penalties to make it return only perfect repeats, but in this mode TRF fails to detect ~3% of perfect repeats (2-50bp motifs) for unclear reasons. We therefore created colab-repeat-finder to maximise sensitivity. 
 
 
 ### Step 2: Combine perfect_repeat_finder.py output with any available empirically-defined polymorphic tandem repeat catalogs
