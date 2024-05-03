@@ -75,11 +75,14 @@ python3 -u -m str_analysis.merge_loci --verbose \
   $(basename ${ILLUMINA_CATALOG_URL}) \
   $(basename ${TRUTH_SET_CATALOG_URL})
 
-python3 -u -m str_analysis.annotate_and_filter_str_catalog \
-   --reference ${REFERENCE_FASTA_PATH} \
+python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose \
+   --skip-gene-annotations \
+   --skip-disease-loci-annotations \
+   --skip-mappability-annotations \
    --discard-loci-with-non-acgt-bases \
-   --output-path merged_and_annotated_catalog.json \
-   --verbose
+   --reference ${REFERENCE_FASTA_PATH} \
+   --output-path merged_and_annotated_catalog.json.gz \
+   merged_catalog.json.gz
 ```
 
 ### Step 4: Convert the combined catalog into tool-specific catalog formats
@@ -89,8 +92,8 @@ Use the scrips in the str_analysis repo.
 **Commands:**
 
 ```
-python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_trgt_catalog   merged_and_annotated_catalog.json  --output-file merged_and_annotated_catalog.TRGT.bed 
-python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_longtr_format  merged_and_annotated_catalog.json  --output-file merged_and_annotated_catalog.LongTR.bed
-python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_gangstr_spec   merged_and_annotated_catalog.json  --output-file merged_and_annotated_catalog.GangSTR.bed
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_trgt_catalog   merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.TRGT.bed 
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_longtr_format  merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.LongTR.bed
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_gangstr_spec   merged_and_annotated_catalog.json.gz  --output-file merged_and_annotated_catalog.GangSTR.bed
 ```
 
