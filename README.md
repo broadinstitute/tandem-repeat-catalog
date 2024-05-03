@@ -38,9 +38,9 @@ https://storage.cloud.google.com/str-truth-set/hg38/ref/other/colab-repeat-finde
 
 ### Step 2: Merge loci from step 1 (and optionally add other repeat catalogs)
 
-Here, we fix some representation issues by doing the following:
-- collapsing adjacent loci that have the same motif but were reported as two separate loci by colab-repeat-finder due to a single base pair interruption between them.
-- filtering out repeats that include non-A,C,G,T characters (such as homopolymer repeats of 'N')
+Here, we fix some representation issues in the catalog from step1:
+- collapse adjacent loci that have the same motif but were reported as two separate loci by colab-repeat-finder due to a single base pair interruption between them.
+- filter out repeats that include non-A,C,G,T characters (such as homopolymer repeats of 'N')
 
 Also, we can optionally augment our catalog with loci from additional sources. Specifically, while the catalog from step 1 includes all tandem repeat loci that have at least 3 repeats of some motif and span at least 9bp in the reference genome, it misses loci that have 2 or fewer repeats in the reference (while having 3 or more repeats in other genomes within the population). To capture these loci as well, we can merge the catalog from step 1 with any available catalogs of polymorphic tandem repeat loci that were generated via 
 orthogonal methods. For the human genome, these include the following catalogs:
