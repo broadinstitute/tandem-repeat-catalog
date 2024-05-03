@@ -27,7 +27,7 @@ https://storage.cloud.google.com/str-truth-set/hg38/ref/other/colab-repeat-finde
 *NOTE:* colab-repeat-finder is a new, simple tool that finds all perfect repeats in a given input sequence that satify user parameters. We could have, instead, run TandemRepeatFinder (TRF) with very large mismatch and indel penalties to make it return only perfect repeats, but in this mode TRF fails to detect ~3% of perfect repeats (2-50bp motifs) for unclear reasons. We therefore created colab-repeat-finder to maximise sensitivity. 
 
 
-### Step 2: Combine perfect_repeat_finder.py output with any available empirically-defined polymorphic tandem repeat catalogs
+### Step 2: Combine output of step 1 with any available empirically-defined polymorphic tandem repeat catalogs
 
 While the catalog from step 1 includes all tandem repeat loci that have at least 3 repeats of some motif and span at least 9bp in the reference genome, it misses loci that have 2 or fewer repeats in the reference (while having 3 or more repeats in other genomes within the population). To capture these loci as well, we can merge the catalog from step 1 with any available catalogs of polymorphic tandem repeat loci that were generated via 
 orthogonal methods. For human genomes, these include the following catalogs:
