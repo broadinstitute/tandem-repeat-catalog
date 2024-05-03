@@ -54,7 +54,7 @@ Optionally, we can augment our catalog with loci from other sources. Specificall
 * Truth set from [[weisburd 2023](https://www.biorxiv.org/content/10.1101/2023.05.05.539588v1)] that has now been updated to include polymorphic TR loci in 51 samples from the HPRC. 
 
 
-The following commands should be run even if you only have the one catalog from step1 and did not add any other catalogs:
+The following commands should be run even if you only have the one catalog from step1 and did not add any other catalogs. To do this, simply remove the additional catalogs from the commmands below.
 
 **Commands:**
 ```
