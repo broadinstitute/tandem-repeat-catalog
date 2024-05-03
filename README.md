@@ -50,7 +50,7 @@ orthogonal methods. For the human genome, these include the following catalogs:
 * Truth set from [weisburd 2023] of polymorphic TR loci in 51 samples from the HPRC. 
 
 
-These are the commands for this step, and should be run even if you only have the catalog from step1 and are not adding any other catalogs:
+The following commands should be run even if you only have the one catalog from step1 and did not add any other catalogs:
 
 **Commands:**
 ```
