@@ -28,9 +28,11 @@ Run [colab-repeat-finder](https://github.com/broadinstitute/colab-repeat-finder)
 
 **Commands:**
 ```
+REFERENCE_FASTA_PATH=/path/to/hg38.fa
+
 git clone git@github.com:broadinstitute/colab-repeat-finder.git
 cd colab-repeat-finder/python
-python3 perfect_repeat_finder.py  --min-repeats 3  --min-span 9  --min-motif-size 1  --max-motif-size 50  --output-prefix perfect_repeats.hg38  --show-progress-bar   /path/to/hg38.fa   
+python3 perfect_repeat_finder.py  --min-repeats 3  --min-span 9  --min-motif-size 1  --max-motif-size 50  --output-prefix perfect_repeats.hg38  --show-progress-bar  ${REFERENCE_FASTA_PATH}
 ```
 
 The output for hg38 is already available @   
@@ -40,7 +42,7 @@ https://storage.cloud.google.com/str-truth-set/hg38/ref/other/colab-repeat-finde
 *NOTE:* colab-repeat-finder is a new, simple tool that finds all perfect repeats in a given input sequence that satify user parameters. We could have, instead, run TandemRepeatFinder (TRF) with very large mismatch and indel penalties to make it return only perfect repeats, but in this mode TRF fails to detect ~3% of perfect repeats (2-50bp motifs) for unclear reasons. We therefore created colab-repeat-finder to maximise sensitivity. 
 
 
-### Step 2: Merge loci from step 1 (and optionally add other repeat catalogs)
+### Step 2: Merge and annotate loci from step 1 (and optionally add other repeat catalogs)
 
 Here, we fix some representation issues in the catalog from step 1:
 - collapse adjacent loci that have the same motif but were reported as two separate loci by colab-repeat-finder due to a single base pair interruption between them.
@@ -67,18 +69,27 @@ wget $TRUTH_SET_CATALOG_URL
 
 python3 -u -m str_analysis.merge_loci --verbose \
   --merge-adjacent-loci-with-same-motif \
+  --output-format JSON \
+  --output-prefix merged_catalog \
   $(basename ALL_PERFECT_REPEATS_CATALOG_URL) \
   $(basename $ILLUMINA_CATALOG_URL) \
   $(basename TRUTH_SET_CATALOG_URL)
-```
 
+python3 -u -m str_analysis.annotate_and_filter_str_catalog \
+   --reference ${REFERENCE_FASTA_PATH} \
+   --discard-loci-with-non-acgt-bases \
+   --output-path merged_and_annotated_catalog.json \
+   --verbose
 
-
-### Step 3: Annotate loci with gene names, etc.
-
-Use the `python3 -u -m str_analysis.annotate_and_filter_str_catalog` script.
-
-### Step 4: Convert the combined catalog into tool-specific catalog formats, while adding tool-specific optimizations to the locus definitions 
+### Step 4: Convert the combined catalog into tool-specific catalog formats
 
 Use the scrips in the str_analysis repo.
+
+**Commands:**
+
+```
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_trgt_catalog   merged_and_annotated_catalog.json  --output-file merged_and_annotated_catalog.TRGT.bed 
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_longtr_format  merged_and_annotated_catalog.json  --output-file merged_and_annotated_catalog.LongTR.bed
+python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_gangstr_spec   merged_and_annotated_catalog.json  --output-file merged_and_annotated_catalog.GangSTR.bed
+```
 
