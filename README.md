@@ -23,6 +23,7 @@ The steps below start with a reference genome fasta file and proceed to generate
 
 Run [colab-repeat-finder](https://github.com/broadinstitute/colab-repeat-finder) on the reference genome: 
 
+**Commands:**
 ```
 git clone git@github.com:broadinstitute/colab-repeat-finder.git
 cd colab-repeat-finder/python
@@ -51,6 +52,7 @@ orthogonal methods. For the human genome, these include the following catalogs:
 
 These are the commands for this step, and should be run even if you only have the catalog from step1 and are not adding any other catalogs:
 
+**Commands:**
 ```
 ALL_PERFECT_REPEATS_CATALOG_URL=https://storage.cloud.google.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp.bed.gz
 ILLUMINA_CATALOG_URL=https://storage.cloud.google.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz
