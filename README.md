@@ -21,7 +21,10 @@ The steps below start with a reference genome fasta file and proceed to generate
 
 ### Step 1: Detect all perfect (ie. non-interrupted) tandem repeats in the reference genome
 
-Run [colab-repeat-finder](https://github.com/broadinstitute/colab-repeat-finder) on the reference genome: 
+Run [colab-repeat-finder](https://github.com/broadinstitute/colab-repeat-finder) to detect perfect (ie. non-interrupted) tandem repeats in the reference genome that satisfy the following two criteria:
+* Have a repeat motif size between 1bp and 50bp
+* Have 3 or more consencutive repeats in the reference genome that span at least 9bp 
+
 
 **Commands:**
 ```
