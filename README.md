@@ -25,7 +25,7 @@ Run [colab-repeat-finder](https://github.com/broadinstitute/colab-repeat-finder)
 * Have a repeat motif that's between 1bp and 50bp, including all STRs (1-6bp) and many VNTR sizes (7-50bp)
 * Have 3 or more consecutive repeats in the reference genome that span at least 9bp 
 
-The output for hg38 is already available [here](https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp.bed.gz).
+=> The output of this step for hg38 is available for [download from here](https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp.bed.gz).
 
 **Commands:**
 ```
@@ -45,29 +45,33 @@ Here, we fix some representation issues in the catalog from step 1:
 - collapse adjacent loci that have the same motif but were reported as two separate loci by colab-repeat-finder due to a single base pair interruption between them.
 - filter out repeats that include non-A,C,G,T characters, including Ns
 
-Optionally, we can augment our catalog with loci from other sources. Specifically, while the catalog from step 1 includes all perfect tandem repeats loci that have at least 3 repeats of some motif and span at least 9bp in the reference genome, it misses polymorphic loci that coincidentally have 2 or fewer repeats in the reference (with larger TR alleles segregating in the population). To capture these loci, we can merge the catalog from step 1 with any available catalogs of polymorphic tandem repeat loci that were generated via orthogonal methods. For the human genome, these include:
+Optionally, we can augment our catalog with [known disease-associated TR loci](https://github.com/broadinstitute/str-analysis/blob/main/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json) as well as loci from other sources. Specifically, while the catalog from step 1 includes all perfect tandem repeats loci that have at least 3 repeats of some motif and span at least 9bp in the reference genome, it misses polymorphic loci that coincidentally have 2 or fewer repeats in the reference (with larger TR alleles segregating in the population). To capture these loci, we can merge the catalog from step 1 with any available catalogs of polymorphic tandem repeat loci that were generated via orthogonal methods. For the human genome, these include:
 
 * [Illumina catalog](https://github.com/Illumina/RepeatCatalogs) of 174k TR loci that are polymporphic in 2.4k diverse population samples from 1kGP.  
 * Truth set from [[weisburd 2023](https://www.biorxiv.org/content/10.1101/2023.05.05.539588v1)] that has now been updated to include polymorphic TR loci in 51 samples from the HPRC. 
 
-
 The following commands should be run even if you only have the one catalog from step1 and did not add any other catalogs. To do this, simply remove the additional catalogs from the commmands below.
+
+=> The output of this step for hg38 is available for [download from here](https://console.cloud.google.com/storage/browser/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp;tab=objects?prefix=&forceOnObjectsSortingFiltering=false).
 
 **Commands:**
 ```
+KNOWN_DISEASE_ASSOCIATED_LOCI=https://raw.githubusercontent.com/broadinstitute/str-analysis/main/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json
 ALL_PERFECT_REPEATS_CATALOG_URL=https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp.bed.gz
 ILLUMINA_CATALOG_URL=https://storage.googleapis.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz
 TRUTH_SET_CATALOG_URL=https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/combined.51_samples.positive_loci.json
 
-
-wget $ALL_PERFECT_REPEATS_CATALOG_URL
-wget $ILLUMINA_CATALOG_URL
-wget $TRUTH_SET_CATALOG_URL
+wget -nc $KNOWN_DISEASE_ASSOCIATED_LOCI
+wget -nc $ALL_PERFECT_REPEATS_CATALOG_URL
+wget -nc $ILLUMINA_CATALOG_URL
+wget -nc $TRUTH_SET_CATALOG_URL
 
 python3 -u -m str_analysis.merge_loci --verbose \
   --merge-adjacent-loci-with-same-motif \
+  --add-extra-fields-from-input-catalogs \
   --output-format JSON \
   --output-prefix merged_catalog \
+  $(basename ${KNOWN_DISEASE_ASSOCIATED_LOCI}) \
   $(basename ${ALL_PERFECT_REPEATS_CATALOG_URL}) \
   $(basename ${ILLUMINA_CATALOG_URL}) \
   $(basename ${TRUTH_SET_CATALOG_URL})
@@ -89,6 +93,8 @@ The `merged_catalog.json.gz` file from step2 is already in a format that can be 
 * [LongTR](https://github.com/gymrek-lab/LongTR)
 * [HipSTR](https://github.com/HipSTR-Tool/HipSTR)
 * [GangSTR](https://github.com/gymreklab/GangSTR)
+
+=> The output of this step for hg38 is available for [download from here](https://console.cloud.google.com/storage/browser/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp;tab=objects?prefix=&forceOnObjectsSortingFiltering=false).
 
 **Commands:**
 
