@@ -5,11 +5,26 @@
 
 ### Introduction
 
-Tandem repeats (TRs) are regions of the genome that consist of consecutive copies of some motif sequence. For example, CAGCAGCAG is a tandem repeat with motif CAG. Many types of genomic studies require annotations of tandem repeats in the reference genome, called repeat catalogs, which specify the genomic start and end coordinates of each tandem repeat region, as well as the motif or motifs that repeat there.
+Tandem repeats (TRs) are regions of the genome that consist of consecutive copies of some motif sequence. For example, `CAGCAGCAG` is a tandem repeat of the `CAG` motif. Many types of genomic studies require annotations of tandem repeats in the reference genome, called repeat catalogs, which specify the genomic start and end coordinates of each tandem repeat region, as well as the one or more motifs that repeat there. 
 
-This repo documents best practices for defining repeat catalogs, and provides a general purpose catalog for use in a wide range of TR genotyping studies involving short read or long read sequencing data. 
+For example, if a hypothetical region at the beginning of `chrX` had the following nucleotide sequence:  
+`ATCAGTAGA ATATATATAT CAGACAGCAGCAG TGAGTGCGTAC...`  
+it could be represented in a repeat catalog as two entries:  
+`chrX:10-19 (AT)*`  
+`chrX:20-32 (CAG)*`   
+indicating that a repeat of the `AT` motif occurs between positions 10 and 19 (inclusive), and of the `CAG` motif between positions 20 and 32.
 
-Although our initial focus is on the human genome, these best practices are also applicable to other closely-related genomes. We'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
+
+### Repeat Catalog
+
+This repo provides a general purpose catalog for use in a wide range of TR genotyping studies involving short read or long read sequencing data. 
+
+Features:
+
+- ...
+
+
+Although our initial focus is on the human genome, we'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
 
 ### Defining a genome-wide tandem repeat catalog
 
