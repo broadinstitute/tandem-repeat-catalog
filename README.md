@@ -5,9 +5,11 @@
 
 ### Introduction
 
-Tandem repeats are regions of the genome that consist of consecutive copies of some motif sequence. For example, CAGCAGCAG is a tandem repeat with motif CAG. Many types of genomic studies require annotations of tandem repeats in the reference genome, called repeat catalogs. Repeat catalogs typically consist of the repeat reference coordinates and one or multiple motif sequences that the repeat is composed of.
+Tandem repeats (TRs) are regions of the genome that consist of consecutive copies of some motif sequence. For example, CAGCAGCAG is a tandem repeat with motif CAG. Many types of genomic studies require annotations of tandem repeats in the reference genome, called repeat catalogs, which specify the genomic start and end coordinates of each tandem repeat region, as well as the motif or motifs that repeat there.
 
-The purpose of this repo is to provide methods and best practices for defining high-quality repeat catalogs. Although our initial focus is on the human genome, this tutorial should be also applicable to other closely-related genomes. We'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
+This repo documents best practices for defining repeat catalogs, and provides a general purpose catalog for use in a wide range of TR genotyping studies involving short read or long read sequencing data. 
+
+Although our initial focus is on the human genome, these best practices are also applicable to other closely-related genomes. We'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
 
 ### Defining a genome-wide tandem repeat catalog
 
