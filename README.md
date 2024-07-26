@@ -6,7 +6,7 @@ This repo provides a general purpose genome-wide TR catalog for use in TR genoty
 
 **Releases**
 
-[v0.9](https://github.com/broadinstitute/tandem-repeat-catalogs/releases) is now available on the [[Releases]](https://github.com/broadinstitute/tandem-repeat-catalogs/releases) page
+[v0.9](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v0.9) is now available on the [[Releases]](https://github.com/broadinstitute/tandem-repeat-catalogs/releases) page
 
 ### Goals
 
