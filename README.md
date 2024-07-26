@@ -2,7 +2,7 @@
 
 ### Repeat Catalog
 
-This repo provides a general purpose genome-wide TR catalog for use in TR genotyping studies involving short read or long read sequencing data. 
+This repo provides a general purpose genome-wide TR catalog for genotyping TRs in short read or long read sequencing data. 
 
 **Releases**
 
@@ -10,15 +10,15 @@ This repo provides a general purpose genome-wide TR catalog for use in TR genoty
 
 ### Goals
 
-- Provide a catalog that is as sensitive (includes all polymorphic TR loci in the human genome) and specific (excludes non-polymorphic loci) as possible
+- Create a catalog that is as sensitive (includes all polymorphic TR loci in the human genome) and specific (excludes non-polymorphic loci) as possible
 - Provide rich annotations
-- Determine best practices for how to define TR loci for specific TR genotyping tools, and then share the catalog in formats that can be used directly with:
+- Share the catalog in formats that can be used directly with the following tools:
   * [ExpansionHunter](https://github.com/Illumina/ExpansionHunter)
   * [TRGT](https://github.com/PacificBiosciences/trgt)
   * [LongTR](https://github.com/gymrek-lab/LongTR)
   * [HipSTR](https://github.com/HipSTR-Tool/HipSTR)
   * [GangSTR](https://github.com/gymreklab/GangSTR)
-  * and other TR genotyping tools
+  * others
 
 Although our initial focus is on the human genome, we'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
 
