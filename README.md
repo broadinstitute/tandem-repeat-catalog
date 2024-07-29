@@ -4,17 +4,17 @@
 
 This repo provides a general purpose genome-wide TR catalog for genotyping TRs in short read or long read sequencing data. 
 
-[Release v0.9](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v0.9) is now available on the [[Releases]](https://github.com/broadinstitute/tandem-repeat-catalogs/releases) page and includes the following files:
+[Release v0.9](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v0.9) is now available. It includes filenames that start with `repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38` and have the following suffixes:
 
 <br />
 <table>
-<tr><td><b>File</b></td><td><b>Description</b></td></tr>
-<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz</td><td>Includes all annotations, and can be used directly with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a></td></tr>
-<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.bed.gz</td><td>Sorted and indexed BED file for IGV</td></tr>
-<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.TRGT.bed</td><td>For use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
-<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.LongTR.bed</td><td>For use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
-<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.GangSTR.bed</td><td>For use with <a href="https://github.com/gymreklab/GangSTR">GangSTR</a></td></tr>
-<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.HipSTR.bed</td><td>For use with <a href="https://github.com/HipSTR-Tool/HipSTR">HipSTR</a></td></tr>
+<tr><td><b>File suffix</b></td><td><b>Description</b></td></tr>
+<tr><td>.merged_and_annotated.json.gz</td><td>For use with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a>, but also includes all annotations as extra fields that ExpansionHunter ignores</td></tr>
+<tr><td>.bed.gz</td><td>Sorted and indexed BED file for IGV</td></tr>
+<tr><td>.TRGT.bed</td><td>For use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
+<tr><td>.LongTR.bed</td><td>For use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
+<tr><td>.GangSTR.bed</td><td>For use with <a href="https://github.com/gymreklab/GangSTR">GangSTR</a></td></tr>
+<tr><td>.HipSTR.bed</td><td>For use with <a href="https://github.com/HipSTR-Tool/HipSTR">HipSTR</a></td></tr>
 </table>
 <br />
 
