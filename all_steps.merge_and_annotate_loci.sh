@@ -201,7 +201,7 @@ do
     python3 -u -m str_analysis.merge_loci --verbose  \
 	    --output-prefix ${current_catalog_output_prefix}  \
 	    --write-bed-files-with-new-loci \
-	    $(basename ${OUTPUT_PREFIX}).merged_and_annotated.json.gz \
+	    ${OUTPUT_PREFIX}.merged_and_annotated.json.gz \
 	    ${current_catalog_output_prefix}.annotated_and_filtered.json
 done
 
