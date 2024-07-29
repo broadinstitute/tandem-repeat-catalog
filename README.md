@@ -30,10 +30,10 @@ Although our initial focus is on the human genome, we'd also love to extend this
 
 Tandem repeats (TRs) are regions of the genome that consist of consecutive copies of some motif sequence. For example, `CAGCAGCAG` is a tandem repeat of the `CAG` motif. Many types of genomic studies require annotations of tandem repeats in the reference genome, called repeat catalogs, which specify the genomic start and end coordinates of each tandem repeat region, as well as the one or more motifs that repeat there. 
 
-For example, if a hypothetical region at the beginning of `chrX` had the following nucleotide sequence:  
+For example, if a hypothetical region at the beginning of `chrX` consisted of the following nucleotide sequence:  
 `ATCAGTAGA ATATATATAT CAGACAGCAGCAG TGAGTGCGTAC...`  
 it could be represented in a repeat catalog as two entries:  
 `chrX:10-19 (AT)*`  
 `chrX:20-32 (CAG)*`   
 indicating that a repeat of the `AT` motif occurs between positions 10 and 19 (inclusive), and of the `CAG` motif between positions 20 and 32.
-
+A genome-wide catalog would contain such entries for all repeat regions of interest found anywhere in the genome. 
