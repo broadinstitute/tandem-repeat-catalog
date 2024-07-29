@@ -4,28 +4,27 @@
 
 This repo provides a general purpose genome-wide TR catalog for genotyping TRs in short read or long read sequencing data. 
 
-**Releases**
+[Release v0.9](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v0.9) is now available on the [[Releases]](https://github.com/broadinstitute/tandem-repeat-catalogs/releases) page and includes the following files:
 
-[v0.9](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v0.9) is now available on the [[Releases]](https://github.com/broadinstitute/tandem-repeat-catalogs/releases) page
+<br />
+<table>
+<tr><td><b>File</b></td><td><b>Description</b></td></tr>
+<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz</td><td>Includes all annotations, and can be used directly with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a></td></tr>
+<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.bed.gz</td><td>Sorted and indexed BED file for IGV</td></tr>
+<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.TRGT.bed</td><td>For use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
+<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.LongTR.bed</td><td>For use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
+<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.GangSTR.bed</td><td>For use with <a href="https://github.com/gymreklab/GangSTR">GangSTR</a></td></tr>
+<tr><td>repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.HipSTR.bed</td><td>For use with <a href="https://github.com/HipSTR-Tool/HipSTR">HipSTR</a></td></tr>
+</table>
+<br />
 
 ### Goals
 
 - Create a catalog that is as sensitive (includes all polymorphic TR loci in the human genome) and specific (excludes non-polymorphic loci) as possible
 - Provide rich annotations
-- Share the catalog in formats that can be used directly with the following tools:
-  * [ExpansionHunter](https://github.com/Illumina/ExpansionHunter)
-  * [TRGT](https://github.com/PacificBiosciences/trgt)
-  * [LongTR](https://github.com/gymrek-lab/LongTR)
-  * [HipSTR](https://github.com/HipSTR-Tool/HipSTR)
-  * [GangSTR](https://github.com/gymreklab/GangSTR)
-  * others
+- Share the catalog in formats that can be used directly with widely-used TR genotyping tools
 
 Although our initial focus is on the human genome, we'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
-
-### Authors
-
-* Ben Weisburd, Broad Institute
-* Egor Dolzhenko, PacBio
 
 ### Background
 
