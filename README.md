@@ -128,10 +128,10 @@ Additional stats can be found in the [[run log](https://raw.githubusercontent.co
 Merged 63,170 out of 3,289,806 (  1.9%) adjacent loci that were within 1bp of each other and had the same motif after cyclic shift
 
 Source of loci in the final catalog:
-   3,220,632 out of 3,289,806 (97.9%) hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.json
-      58,447 out of 3,289,806 ( 1.8%) combined.51_samples.positive_loci.filtered.json
-      10,645 out of 3,289,806 ( 0.3%) illumina_variant_catalog.sorted.filtered.json
-          82 out of 3,289,806 ( 0.0%) variant_catalog_without_offtargets.GRCh38.split.filtered.json
+   3,220,632 out of 3,289,806 (97.9%) All pure repeats in hg38 (hg38_repeats.motifs_2_to_1000bp.repeats_3x_and_spans_9bp.filtered.json)
+      58,447 out of 3,289,806 ( 1.8%) Truth set of TR variants from 51 HPRC assemblies (combined.51_samples.positive_loci.filtered.json)
+      10,645 out of 3,289,806 ( 0.3%) Illumina 174k polymorphic loci from 1kGP samples (illumina_variant_catalog.sorted.filtered.json)
+          82 out of 3,289,806 ( 0.0%) Known disease-associated loci (variant_catalog_without_offtargets.GRCh38.split.filtered.json)
 ```
 
 
