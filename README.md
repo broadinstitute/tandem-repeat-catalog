@@ -125,9 +125,9 @@ Mappability distribution:
 Additional stats can be found in the [[run log](https://raw.githubusercontent.com/broadinstitute/tandem-repeat-catalogs/main/all_steps.merge_and_annotate_loci.log)], including:
 
 ```
-Merged 63,170 out of 3,289,806 (  1.9%) adjacent loci that were within 1bp of each other and had the same motif after cyclic shift
+63,170 out of 3,289,806 (  1.9%) adjacent loci that were within 1bp of each other and had the same motif after cyclic shift were merged together
 
-Source of loci in the final catalog:
+Sources of loci in the final catalog:
    3,220,632 out of 3,289,806 (97.9%) All pure repeats in hg38 (hg38_repeats.motifs_2_to_1000bp.repeats_3x_and_spans_9bp.filtered.json)
       58,447 out of 3,289,806 ( 1.8%) Truth set of TR variants from 51 HPRC assemblies (combined.51_samples.positive_loci.filtered.json)
       10,645 out of 3,289,806 ( 0.3%) Illumina 174k polymorphic loci from 1kGP samples (illumina_variant_catalog.sorted.filtered.json)
