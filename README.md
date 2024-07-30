@@ -11,7 +11,7 @@ It's named *Colab Repeat Catalog* as it is a collaboration between multiple peop
 <br />
 <table>
 <tr><td><b>File suffix</b></td><td><b>Description</b></td></tr>
-<tr><td>.merged_and_annotated.json.gz</td><td>For use with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a>, but also includes all annotations as extra fields that ExpansionHunter ignores</td></tr>
+<tr><td>.merged_and_annotated.json.gz</td><td>For use with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a>. It includes all annotations as extra fields which ExpansionHunter ignores.</td></tr>
 <tr><td>.bed.gz</td><td>Sorted and indexed BED file for IGV</td></tr>
 <tr><td>.TRGT.bed</td><td>For use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
 <tr><td>.LongTR.bed</td><td>For use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
@@ -43,7 +43,7 @@ A genome-wide catalog would contain such entries for all repeat regions of inter
 
 ### Catalog Stats
 
-These catalog stats for v0.9 were computed using [str_analysis/compute_catalog_stats.py](https://github.com/broadinstitute/str-analysis/blob/main/str_analysis/compute_catalog_stats.py):
+The following catalog stats for v0.9 were computed using [str_analysis/compute_catalog_stats.py](https://github.com/broadinstitute/str-analysis/blob/main/str_analysis/compute_catalog_stats.py):
 
 ```
 Stats for repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz:
@@ -121,3 +121,17 @@ Mappability distribution:
           0.9:    512,745 out of  3,226,630 ( 15.9%) loci
           1.0:    965,670 out of  3,226,630 ( 29.9%) loci
 ```
+
+Additional stats can be found in the [[run log](https://raw.githubusercontent.com/broadinstitute/tandem-repeat-catalogs/main/all_steps.merge_and_annotate_loci.log)], including:
+
+```
+Merged 63,170 out of 3,289,806 (  1.9%) adjacent loci that were within 1bp of each other and had the same motif after cyclic shift
+
+Source of loci in the final catalog:
+   3,220,632 out of 3,289,806 (97.9%) hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.json
+      58,447 out of 3,289,806 ( 1.8%) combined.51_samples.positive_loci.filtered.json
+      10,645 out of 3,289,806 ( 0.3%) illumina_variant_catalog.sorted.filtered.json
+          82 out of 3,289,806 ( 0.0%) variant_catalog_without_offtargets.GRCh38.split.filtered.json
+```
+
+
