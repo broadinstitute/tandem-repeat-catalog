@@ -37,19 +37,19 @@ SECONDS=0
 
 # STEP #2:  generate catalog
 KNOWN_DISEASE_ASSOCIATED_LOCI_URL=https://raw.githubusercontent.com/broadinstitute/str-analysis/main/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json
+ILLUMINA_CATALOG_URL=https://storage.googleapis.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz
 #ALL_PERFECT_REPEATS_CATALOG_URL=https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_50bp.repeats_3x_and_spans_9bp.bed.gz
 ALL_PERFECT_REPEATS_CATALOG_URL=https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz
-ILLUMINA_CATALOG_URL=https://storage.googleapis.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz
 TRUTH_SET_CATALOG_URL=https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/combined.51_samples.positive_loci.json
 
 wget -qnc $KNOWN_DISEASE_ASSOCIATED_LOCI_URL
-wget -qnc $ALL_PERFECT_REPEATS_CATALOG_URL
 wget -qnc $ILLUMINA_CATALOG_URL
+wget -qnc $ALL_PERFECT_REPEATS_CATALOG_URL
 wget -qnc $TRUTH_SET_CATALOG_URL
 
 KNOWN_DISEASE_ASSOCIATED_LOCI_PATH=$(basename ${KNOWN_DISEASE_ASSOCIATED_LOCI_URL})
-ALL_PERFECT_REPEATS_CATALOG_PATH=$(basename ${ALL_PERFECT_REPEATS_CATALOG_URL})
 ILLUMINA_CATALOG_PATH=$(basename ${ILLUMINA_CATALOG_URL})
+ALL_PERFECT_REPEATS_CATALOG_PATH=$(basename ${ALL_PERFECT_REPEATS_CATALOG_URL})
 TRUTH_SET_CATALOG_PATH=$(basename ${TRUTH_SET_CATALOG_URL})
 
 python3 -m str_analysis.split_adjacent_loci_in_expansion_hunter_catalog ${KNOWN_DISEASE_ASSOCIATED_LOCI_PATH}
@@ -62,8 +62,8 @@ sed -i 's/AARRG/AAAAG/g' ${KNOWN_DISEASE_ASSOCIATED_LOCI_PATH}
 set +x
 for catalog_path in \
   ${KNOWN_DISEASE_ASSOCIATED_LOCI_PATH} \
-  ${ALL_PERFECT_REPEATS_CATALOG_PATH} \
   ${ILLUMINA_CATALOG_PATH} \
+  ${ALL_PERFECT_REPEATS_CATALOG_PATH} \
   ${TRUTH_SET_CATALOG_PATH}
 do
 
@@ -91,8 +91,8 @@ done
 set -x
 
 KNOWN_DISEASE_ASSOCIATED_LOCI_FILTERED_PATH=$(echo $KNOWN_DISEASE_ASSOCIATED_LOCI_PATH | sed 's/.json/.filtered.json/')
-ALL_PERFECT_REPEATS_CATALOG_FILTERED_PATH=$(echo $ALL_PERFECT_REPEATS_CATALOG_PATH | sed 's/.bed.gz/.filtered.json/')
 ILLUMINA_CATALOG_FILTERED_PATH=$(echo $ILLUMINA_CATALOG_PATH | sed 's/.bed.gz/.filtered.json/')
+ALL_PERFECT_REPEATS_CATALOG_FILTERED_PATH=$(echo $ALL_PERFECT_REPEATS_CATALOG_PATH | sed 's/.bed.gz/.filtered.json/')
 TRUTH_SET_CATALOG_FILTERED_PATH=$(echo $TRUTH_SET_CATALOG_PATH | sed 's/.json/.filtered.json/')
 
 python3 -u -m str_analysis.merge_loci --verbose \
@@ -102,15 +102,15 @@ python3 -u -m str_analysis.merge_loci --verbose \
 	--write-bed-files-with-new-loci \
 	--output-prefix repeat_catalog.3x_and_9bp.hg38.merged \
 	${KNOWN_DISEASE_ASSOCIATED_LOCI_FILTERED_PATH} \
-	${ALL_PERFECT_REPEATS_CATALOG_FILTERED_PATH} \
 	${ILLUMINA_CATALOG_FILTERED_PATH} \
+	${ALL_PERFECT_REPEATS_CATALOG_FILTERED_PATH} \
 	${TRUTH_SET_CATALOG_FILTERED_PATH}
 
 # debug merge
 #for catalog_path in \
 #  ${KNOWN_DISEASE_ASSOCIATED_LOCI_FILTERED_PATH} \
+#  ${ILLUMINA_CATALOG_FILTERED_PATH} \    
 #  ${ALL_PERFECT_REPEATS_CATALOG_FILTERED_PATH} \
-#  ${ILLUMINA_CATALOG_FILTERED_PATH} \
 #  ${TRUTH_SET_CATALOG_FILTERED_PATH}
 #do
 #  echo =================================================
