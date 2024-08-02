@@ -6,7 +6,9 @@ This repo provides a general purpose genome-wide TR catalog for genotyping TRs i
 
 It's named *Colab Repeat Catalog* as it is a collaboration between multiple people including Ben Weisburd, Egor Dolzhenko, and others. 
 
-[Release v0.9](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v0.9) is now available. It includes filenames that start with `repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38` and have the following suffixes:
+[Release v1.0](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v1.0) is now available in draft form. 
+
+It includes filenames that start with `repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38` and have the following suffixes:
 
 <br />
 <table>
