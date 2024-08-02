@@ -134,9 +134,9 @@ Merged 58,226 out of 3,286,072 (  1.8%) adjacent loci that were within 1bp of ea
 
 Sources of loci in the final catalog:
           82 out of 3,286,072 ( 0.0%) Known disease-associated loci (variant_catalog_without_offtargets.GRCh38.split.filtered.json)
-     173,879 out of 3,286,072 ( 5.3%) Illumina 174k polymorphic loci from 1kGP samples (illumina_variant_catalog.sorted.filtered.json)
+     173,879 out of 3,286,072 ( 5.3%) Illumina catalog of 174k polymorphic loci (illumina_variant_catalog.sorted.filtered.json)
    3,053,992 out of 3,286,072 (92.9%) All pure repeats in hg38 (hg38_repeats.motifs_2_to_1000bp.repeats_3x_and_spans_9bp.filtered.json)
-      58,119 out of 3,286,072 ( 1.8%) Truth set of TR variants from 51 HPRC assemblies (combined.51_samples.positive_loci.filtered.json)
+      58,119 out of 3,286,072 ( 1.8%) TR variants from 51 HPRC assemblies (combined.51_samples.positive_loci.filtered.json)
 ```
 
 
