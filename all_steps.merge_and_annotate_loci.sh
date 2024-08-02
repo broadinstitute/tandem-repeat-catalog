@@ -132,6 +132,13 @@ python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose \
 	--output-path ${OUTPUT_PREFIX}.merged_and_annotated.json.gz \
 	repeat_catalog.3x_and_9bp.hg38.merged.json.gz
 
+# Replace "Source" field filenames with more user-friendly source names
+cp ${OUTPUT_PREFIX}.merged_and_annotated.json.gz  temp.json.gz
+gunzip -c temp.json.gz | sed 's/'${KNOWN_DISEASE_ASSOCIATED_LOCI_FILTERED_PATH}'/known disease-associated loci/' | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
+gunzip -c temp.json.gz | sed 's/'${ILLUMINA_CATALOG_FILTERED_PATH}'/Illumina catalog of 174k polymorphic loci/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
+gunzip -c temp.json.gz | sed 's/'${ALL_PERFECT_REPEATS_CATALOG_FILTERED_PATH}'/perfect repeats in hg38/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
+gunzip -c temp.json.gz | sed 's/'${TRUTH_SET_CATALOG_FILTERED_PATH}'/polymorphic TR loci in HPRC assemblies/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
+mv temp.json.gz ${OUTPUT_PREFIX}.merged_and_annotated.json.gz
 
 # STEP #3: convert the catalog from ExpansionHunter catalog format to bed, TRGT, LongTR, HipSTR, and GangSTR formats
 python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_bed --split-adjacent-repeats ${OUTPUT_PREFIX}.merged_and_annotated.json.gz  --output-file ${OUTPUT_PREFIX}.bed.gz &
