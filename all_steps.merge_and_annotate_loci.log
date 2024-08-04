@@ -2771,3 +2771,28 @@ Wrote 1 rows to adotto_tr_catalog_v1.2.annotated_and_filtered.catalog_stats.tsv
 + python3 -u -m str_analysis.merge_loci --verbose --output-prefix adotto_tr_catalog_v1.2 --write-bed-files-with-new-loci /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz adotto_tr_catalog_v1.2.annotated_and_filtered.json
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz
+Added 3,227,828 out of 3,227,828 (100.0%) records from repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz to the output catalog
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Parsing adotto_tr_catalog_v1.2.annotated_and_filtered.json
+Added 1,827,040 out of 2,917,225 ( 62.6%) records from adotto_tr_catalog_v1.2.annotated_and_filtered.json to the output catalog
+    Discarded 899,633 out of 2,917,225 ( 30.8%) records since they overlapped an exising locus by at least 66.0% and had the exact same LocusStructure
+    Discarded 190,552 out of 2,917,225 (  6.5%) records since they overlapped an existing locus by at least 66.0% and had the same canonical motif
+Wrote 1,827,040 unique loci from adotto_tr_catalog_v1.2.annotated_and_filtered.json to adotto_tr_catalog_v1.2.annotated_and_filtered.unique_loci.bed.gz
+Writing combined catalog to adotto_tr_catalog_v1.2.json.gz
+Done writing 5,054,868 output records to adotto_tr_catalog_v1.2.json.gz
+Writing combined catalog to adotto_tr_catalog_v1.2.bed
+Done writing 5,054,868 output records to adotto_tr_catalog_v1.2.bed.gz
+Motif sizes:
+   1,518,702 out of 5,054,868 (30.0%) 3bp
+   1,112,156 out of 5,054,868 (22.0%) 2bp
+   1,040,959 out of 5,054,868 (20.6%) 7+bp
+     800,572 out of 5,054,868 (15.8%) 4bp
+     328,939 out of 5,054,868 ( 6.5%) 5bp
+     253,540 out of 5,054,868 ( 5.0%) 6bp
+Chromsomes:
+   4,778,419 out of 5,054,868 (94.5%) are on autosomes
+     236,617 out of 5,054,868 ( 4.7%) are on X
+      39,818 out of 5,054,868 ( 0.8%) are on Y
+          14 out of 5,054,868 ( 0.0%) are on M
++ echo 'Done.  Total time: 1hrs 54min 29sec'
+Done.  Total time: 1hrs 54min 29sec
