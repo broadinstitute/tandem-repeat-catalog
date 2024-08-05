@@ -45,7 +45,7 @@ A genome-wide catalog would contain such entries for all repeat regions of inter
 
 ### Catalog Stats
 
-The following catalog stats for v0.9 were computed using [str_analysis/compute_catalog_stats.py](https://github.com/broadinstitute/str-analysis/blob/main/str_analysis/compute_catalog_stats.py):
+The following catalog stats for v1.0 were computed using [str_analysis/compute_catalog_stats.py](https://github.com/broadinstitute/str-analysis/blob/main/str_analysis/compute_catalog_stats.py):
 
 ```
 Stats for repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz:
