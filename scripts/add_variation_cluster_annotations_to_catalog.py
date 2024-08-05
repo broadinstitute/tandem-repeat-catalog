@@ -54,7 +54,7 @@ def main():
 	with fopen(args.catalog_json_path, "rt") as f:
 		f2open = gzip.open if args.output_json_path.endswith("gz") else open
 		with f2open(args.output_json_path, "wt") as f2:
-			input_counter = skipped_counter = output_counter = 0
+			input_counter = missing_variation_cluster_counter = output_counter = 0
 			iterator = ijson.items(f, "item")
 			if args.show_progress_bar:
 				iterator = tqdm.tqdm(iterator, unit=" records", unit_scale=True)
@@ -62,16 +62,15 @@ def main():
 			for i, record in enumerate(iterator):
 				locus_id = record["LocusId"]
 				input_counter += 1
-				if locus_id not in locus_id_to_variation_cluster_interval:
-					skipped_counter += 1
+				if locus_id in locus_id_to_variation_cluster_interval:
+					#record["VariationClusterId"] = locus_id_to_variation_cluster_id[locus_id]
+					record["VariationCluster"] = locus_id_to_variation_cluster_interval[locus_id]
+					#del locus_id_to_variation_cluster_id[locus_id]
+					del locus_id_to_variation_cluster_interval[locus_id]
+				else:
+					missing_variation_cluster_counter += 1
 					#if args.verbose:
 					#	print(f"WARNING: locus_id {locus_id} not found in variation cluster catalog")
-					continue
-
-				#record["VariationClusterId"] = locus_id_to_variation_cluster_id[locus_id]
-				record["VariationCluster"] = locus_id_to_variation_cluster_interval[locus_id]
-				#del locus_id_to_variation_cluster_id[locus_id]
-				del locus_id_to_variation_cluster_interval[locus_id]
 
 				output_counter += 1
 				if i > 0:
@@ -82,8 +81,8 @@ def main():
 			f2.write("]")
 
 	if args.verbose:
-		print(f"Skipped {skipped_counter:,d} out of {input_counter:,d} ({skipped_counter/input_counter:.1%}) records "
-			  f"from {args.catalog_json_path}")
+		print(f"Missing variation clusters for {missing_variation_cluster_counter:,d} out of {input_counter:,d} "
+			  f"({missing_variation_cluster_counter/input_counter:.1%}) records from {args.catalog_json_path}")
 		print(f"Used {total_variation_clusters - len(locus_id_to_variation_cluster_interval):,d} out of {total_variation_clusters:,d} "
 			  f"({(total_variation_clusters - len(locus_id_to_variation_cluster_interval))/total_variation_clusters:.1%}) of "
 			  f"variation clusters from {args.variation_clusters_bed_path}")
