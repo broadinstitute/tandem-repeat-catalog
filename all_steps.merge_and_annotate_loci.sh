@@ -23,8 +23,9 @@ then
     exit 1
 fi
 
-mkdir -p results
-cd results
+OUTPUT_DIR=results__$(date +%F)
+mkdir -p ${OUTPUT_DIR}
+cd ${OUTPUT_DIR}
 
 
 SECONDS=0
@@ -180,14 +181,17 @@ python3 -m str_analysis.compute_catalog_stats --verbose ${OUTPUT_PREFIX}.merged_
 mkdir -p comparisons
 cd comparisons
 
+wget -qnc https://zenodo.org/records/13178746/files/human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.bed.gz
 wget -qnc https://s3.amazonaws.com/gangstr/hg38/genomewide/hg38_ver17.bed.gz
 wget -qnc https://storage.googleapis.com/str-truth-set/hg38/ref/other/adotto_tr_catalog_v1.2.bed.gz
 wget -qnc https://storage.googleapis.com/str-truth-set/hg38/ref/other/mukamel_VNTR_catalog.bed.gz
 wget -qnc https://storage.googleapis.com/str-truth-set/hg38/ref/other/vamos_catalog.v2.1.bed.gz
 
+python3 -u -m str_analysis.convert_trgt_catalog_to_expansion_hunter_catalog -r ${REFERENCE_FASTA_PATH} human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.bed.gz -o human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.json.gz 
+
 python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_variant_catalog --verbose hg38_ver17.bed.gz
 
-for catalog_filename in mukamel_VNTR_catalog.bed.gz  vamos_catalog.v2.1.bed.gz hg38_ver17.variant_catalog.json    adotto_tr_catalog_v1.2.bed.gz
+for catalog_filename in human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.json.gz  mukamel_VNTR_catalog.bed.gz  vamos_catalog.v2.1.bed.gz hg38_ver17.variant_catalog.json    adotto_tr_catalog_v1.2.bed.gz
 do
     echo Processing ${catalog_filename}
     current_catalog_output_prefix=$(echo ${catalog_filename} | sed 's/.bed.gz$//' | sed 's/.variant_catalog.json$//')
