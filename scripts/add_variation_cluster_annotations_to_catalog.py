@@ -18,7 +18,7 @@ def main():
 		args.output_json_path = args.catalog_json_path.replace(".json", ".with_variation_clusters.json")
 
 	# parse the variation clusters bed file
-	locus_id_to_variation_cluster_id = {}
+	#locus_id_to_variation_cluster_id = {}
 	locus_id_to_variation_cluster_interval = {}
 
 	if args.verbose:
@@ -44,11 +44,11 @@ def main():
 				info_fields_dict[key] = value
 			for locus_id in info_fields_dict["ID"].split(","):
 				locus_id_to_variation_cluster_interval[locus_id] = f"{chrom}:{start_0based}-{end_1based}"
-				locus_id_to_variation_cluster_id[locus_id] = info_fields_dict["ID"]
+				#locus_id_to_variation_cluster_id[locus_id] = info_fields_dict["ID"]
 
-	total_variation_clusters = len(locus_id_to_variation_cluster_id)
+	total_variation_clusters = len(locus_id_to_variation_cluster_interval)
 	if args.verbose:
-		print(f"Parsed {len(locus_id_to_variation_cluster_id):,d} variation clusters from {args.variation_clusters_bed_path}")
+		print(f"Parsed {len(locus_id_to_variation_cluster_interval):,d} variation clusters from {args.variation_clusters_bed_path}")
 
 	fopen = gzip.open if args.catalog_json_path.endswith("gz") else open
 	with fopen(args.catalog_json_path, "rt") as f:
@@ -68,9 +68,9 @@ def main():
 					#	print(f"WARNING: locus_id {locus_id} not found in variation cluster catalog")
 					continue
 
-				record["VariationClusterId"] = locus_id_to_variation_cluster_id[locus_id]
-				record["VariationClusterInterval"] = locus_id_to_variation_cluster_interval[locus_id]
-				del locus_id_to_variation_cluster_id[locus_id]
+				#record["VariationClusterId"] = locus_id_to_variation_cluster_id[locus_id]
+				record["VariationCluster"] = locus_id_to_variation_cluster_interval[locus_id]
+				#del locus_id_to_variation_cluster_id[locus_id]
 				del locus_id_to_variation_cluster_interval[locus_id]
 
 				output_counter += 1
@@ -84,8 +84,8 @@ def main():
 	if args.verbose:
 		print(f"Skipped {skipped_counter:,d} out of {input_counter:,d} ({skipped_counter/input_counter:.1%}) records "
 			  f"from {args.catalog_json_path}")
-		print(f"Used {total_variation_clusters - len(locus_id_to_variation_cluster_id):,d} out of {total_variation_clusters:,d} "
-			  f"({(total_variation_clusters - len(locus_id_to_variation_cluster_id))/total_variation_clusters:.1%}) of "
+		print(f"Used {total_variation_clusters - len(locus_id_to_variation_cluster_interval):,d} out of {total_variation_clusters:,d} "
+			  f"({(total_variation_clusters - len(locus_id_to_variation_cluster_interval))/total_variation_clusters:.1%}) of "
 			  f"variation clusters from {args.variation_clusters_bed_path}")
 		print(f"Wrote {output_counter:,d} out of {input_counter:,d} ({output_counter/input_counter:.1%}) records "
 			  f"to {args.output_json_path}")
