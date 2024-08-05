@@ -26,7 +26,7 @@ It includes filenames that start with `repeat_catalog.3x_and_9bp.2_to_1000bp_mot
 
 - Create a catalog that is as sensitive (includes all polymorphic TR loci in the human genome) and specific (excludes non-polymorphic loci) as possible
 - Provide rich annotations
-- Share the catalog in formats that can be used directly with widely-used TR genotyping tools
+- Share the catalog in formats that can be used directly with most TR genotyping tools for both short read and long read data. 
 
 Although our initial focus is on the human genome, we'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
 
