@@ -5,12 +5,14 @@
 + REFERENCE_FASTA_PATH=/Users/weisburd/project1/ref/GRCh38/hg38.fa
 ++ realpath gencode.v46.basic.annotation.gtf.gz
 + GENCODE_GTF_PATH=/Users/weisburd/code/str-truth-set/ref/other/gencode.v46.basic.annotation.gtf.gz
+++ realpath vcs_merged.bed.gz
++ VARIATION_CLUSTERS_BED_PATH=/Users/weisburd/code/tandem-repeat-catalogs/vcs_merged.bed.gz
 + '[' '!' -f /Users/weisburd/project1/ref/GRCh38/hg38.fa ']'
 + '[' '!' -f /Users/weisburd/code/str-truth-set/ref/other/gencode.v46.basic.annotation.gtf.gz ']'
 ++ date +%F
-+ OUTPUT_DIR=results__2024-08-04
-+ mkdir -p results__2024-08-04
-+ cd results__2024-08-04
++ OUTPUT_DIR=results__2024-08-05
++ mkdir -p results__2024-08-05
++ cd results__2024-08-05
 + SECONDS=0
 + KNOWN_DISEASE_ASSOCIATED_LOCI_URL=https://raw.githubusercontent.com/broadinstitute/str-analysis/main/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json
 + ILLUMINA_CATALOG_URL=https://storage.googleapis.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz
@@ -442,7 +444,7 @@ Stats for combined.51_samples.positive_loci.filtered.json:
       552,755 out of    552,755 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
             0 out of    552,755 (  0.0%) repeat intervals are homopolymers
       118,307 out of    552,755 ( 21.4%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chr7:26139236-26139270, chr18:40865534-40865572, chr21:28831518-28831566, chr4:81620111-81620143, chr11:7856041-7856085, chr4:135734229-135734247, chr9:119497356-119497378, chr11:75930927-75930987, chr19:19605416-19605464, chr4:184895915-184895933
+Examples of overlapping repeats: chr2:179878692-179878720, chr20:2636460-2636492, chr6:30051789-30051813, chr15:66421093-66421127, chr16:27285120-27285138, chr6:125501250-125501286, chr10:95141356-95141386, chr6:129446514-129446579, chr13:90084695-90084713, chr10:67974073-67974127
 
 Ranges:
    Motif size range: 2-833bp
@@ -583,8 +585,6 @@ Args:
    mappability_track_bigwig =     gs://tgg-viewer/ref/GRCh38/mappability/GRCh38_no_alt_analysis_set_GCA_000001405.15-k36_m2.bw
    variant_catalog_json_or_bed =  repeat_catalog.3x_and_9bp.hg38.merged.json.gz
    known_disease_associated_loci =  ~/code/str-analysis/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json
-/usr/local/lib/python3.9/site-packages/hailtop/aiocloud/aiogoogle/user_config.py:28: UserWarning: You have specified the GCS requester pays configuration in both your spark-defaults.conf (/usr/local/lib/python3.9/site-packages/pyspark/conf/spark-defaults.conf) and either an explicit argument or through `hailctl config`. For GCS requester pays configuration, Hail first checks explicit arguments, then `hailctl config`, then spark-defaults.conf.
-  warnings.warn(
 Parsing repeat_catalog.3x_and_9bp.hg38.merged.json.gz
 Parsing /Users/weisburd/code/str-truth-set/ref/other/gencode.v46.basic.annotation.gtf.gz...
 Adding gtf records to IntervalTree for overlap detection...
@@ -617,12 +617,19 @@ Filter stats:
 + gzip -c -
 + mv temp2.json.gz temp.json.gz
 + mv temp.json.gz /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz
-+ python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_bed --split-adjacent-repeats /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz --output-file /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.bed.gz
++ python3 ../scripts/add_variation_cluster_annotations_to_catalog.py --verbose --output-json-path /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.with_variation_clusters.json.gz /Users/weisburd/code/tandem-repeat-catalogs/vcs_merged.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/vcs_merged.bed.gz
+Parsed 3,147,421 variation clusters from /Users/weisburd/code/tandem-repeat-catalogs/vcs_merged.bed.gz
+Missing variation clusters for 80,407 out of 3,227,828 (2.5%) records from /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz
+Used 3,147,421 out of 3,147,421 (100.0%) of variation clusters from /Users/weisburd/code/tandem-repeat-catalogs/vcs_merged.bed.gz
+Wrote 3,227,828 out of 3,227,828 (100.0%) records to /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.with_variation_clusters.json.gz
++ mv /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.with_variation_clusters.json.gz /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz
 + python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_trgt_catalog --split-adjacent-repeats /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz --output-file /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.TRGT.bed
++ python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_bed --split-adjacent-repeats /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz --output-file /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.bed.gz
 + python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_longtr_format /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz --output-file /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.LongTR.bed
 + python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_hipstr_format /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz --output-file /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.HipSTR.bed
-+ wait
 + python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_gangstr_spec /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz --output-file /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.GangSTR.bed
++ wait
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz
 Wrote out /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.GangSTR.bed
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz
@@ -651,23 +658,23 @@ chr4	41745972	41746032	ID=PHOX2B;MOTIFS=GCN;STRUC=(GCN)n
 + grep '	80147139	' /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.TRGT.bed
 chr17	80147059	80147139	ID=EIF4A3;MOTIFS=CCTCGCTGTGCCGCTGCCGA;STRUC=(CCTCGCTGTGCCGCTGCCGA)n
 ++ date +%Y-%m-%d
-+ timestamp=2024-08-04
-+ release_draft_folder=release_draft_2024-08-04
-+ mkdir -p release_draft_2024-08-04
++ timestamp=2024-08-05
++ release_draft_folder=release_draft_2024-08-05
++ mkdir -p release_draft_2024-08-05
 + for path in '${OUTPUT_PREFIX}.bed.gz' '${OUTPUT_PREFIX}.bed.gz.tbi' '${OUTPUT_PREFIX}.merged_and_annotated.json.gz' '${OUTPUT_PREFIX}.TRGT.bed' '${OUTPUT_PREFIX}.LongTR.bed' '${OUTPUT_PREFIX}.HipSTR.bed' '${OUTPUT_PREFIX}.GangSTR.bed'
-+ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.bed.gz release_draft_2024-08-04/
++ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.bed.gz release_draft_2024-08-05/
 + for path in '${OUTPUT_PREFIX}.bed.gz' '${OUTPUT_PREFIX}.bed.gz.tbi' '${OUTPUT_PREFIX}.merged_and_annotated.json.gz' '${OUTPUT_PREFIX}.TRGT.bed' '${OUTPUT_PREFIX}.LongTR.bed' '${OUTPUT_PREFIX}.HipSTR.bed' '${OUTPUT_PREFIX}.GangSTR.bed'
-+ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.bed.gz.tbi release_draft_2024-08-04/
++ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.bed.gz.tbi release_draft_2024-08-05/
 + for path in '${OUTPUT_PREFIX}.bed.gz' '${OUTPUT_PREFIX}.bed.gz.tbi' '${OUTPUT_PREFIX}.merged_and_annotated.json.gz' '${OUTPUT_PREFIX}.TRGT.bed' '${OUTPUT_PREFIX}.LongTR.bed' '${OUTPUT_PREFIX}.HipSTR.bed' '${OUTPUT_PREFIX}.GangSTR.bed'
-+ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz release_draft_2024-08-04/
++ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz release_draft_2024-08-05/
 + for path in '${OUTPUT_PREFIX}.bed.gz' '${OUTPUT_PREFIX}.bed.gz.tbi' '${OUTPUT_PREFIX}.merged_and_annotated.json.gz' '${OUTPUT_PREFIX}.TRGT.bed' '${OUTPUT_PREFIX}.LongTR.bed' '${OUTPUT_PREFIX}.HipSTR.bed' '${OUTPUT_PREFIX}.GangSTR.bed'
-+ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.TRGT.bed release_draft_2024-08-04/
++ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.TRGT.bed release_draft_2024-08-05/
 + for path in '${OUTPUT_PREFIX}.bed.gz' '${OUTPUT_PREFIX}.bed.gz.tbi' '${OUTPUT_PREFIX}.merged_and_annotated.json.gz' '${OUTPUT_PREFIX}.TRGT.bed' '${OUTPUT_PREFIX}.LongTR.bed' '${OUTPUT_PREFIX}.HipSTR.bed' '${OUTPUT_PREFIX}.GangSTR.bed'
-+ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.LongTR.bed release_draft_2024-08-04/
++ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.LongTR.bed release_draft_2024-08-05/
 + for path in '${OUTPUT_PREFIX}.bed.gz' '${OUTPUT_PREFIX}.bed.gz.tbi' '${OUTPUT_PREFIX}.merged_and_annotated.json.gz' '${OUTPUT_PREFIX}.TRGT.bed' '${OUTPUT_PREFIX}.LongTR.bed' '${OUTPUT_PREFIX}.HipSTR.bed' '${OUTPUT_PREFIX}.GangSTR.bed'
-+ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.HipSTR.bed release_draft_2024-08-04/
++ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.HipSTR.bed release_draft_2024-08-05/
 + for path in '${OUTPUT_PREFIX}.bed.gz' '${OUTPUT_PREFIX}.bed.gz.tbi' '${OUTPUT_PREFIX}.merged_and_annotated.json.gz' '${OUTPUT_PREFIX}.TRGT.bed' '${OUTPUT_PREFIX}.LongTR.bed' '${OUTPUT_PREFIX}.HipSTR.bed' '${OUTPUT_PREFIX}.GangSTR.bed'
-+ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.GangSTR.bed release_draft_2024-08-04/
++ cp /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.GangSTR.bed release_draft_2024-08-05/
 + python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz
 --------------------------------------------------
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated.json.gz
@@ -681,7 +688,7 @@ Stats for repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38.merged_and_annotated
             0 out of  3,227,828 (  0.0%) repeat intervals are homopolymers
        17,061 out of  3,227,828 (  0.5%) repeat intervals overlap each other by at least two motif lengths
            11 out of  3,227,828 (  0.0%) repeat intervals have non-ACGT motifs
-Examples of overlapping repeats: chr7:152922271-152922280, chr2:105950180-105950200, chr2:114110523-114110539, chr7:82186243-82186255, chr17:66798554-66798691, chr5:110587659-110587691, chr19:58410681-58410713, chr8:79210420-79210464, chrX:71964011-71964024, chr6:135232458-135232494
+Examples of overlapping repeats: chr2:215786890-215786932, chr1:24820063-24820079, chr16:89069143-89069154, chr12:60722237-60722253, chr2:170580718-170580759, chr10:9067528-9067592, chr4:20748878-20748894, chr8:105534022-105534070, chr20:55628078-55628094, chr2:230508952-230508970
 
 Ranges:
    Motif size range: 2-833bp
@@ -918,8 +925,8 @@ Chromsomes:
 + for catalog_filename in human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.json.gz mukamel_VNTR_catalog.bed.gz vamos_catalog.v2.1.bed.gz hg38_ver17.variant_catalog.json adotto_tr_catalog_v1.2.bed.gz
 + echo Processing mukamel_VNTR_catalog.bed.gz
 Processing mukamel_VNTR_catalog.bed.gz
-++ sed 's/.bed.gz$//'
 ++ echo mukamel_VNTR_catalog.bed.gz
+++ sed 's/.bed.gz$//'
 ++ sed 's/.variant_catalog.json$//'
 + current_catalog_output_prefix=mukamel_VNTR_catalog
 + python3 -m str_analysis.annotate_and_filter_str_catalog -r /Users/weisburd/project1/ref/GRCh38/hg38.fa --skip-gene-annotations --skip-mappability-annotations --skip-disease-loci-annotations --min-motif-size 2 --max-motif-size 1000 --output-path mukamel_VNTR_catalog.annotated_and_filtered.json --verbose mukamel_VNTR_catalog.bed.gz
@@ -2612,7 +2619,7 @@ Stats for hg38_ver17.annotated_and_filtered.json:
       851,598 out of    851,598 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
             0 out of    851,598 (  0.0%) repeat intervals are homopolymers
            16 out of    851,598 (  0.0%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chr2:1489650-1489682, chr20:2652732-2652756, chr9:27573523-27573541, chr15:96831014-96831039, chr5:123775552-123775596, chr15:96831011-96831036, chr11:2171087-2171115, chr5:123775555-123775599, chr9:27573528-27573546, chr2:1489652-1489684
+Examples of overlapping repeats: chr5:146878728-146878758, chr5:123775552-123775596, chr5:146878727-146878757, chr9:27573528-27573546, chr20:2652732-2652756, chr2:1489650-1489682, chr7:84160225-84160277, chr11:2171087-2171115, chr5:123775555-123775599, chr7:84160224-84160276
 
 Ranges:
    Motif size range: 2-20bp
@@ -2697,8 +2704,8 @@ Chromsomes:
 + echo Processing adotto_tr_catalog_v1.2.bed.gz
 Processing adotto_tr_catalog_v1.2.bed.gz
 ++ echo adotto_tr_catalog_v1.2.bed.gz
-++ sed 's/.bed.gz$//'
 ++ sed 's/.variant_catalog.json$//'
+++ sed 's/.bed.gz$//'
 + current_catalog_output_prefix=adotto_tr_catalog_v1.2
 + python3 -m str_analysis.annotate_and_filter_str_catalog -r /Users/weisburd/project1/ref/GRCh38/hg38.fa --skip-gene-annotations --skip-mappability-annotations --skip-disease-loci-annotations --min-motif-size 2 --max-motif-size 1000 --output-path adotto_tr_catalog_v1.2.annotated_and_filtered.json --verbose adotto_tr_catalog_v1.2.bed.gz
 Args:
@@ -2889,7 +2896,7 @@ Stats for adotto_tr_catalog_v1.2.annotated_and_filtered.json:
       926,416 out of  2,917,225 ( 31.8%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
             0 out of  2,917,225 (  0.0%) repeat intervals are homopolymers
        26,599 out of  2,917,225 (  0.9%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chrX:120796960-120796988, chr3:195929109-195929154, chr1:240377809-240377907, chrX:1375432-1375450, chr5:167713596-167713650, chr18:22069065-22069078, chr2:87393086-87393269, chr1:181053066-181053097, chr6:118187016-118187045, chr9:128080232-128080272
+Examples of overlapping repeats: chr11:48669531-48669575, chr17:43132563-43132595, chr1:25042654-25042672, chr16:56728555-56728576, chr18:10803775-10803801, chr2:26083454-26083469, chrX:83900476-83900492, chr13:47123117-47123150, chr13:63655375-63655397, chr16:88620853-88620883
 
 Ranges:
    Motif size range: 2-495bp
@@ -2970,5 +2977,5 @@ Chromsomes:
      236,617 out of 5,054,868 ( 4.7%) are on X
       39,818 out of 5,054,868 ( 0.8%) are on Y
           14 out of 5,054,868 ( 0.0%) are on M
-+ echo 'Done.  Total time: 2hrs 36min 37sec'
-Done.  Total time: 2hrs 36min 37sec
++ echo 'Done.  Total time: 3hrs 28min 47sec'
+Done.  Total time: 3hrs 28min 47sec

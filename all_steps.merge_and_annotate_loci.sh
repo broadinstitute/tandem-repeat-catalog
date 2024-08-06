@@ -11,6 +11,8 @@ OUTPUT_PREFIX=$(realpath repeat_catalog.3x_and_9bp.2_to_1000bp_motifs.hg38)
 REFERENCE_FASTA_PATH=$(realpath hg38.fa)
 GENCODE_GTF_PATH=$(realpath gencode.v46.basic.annotation.gtf.gz)
 
+VARIATION_CLUSTERS_BED_PATH=$(realpath vcs_merged.bed.gz)
+
 if [ ! -f ${REFERENCE_FASTA_PATH} ]
 then
     echo ERROR: ${REFERENCE_FASTA_PATH} file not found
@@ -140,6 +142,16 @@ gunzip -c temp.json.gz | sed 's/'${ILLUMINA_CATALOG_FILTERED_PATH}'/Illumina cat
 gunzip -c temp.json.gz | sed 's/'${ALL_PERFECT_REPEATS_CATALOG_FILTERED_PATH}'/perfect repeats in hg38/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
 gunzip -c temp.json.gz | sed 's/'${TRUTH_SET_CATALOG_FILTERED_PATH}'/polymorphic TR loci in HPRC assemblies/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
 mv temp.json.gz ${OUTPUT_PREFIX}.merged_and_annotated.json.gz
+
+
+# Add variation clusters
+python3 ../scripts/add_variation_cluster_annotations_to_catalog.py \
+	--verbose \
+	--output-json-path ${OUTPUT_PREFIX}.merged_and_annotated.with_variation_clusters.json.gz \
+	${VARIATION_CLUSTERS_BED_PATH} \
+	${OUTPUT_PREFIX}.merged_and_annotated.json.gz
+
+mv ${OUTPUT_PREFIX}.merged_and_annotated.with_variation_clusters.json.gz ${OUTPUT_PREFIX}.merged_and_annotated.json.gz
 
 # STEP #3: convert the catalog from ExpansionHunter catalog format to bed, TRGT, LongTR, HipSTR, and GangSTR formats
 python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_bed --split-adjacent-repeats ${OUTPUT_PREFIX}.merged_and_annotated.json.gz  --output-file ${OUTPUT_PREFIX}.bed.gz &

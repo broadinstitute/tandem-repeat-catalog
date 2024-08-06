@@ -74,10 +74,8 @@ def main():
 
 				output_counter += 1
 				if i > 0:
-					f2.write(",")
+					f2.write(", ")
 				f2.write(json.dumps(record, f2, use_decimal=True, indent=4))
-				f2.write("\n")
-
 			f2.write("]")
 
 	if args.verbose:
