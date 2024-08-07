@@ -3,8 +3,7 @@
 ### Colab Repeat Catalog
 
 This repo provides a general purpose genome-wide TR catalog for genotyping TRs in short read or long read sequencing data. 
-
-It's named *Colab Repeat Catalog* as it is a collaboration between multiple people including Ben Weisburd, Egor Dolzhenko, and others. 
+It is being developed as part of a collaboration between Ben Weisburd, Egor Dolzhenko, and others. 
 
 [Release v1.0](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v1.0) is now available in draft form. 
 
@@ -21,6 +20,8 @@ It includes filenames that start with `repeat_catalog.3x_and_9bp.2_to_1000bp_mot
 <tr><td>.HipSTR.bed</td><td>For use with <a href="https://github.com/HipSTR-Tool/HipSTR">HipSTR</a></td></tr>
 </table>
 <br />
+
+Additionally, `variation_clusters.hg38.TRGT.bed` contains variation clusters in a format that can be passed to TRGT to genotype wider regions around the simple repeats defined in the catalog above. 
 
 ### Goals
 
