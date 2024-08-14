@@ -2,6 +2,7 @@ import argparse
 import datetime
 import json
 import os
+import pandas as pd
 import re
 import subprocess
 import time
@@ -65,7 +66,8 @@ catalogs_in_order = [
 
 catalog_paths = {}
 for catalog_name, url in catalogs_in_order:
-	run(f"wget -qnc {url}")
+	if not os.path.isfile(os.path.basename(url)):
+		run(f"wget -O {os.path.basename(url)}.tmp -qnc {url} && mv {os.path.basename(url)}.tmp {os.path.basename(url)}")
 	catalog_paths[catalog_name] = os.path.abspath(os.path.basename(url))
 
 # preprocess catalog of known disease-associated loci: split compound definitions
@@ -86,8 +88,6 @@ primary_disease_associated_loci = [
 		x["LocusId"].startswith("HOXA") or x["LocusId"].startswith("ARX") or "_" not in x["LocusId"]
 	)
 ]
-# check the number of primary disease-associated loci, not counting adjacent repeats and historic candidate loci that
-# are not currently considered monogenic
 assert len(primary_disease_associated_loci) == 63
 
 primary_disease_associated_loci_path = catalog_paths["known_disease_associated_loci"].replace(
@@ -96,23 +96,10 @@ primary_disease_associated_loci_path = catalog_paths["known_disease_associated_l
 with open(primary_disease_associated_loci_path, "wt") as f:
 	json.dump(primary_disease_associated_loci, f, indent=4)
 
-run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
-	--verbose \
-	--reference-fasta {args.hg38_reference_fasta} \
-	--min-interval-size-bp 1 \
-	--skip-gene-annotations \
-	--skip-mappability-annotations \
-	--skip-disease-loci-annotations \
-	--discard-loci-with-non-ACGT-bases-in-reference \
-	--discard-loci-with-non-ACGTN-bases-in-motif \
-	--output-path {primary_disease_associated_loci_path} \
-	{primary_disease_associated_loci_path}""")
+catalogs_in_order = [("primary_known_disease_associated_loci", primary_disease_associated_loci_path)] + catalogs_in_order
+catalog_paths["primary_known_disease_associated_loci"] = primary_disease_associated_loci_path
 
-run(f"python3 -m str_analysis.compute_catalog_stats --verbose {primary_disease_associated_loci_path}")
-
-# convert catalogs to ExpansionHunter catalog format for comparison
-
-# PlatinumTR catalog
+# convert PlatinumTR catalog to ExpansionHunter catalog format for comparison
 if "platinumTRs_v1.0" in catalog_paths:
 	path_after_conversion = catalog_paths["platinumTRs_v1.0"].replace(".bed.gz", ".catalog.json.gz")
 	if not os.path.isfile(path_after_conversion):
@@ -121,7 +108,7 @@ if "platinumTRs_v1.0" in catalog_paths:
 else:
 	print("WARNING: PlatinumTRs catalog not included in list of catalogs")
 
-# GangSTR catalog
+# convert GangSTR catalog to ExpansionHunter catalog format for comparison
 if "GangSTR_v17" in catalog_paths:
 	path_after_conversion = catalog_paths["GangSTR_v17"].replace(".bed.gz", ".catalog.json.gz")
 	if not os.path.isfile(path_after_conversion):
@@ -130,15 +117,16 @@ if "GangSTR_v17" in catalog_paths:
 else:
 	print("WARNING: GangSTR catalog not included in list of catalogs")
 
-# HipSTR catalog
+# convert HipSTR catalog to ExpansionHunter catalog format for comparison
 if "HipSTR_catalog" in catalog_paths:
 	path_after_conversion = catalog_paths["HipSTR_catalog"].replace(".bed.gz", ".catalog.bed.gz")
-	if not os.path.isfile(f"{path_after_conversion}.gz"):
+	if not os.path.isfile(path_after_conversion):
 		run(f"python3 -u {scripts_dir}/convert_hipstr_catalog_to_regular_bed_file.py {catalog_paths['HipSTR_catalog']} -o {path_after_conversion}")
 	catalog_paths["HipSTR_catalog"] = f"{path_after_conversion}"
 else:
 	print("WARNING: HipSTR catalog not included in list of catalogs")
 
+# convert Chiu et al catalog to ExpansionHunter catalog format for comparison
 if "comprehensive_catalog_from_Chiu_et_al" in catalog_paths:
 	output_path = "hg38.Chiu_et_al.v1.bed.gz"
 	if not os.path.isfile(output_path):
@@ -146,9 +134,9 @@ if "comprehensive_catalog_from_Chiu_et_al" in catalog_paths:
 		run(f"gunzip -c {catalog_paths['comprehensive_catalog_from_Chiu_et_al']} | tail -n +3 | cut -f 1-4 | awk 'BEGIN {{OFS=\"\\t\"}} {{ print( $1, $2 - 1, $3, $4 ) }}' | gzip -c - > {output_path}")
 	catalog_paths["comprehensive_catalog_from_Chiu_et_al"] = output_path
 
+all_stats_tsv_paths = {}
 for catalog_name, path in catalog_paths.items():
-	annotated_catalog_path = re.sub("(.json.gz|.bed.gz)$", ".annotated.json.gz", path)
-
+	annotated_catalog_path = re.sub("(.json|.bed)(.gz)?$", "", path) + ".annotated.json.gz"
 	if not os.path.isfile(annotated_catalog_path):
 		run(f"""python3 -m str_analysis.annotate_and_filter_str_catalog \
 			--reference-fasta {args.hg38_reference_fasta} \
@@ -158,8 +146,26 @@ for catalog_name, path in catalog_paths.items():
 			--output-path {annotated_catalog_path} \
 			{path}""")
 
-	run(f"python3 -m str_analysis.compute_catalog_stats --verbose {annotated_catalog_path}")
+	stats_tsv_path = re.sub("(.json|.bed)(.gz)?$", "", annotated_catalog_path) + ".catalog_stats.tsv"
+	if True or not os.path.isfile(stats_tsv_path):
+		print(f"Generating {stats_tsv_path}")
+		run(f"python3 -m str_analysis.compute_catalog_stats --verbose {annotated_catalog_path}")
+	all_stats_tsv_paths[catalog_name] = stats_tsv_path
 
-	diff = time.time() - start_time
-	print(f"Done with comparisons. Took {diff//3600:.0f}h, {(diff%3600)//60:.0f}m, {diff%60:.0f}s")
+print(f"Combining stats from all {len(all_stats_tsv_paths)} catalogs")
+dfs = []
+for catalog_name, stats_tsv_path in all_stats_tsv_paths.items():
+	df = pd.read_table(stats_tsv_path)
+	df.rename(columns={"catalog": "filename"}, inplace=True)
+	df["catalog"] = catalog_name
+	dfs.append(df)
+df = pd.concat(dfs)
+print(f"Sorting {len(df)} rows")
+df["total"] = df["total"].apply(lambda s: str(s).replace(",", "")).astype(int)
+df.sort_values("total", inplace=True)
+df.to_csv(f"combined_catalog_stats.all_{len(all_stats_tsv_paths)}_catalogs.tsv", sep="\t", index=False)
+
+
+diff = time.time() - start_time
+print(f"Done with comparisons. Took {diff//3600:.0f}h, {(diff%3600)//60:.0f}m, {diff%60:.0f}s")
 
