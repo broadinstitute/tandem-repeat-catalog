@@ -2,7 +2,7 @@
 import matplotlib.pyplot as plt
 import os
 import pandas as pd
-
+from pprint import pprint
 import seaborn as sns
 
 catalog_stats_table_path = "compare_catalogs/combined_catalog_stats.all_13_catalogs.tsv"
@@ -20,43 +20,28 @@ df["catalog"] = df["catalog"].replace({
     })
 df["catalog"] = df["catalog"] + " (" + df["total"].apply(lambda t: f"{t:,d}") + " loci)"
 
-#'count_1bp_motifs', 'count_2bp_motifs', 'count_3bp motifs', 'count_4bp_motifs',
-#      'count_5bp_motifs', 'count_6bp_motifs', 'count_7+bp_motifs',
+pprint(list(df.columns))
 
-df.rename(columns={
-    "count_1bp_motifs": "1bp motifs",
-    "count_2bp_motifs": "2bp motifs",
-    "count_3bp motifs": "3bp motifs",
-    "count_4bp_motifs": "4bp motifs",
-    "count_5bp_motifs": "5bp motifs",
-    "count_6bp_motifs": "6bp motifs",
-    "count_7+bp_motifs": "7+bp motifs",
-    #"count_7-24bp_motifs": "7-24bp motifs",
-    #"count_25+bp_motifs": "25+bp motifs",
-}, inplace=True)
+columns_of_interest = []
+column_name_map = {}
+for label in list(range(1, 7)) + ["7-24", "25+"]:
+    new_column_name = f"{label}bp motifs"
+    column_name_map[f"count_{label}bp_motifs"] = new_column_name
+    columns_of_interest.append(new_column_name)
 
-
-#print(df.columns)
-
-# Defining columns of interest
-columns_of_interest = [
-    "1bp motifs",
-    "2bp motifs",
-    "3bp motifs",
-    "4bp motifs",
-    "5bp motifs",
-    "6bp motifs",
-    "7+bp motifs",
-    #"7-24bp motifs",
-    #"25+bp motifs",
-]
+df.rename(columns=column_name_map, inplace=True)
 
 df.index = range(len(df))
 
-fig, all_axes = plt.subplots(4, 3, figsize=(20, 28), sharey=True, sharex=False, constrained_layout=True, dpi=600)
+grid_rows = 4
+grid_columns = 3
+
+grid_rows = 3
+grid_columns = 4
+fig, all_axes = plt.subplots(grid_rows, grid_columns, figsize=(7*grid_columns, 7*grid_rows), sharey=True, sharex=False, constrained_layout=True) #, dpi=600)
 i = 0
-for idx_i in range(4):
-    for idx_j in range(3):
+for idx_i in range(grid_rows):
+    for idx_j in range(grid_columns):
         axes = all_axes[idx_i][idx_j]
 
         current_catalog_name = df.loc[i, 'catalog'].replace("_", " ")
@@ -93,7 +78,9 @@ for idx_i in range(4):
 
         # add label to each bar
         for locus_count, p in zip(row_values_seaborn_i["Count"], axes.patches):
-            axes.annotate(f"{int(locus_count):,d}", (p.get_x() + p.get_width() / 2., p.get_height()),
+            x_pos = p.get_x() + p.get_width() / 2.
+            y_pos = p.get_height()
+            axes.annotate(f"{int(locus_count):,d}", (x_pos, y_pos),
                              ha="center", va="center", fontsize=11, color="black", xytext=(0, 10),
                              textcoords="offset points")
 
