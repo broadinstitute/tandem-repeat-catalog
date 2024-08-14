@@ -20,7 +20,7 @@ parser.add_argument("--hg38-reference-fasta", default="hg38.fa", help="Path of h
 parser.add_argument("--gencode-gtf", default="gencode.v46.basic.annotation.gtf.gz", help="Gene annotations GTF file")
 parser.add_argument("--variation-clusters-bed", default="vcs_merged.bed.gz", help="Variation clusters file shared by Egor Dolzhenko")
 parser.add_argument("--skip-variation-cluster-annotations", action="store_true", help="Skip adding variation cluster annotations to the catalog")
-parser.add_argument("--output-prefix", default="repeat_catalog_v1.hg38")
+parser.add_argument("--output-prefix", default="simple_repeat_catalog_v1.hg38")
 parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
 
 args = parser.parse_args()
@@ -80,7 +80,8 @@ source_catalogs_in_order = [
 
 source_catalog_paths = {}
 for catalog_name, url in source_catalogs_in_order:
-	run(f"wget -qnc {url}")
+	if not os.path.isfile(os.path.basename(url)):
+		run(f"wget -O {os.path.basename(url)}.tmp -qnc {url} && mv {os.path.basename(url)}.tmp {os.path.basename(url)}")
 	source_catalog_paths[catalog_name] = os.path.abspath(os.path.basename(url))
 
 # preprocess catalog of known disease-associated loci: split compound definitions
@@ -150,19 +151,20 @@ for motif_size_label, min_motif_size, max_motif_size in [
 		filtered_catalog_path = os.path.abspath(os.path.basename(filtered_catalog_path))
 		filtered_source_catalog_paths[catalog_name] = filtered_catalog_path
 
-		run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
-			--verbose \
-			--reference-fasta {args.hg38_reference_fasta} \
-			--min-motif-size {min_motif_size} \
-			--max-motif-size {max_motif_size} \
-			--min-interval-size-bp 1 \
-			--skip-gene-annotations \
-			--skip-mappability-annotations \
-			--skip-disease-loci-annotations \
-			--discard-loci-with-non-ACGT-bases-in-reference \
-			--discard-loci-with-non-ACGTN-bases-in-motif \
-			--output-path {filtered_catalog_path} \
-			{catalog_path}""")
+		if not os.path.isfile(filtered_catalog_path):
+			run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
+				--verbose \
+				--reference-fasta {args.hg38_reference_fasta} \
+				--min-motif-size {min_motif_size} \
+				--max-motif-size {max_motif_size} \
+				--min-interval-size-bp 1 \
+				--skip-gene-annotations \
+				--skip-mappability-annotations \
+				--skip-disease-loci-annotations \
+				--discard-loci-with-non-ACGT-bases-in-reference \
+				--discard-loci-with-non-ACGTN-bases-in-motif \
+				--output-path {filtered_catalog_path} \
+				{catalog_path}""")
 
 		print(f"Stats for {catalog_path}")
 		run(f"python3 -m str_analysis.compute_catalog_stats --verbose {filtered_catalog_path}")
@@ -246,7 +248,8 @@ for motif_size_label, min_motif_size, max_motif_size in [
 
 	comparison_catalog_paths = {}
 	for catalog_name, url in comparison_catalogs_in_order:
-		run(f"wget -qnc {url}")
+		if not os.path.isfile(os.path.basename(url)):
+			run(f"wget -O {os.path.basename(url)}.tmp -qnc {url} && mv {os.path.basename(url)}.tmp {os.path.basename(url)}")
 		comparison_catalog_paths[catalog_name] = os.path.abspath(os.path.basename(url))
 
 	path_after_conversion = comparison_catalog_paths["GangSTR_v17"].replace(".bed.gz", ".json.gz")
@@ -257,7 +260,7 @@ for motif_size_label, min_motif_size, max_motif_size in [
 	start_time = time.time()
 
 	for catalog_name, path in comparison_catalog_paths.items():
-		filtered_comparison_catalog_path = re.sub("(.json.gz|.bed.gz)$", ".filtered.json.gz", path)
+		filtered_comparison_catalog_path = re.sub("(.json|.bed)(.gz)?$", "", path) + ".filtered.json.gz"
 
 		run(f"""python3 -m str_analysis.annotate_and_filter_str_catalog \
 			--reference-fasta {args.hg38_reference_fasta} \
