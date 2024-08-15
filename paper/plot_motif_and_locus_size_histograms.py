@@ -153,7 +153,7 @@ def create_plot(histogram_type, df, args):
                 break
 
     plt.tight_layout()
-    # save the image
+
     print(f"Saving plot to {output_path}")
     plt.savefig(output_path)  # , dpi=300)
 
