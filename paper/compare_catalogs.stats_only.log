@@ -1,0 +1,903 @@
+----------------------------------------------------------------------------------------------------
+mkdir -p /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs
+cd /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs
+----------------------------------------------------------------------------------------------------
+sed -i 's/AARRG/AAAAG/g' /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/variant_catalog_without_offtargets.GRCh38.split.json
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/variant_catalog_without_offtargets.GRCh38.split.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/variant_catalog_without_offtargets.GRCh38.split.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/variant_catalog_without_offtargets.GRCh38.split.annotated.json.gz
+
+Stats for variant_catalog_without_offtargets.GRCh38.split.annotated.json.gz:
+           83 total loci
+        3,770 base pairs spanned by all loci (0.000% of the genome)
+            0 out of         83 (  0.0%) loci define adjacent repeats
+           83 total repeat intervals
+           82 out of         83 ( 98.8%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+            1 out of         83 (  1.2%) repeat intervals are homopolymers
+            0 out of         83 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+           11 out of         83 ( 13.3%) repeat intervals have non-ACGT motifs
+
+Ranges:
+   Motif size range: 1-27bp
+   Locus size range: 6-150bp
+   Num repeats range: 1-50x repeats
+
+   Maximum locus size =   150bp             @ chr13:102161574-102161724 (AAG)
+   Minimum fraction pure bases =  0.59      @ chr8:118366812-118366918 (AAAAT)
+   Minimum fraction pure repeats =  0.00    @ chr13:99985448-99985493 (GCN)
+
+          chrX:         11 out of         83 ( 13.3%) repeat intervals
+          chrY:          0 out of         83 (  0.0%) repeat intervals
+          chrM:          0 out of         83 (  0.0%) repeat intervals
+   alt contigs:          0 out of         83 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:          1 out of         83 (  1.2%) repeat intervals
+          2bp:          1 out of         83 (  1.2%) repeat intervals
+          3bp:         60 out of         83 ( 72.3%) repeat intervals
+          4bp:          2 out of         83 (  2.4%) repeat intervals
+          5bp:         10 out of         83 ( 12.0%) repeat intervals
+          6bp:          4 out of         83 (  4.8%) repeat intervals
+       7-24bp:          4 out of         83 (  4.8%) repeat intervals
+        25+bp:          1 out of         83 (  1.2%) repeat intervals
+
+Num repeats in reference:
+           1x:          1 out of         83 (  1.2%) repeat intervals
+           2x:          3 out of         83 (  3.6%) repeat intervals
+           3x:          3 out of         83 (  3.6%) repeat intervals
+           4x:          4 out of         83 (  4.8%) repeat intervals
+           5x:          2 out of         83 (  2.4%) repeat intervals
+           6x:          2 out of         83 (  2.4%) repeat intervals
+           7x:          5 out of         83 (  6.0%) repeat intervals
+           8x:          5 out of         83 (  6.0%) repeat intervals
+           9x:          2 out of         83 (  2.4%) repeat intervals
+       10-15x:         31 out of         83 ( 37.3%) repeat intervals
+       16-25x:         21 out of         83 ( 25.3%) repeat intervals
+       26-35x:          2 out of         83 (  2.4%) repeat intervals
+       36-50x:          2 out of         83 (  2.4%) repeat intervals
+         51+x:          0 out of         83 (  0.0%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:         11 out of         83 ( 13.3%) repeat intervals
+          0.1:          0 out of         83 (  0.0%) repeat intervals
+          0.2:          0 out of         83 (  0.0%) repeat intervals
+          0.3:          0 out of         83 (  0.0%) repeat intervals
+          0.4:          0 out of         83 (  0.0%) repeat intervals
+          0.5:          1 out of         83 (  1.2%) repeat intervals
+          0.6:          0 out of         83 (  0.0%) repeat intervals
+          0.7:          2 out of         83 (  2.4%) repeat intervals
+          0.8:          8 out of         83 (  9.6%) repeat intervals
+          0.9:          9 out of         83 ( 10.8%) repeat intervals
+          1.0:         52 out of         83 ( 62.7%) repeat intervals
+Wrote 1 rows to variant_catalog_without_offtargets.GRCh38.split.annotated.catalog_stats.tsv
+Generating hg38.Chiu_et_al.v1.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose hg38.Chiu_et_al.v1.annotated.json.gz
+--------------------------------------------------
+Parsing hg38.Chiu_et_al.v1.annotated.json.gz
+
+Stats for hg38.Chiu_et_al.v1.annotated.json.gz:
+   18,759,399 total loci
+   367,611,990 base pairs spanned by all loci (11.903% of the genome)
+            0 out of 18,759,399 (  0.0%) loci define adjacent repeats
+   18,759,399 total repeat intervals
+    6,482,414 out of 18,759,399 ( 34.6%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+            0 out of 18,759,399 (  0.0%) repeat intervals are homopolymers
+    1,940,944 out of 18,759,399 ( 10.3%) repeat intervals overlap each other by at least two motif lengths
+Examples of overlapping repeats: chr17:20607665-20607787, chr5:35254500-35254506, chr8:66068470-66068526, chr12:103738325-103738344, chr18:68252081-68252145, chr13:32443791-32443797, chr4:127001789-127001822, chr9:87927466-87927509, chr4:156541925-156541932, chr18:40492793-40492816
+
+Ranges:
+   Motif size range: 2-100bp
+   Locus size range: 2-185860bp
+   Num repeats range: 0-37172x repeats
+
+   Maximum locus size = 185860bp             @ chr20:31059608-31245468 (TGGAA)
+   Minimum fraction pure bases =  0.00      @ chrX:156009907-156009918 (ACTGC)
+   Minimum fraction pure repeats =  0.00    @ chrX:156029372-156029493 (TGCGAAGGCGGAGCTGCGTTCTCCTCAGCACAGAGCGGCAGAGCAC)
+
+          chrX:    965,451 out of 18,759,399 (  5.1%) repeat intervals
+          chrY:          0 out of 18,759,399 (  0.0%) repeat intervals
+          chrM:          0 out of 18,759,399 (  0.0%) repeat intervals
+   alt contigs:          0 out of 18,759,399 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:          0 out of 18,759,399 (  0.0%) repeat intervals
+          2bp:  2,711,589 out of 18,759,399 ( 14.5%) repeat intervals
+          3bp:  2,994,904 out of 18,759,399 ( 16.0%) repeat intervals
+          4bp:  3,274,551 out of 18,759,399 ( 17.5%) repeat intervals
+          5bp:  2,206,466 out of 18,759,399 ( 11.8%) repeat intervals
+          6bp:  2,211,871 out of 18,759,399 ( 11.8%) repeat intervals
+       7-24bp:  5,124,333 out of 18,759,399 ( 27.3%) repeat intervals
+        25+bp:    235,685 out of 18,759,399 (  1.3%) repeat intervals
+
+Num repeats in reference:
+           1x:    723,651 out of 18,759,399 (  3.9%) repeat intervals
+           2x: 10,147,543 out of 18,759,399 ( 54.1%) repeat intervals
+           3x:  3,793,282 out of 18,759,399 ( 20.2%) repeat intervals
+           4x:  1,691,294 out of 18,759,399 (  9.0%) repeat intervals
+           5x:    721,782 out of 18,759,399 (  3.8%) repeat intervals
+           6x:    449,953 out of 18,759,399 (  2.4%) repeat intervals
+           7x:    283,559 out of 18,759,399 (  1.5%) repeat intervals
+           8x:    186,009 out of 18,759,399 (  1.0%) repeat intervals
+           9x:    130,404 out of 18,759,399 (  0.7%) repeat intervals
+       10-15x:    340,258 out of 18,759,399 (  1.8%) repeat intervals
+       16-25x:    171,738 out of 18,759,399 (  0.9%) repeat intervals
+       26-35x:     48,974 out of 18,759,399 (  0.3%) repeat intervals
+       36-50x:     26,147 out of 18,759,399 (  0.1%) repeat intervals
+         51+x:     34,271 out of 18,759,399 (  0.2%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:  1,780,876 out of 18,759,399 (  9.5%) repeat intervals
+          0.1:     73,470 out of 18,759,399 (  0.4%) repeat intervals
+          0.2:    298,002 out of 18,759,399 (  1.6%) repeat intervals
+          0.3:    723,760 out of 18,759,399 (  3.9%) repeat intervals
+          0.4:    187,997 out of 18,759,399 (  1.0%) repeat intervals
+          0.5:  3,295,859 out of 18,759,399 ( 17.6%) repeat intervals
+          0.6:  1,333,089 out of 18,759,399 (  7.1%) repeat intervals
+          0.7:    631,117 out of 18,759,399 (  3.4%) repeat intervals
+          0.8:    567,715 out of 18,759,399 (  3.0%) repeat intervals
+          0.9:     62,154 out of 18,759,399 (  0.3%) repeat intervals
+          1.0:  9,805,360 out of 18,759,399 ( 52.3%) repeat intervals
+Wrote 1 rows to hg38.Chiu_et_al.v1.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/popstr_catalog_v2.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/popstr_catalog_v2.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/popstr_catalog_v2.annotated.json.gz
+
+Stats for popstr_catalog_v2.annotated.json.gz:
+    5,401,401 total loci
+   88,069,750 base pairs spanned by all loci (2.852% of the genome)
+            0 out of  5,401,401 (  0.0%) loci define adjacent repeats
+    5,401,401 total repeat intervals
+    2,270,677 out of  5,401,401 ( 42.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+      822,329 out of  5,401,401 ( 15.2%) repeat intervals are homopolymers
+       11,227 out of  5,401,401 (  0.2%) repeat intervals overlap each other by at least two motif lengths
+Examples of overlapping repeats: chr1:207510781-207510830, chr1:17708631-17708679, chr1:200528683-200528720, chr20:21263665-21263770, chr8:140206718-140206759, chr1:25733777-25733805, chr15:66130608-66130691, chr10:9217280-9217296, chr13:89947360-89947379, chr7:143883481-143883503
+
+Ranges:
+   Motif size range: 1-6bp
+   Locus size range: 11-137bp
+   Num repeats range: 2-128x repeats
+
+   Maximum locus size =   137bp             @ chr9:134847386-134847523 (GT)
+   Minimum fraction pure bases =  0.04      @ chr7:46066550-46066650 (AT)
+   Minimum fraction pure repeats =  0.00    @ chr9:116783976-116784000 (AAATAC)
+
+          chrX:          0 out of  5,401,401 (  0.0%) repeat intervals
+          chrY:          0 out of  5,401,401 (  0.0%) repeat intervals
+          chrM:          0 out of  5,401,401 (  0.0%) repeat intervals
+   alt contigs:          0 out of  5,401,401 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:    822,329 out of  5,401,401 ( 15.2%) repeat intervals
+          2bp:    394,920 out of  5,401,401 (  7.3%) repeat intervals
+          3bp:    322,170 out of  5,401,401 (  6.0%) repeat intervals
+          4bp:    824,476 out of  5,401,401 ( 15.3%) repeat intervals
+          5bp:  1,404,172 out of  5,401,401 ( 26.0%) repeat intervals
+          6bp:  1,633,334 out of  5,401,401 ( 30.2%) repeat intervals
+       7-24bp:          0 out of  5,401,401 (  0.0%) repeat intervals
+        25+bp:          0 out of  5,401,401 (  0.0%) repeat intervals
+
+Num repeats in reference:
+           1x:          0 out of  5,401,401 (  0.0%) repeat intervals
+           2x:  2,845,907 out of  5,401,401 ( 52.7%) repeat intervals
+           3x:    594,545 out of  5,401,401 ( 11.0%) repeat intervals
+           4x:    295,310 out of  5,401,401 (  5.5%) repeat intervals
+           5x:    216,785 out of  5,401,401 (  4.0%) repeat intervals
+           6x:    151,578 out of  5,401,401 (  2.8%) repeat intervals
+           7x:     85,215 out of  5,401,401 (  1.6%) repeat intervals
+           8x:     70,327 out of  5,401,401 (  1.3%) repeat intervals
+           9x:     47,100 out of  5,401,401 (  0.9%) repeat intervals
+       10-15x:    486,523 out of  5,401,401 (  9.0%) repeat intervals
+       16-25x:    454,092 out of  5,401,401 (  8.4%) repeat intervals
+       26-35x:    114,468 out of  5,401,401 (  2.1%) repeat intervals
+       36-50x:     33,071 out of  5,401,401 (  0.6%) repeat intervals
+         51+x:      6,480 out of  5,401,401 (  0.1%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:        106 out of  5,401,401 (  0.0%) repeat intervals
+          0.1:        688 out of  5,401,401 (  0.0%) repeat intervals
+          0.2:      7,939 out of  5,401,401 (  0.1%) repeat intervals
+          0.3:     25,219 out of  5,401,401 (  0.5%) repeat intervals
+          0.4:     19,791 out of  5,401,401 (  0.4%) repeat intervals
+          0.5:    145,720 out of  5,401,401 (  2.7%) repeat intervals
+          0.6:    270,335 out of  5,401,401 (  5.0%) repeat intervals
+          0.7:    174,267 out of  5,401,401 (  3.2%) repeat intervals
+          0.8:    258,605 out of  5,401,401 (  4.8%) repeat intervals
+          0.9:    214,947 out of  5,401,401 (  4.0%) repeat intervals
+          1.0:  4,283,784 out of  5,401,401 ( 79.3%) repeat intervals
+Wrote 1 rows to popstr_catalog_v2.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/illumina_variant_catalog.sorted.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/illumina_variant_catalog.sorted.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/illumina_variant_catalog.sorted.annotated.json.gz
+
+Stats for illumina_variant_catalog.sorted.annotated.json.gz:
+      174,286 total loci
+    4,623,031 base pairs spanned by all loci (0.150% of the genome)
+            0 out of    174,286 (  0.0%) loci define adjacent repeats
+      174,286 total repeat intervals
+      174,262 out of    174,286 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+          365 out of    174,286 (  0.2%) repeat intervals are homopolymers
+            0 out of    174,286 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+            1 out of    174,286 (  0.0%) repeat intervals have non-ACGT motifs
+
+Ranges:
+   Motif size range: 1-24bp
+   Locus size range: 4-532bp
+   Num repeats range: 2-133x repeats
+
+   Maximum locus size =   532bp             @ chr7:138621782-138622314 (TATC)
+   Minimum fraction pure bases =  0.43      @ chr3:112804380-112804514 (TCT)
+   Minimum fraction pure repeats =  0.00    @ chr4:41745972-41746032 (GCN)
+
+          chrX:      8,561 out of    174,286 (  4.9%) repeat intervals
+          chrY:          0 out of    174,286 (  0.0%) repeat intervals
+          chrM:          0 out of    174,286 (  0.0%) repeat intervals
+   alt contigs:          0 out of    174,286 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:        365 out of    174,286 (  0.2%) repeat intervals
+          2bp:     98,531 out of    174,286 ( 56.5%) repeat intervals
+          3bp:     14,442 out of    174,286 (  8.3%) repeat intervals
+          4bp:     43,263 out of    174,286 ( 24.8%) repeat intervals
+          5bp:     12,551 out of    174,286 (  7.2%) repeat intervals
+          6bp:      3,931 out of    174,286 (  2.3%) repeat intervals
+       7-24bp:      1,203 out of    174,286 (  0.7%) repeat intervals
+        25+bp:          0 out of    174,286 (  0.0%) repeat intervals
+
+Num repeats in reference:
+           1x:          0 out of    174,286 (  0.0%) repeat intervals
+           2x:      8,780 out of    174,286 (  5.0%) repeat intervals
+           3x:      6,543 out of    174,286 (  3.8%) repeat intervals
+           4x:      8,882 out of    174,286 (  5.1%) repeat intervals
+           5x:     11,884 out of    174,286 (  6.8%) repeat intervals
+           6x:     13,900 out of    174,286 (  8.0%) repeat intervals
+           7x:     14,915 out of    174,286 (  8.6%) repeat intervals
+           8x:     13,902 out of    174,286 (  8.0%) repeat intervals
+           9x:     12,532 out of    174,286 (  7.2%) repeat intervals
+       10-15x:     49,952 out of    174,286 ( 28.7%) repeat intervals
+       16-25x:     31,237 out of    174,286 ( 17.9%) repeat intervals
+       26-35x:      1,729 out of    174,286 (  1.0%) repeat intervals
+       36-50x:         24 out of    174,286 (  0.0%) repeat intervals
+         51+x:          6 out of    174,286 (  0.0%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:          1 out of    174,286 (  0.0%) repeat intervals
+          0.1:          0 out of    174,286 (  0.0%) repeat intervals
+          0.2:          0 out of    174,286 (  0.0%) repeat intervals
+          0.3:          0 out of    174,286 (  0.0%) repeat intervals
+          0.4:          0 out of    174,286 (  0.0%) repeat intervals
+          0.5:          0 out of    174,286 (  0.0%) repeat intervals
+          0.6:         25 out of    174,286 (  0.0%) repeat intervals
+          0.7:        566 out of    174,286 (  0.3%) repeat intervals
+          0.8:      4,113 out of    174,286 (  2.4%) repeat intervals
+          0.9:      3,180 out of    174,286 (  1.8%) repeat intervals
+          1.0:    166,401 out of    174,286 ( 95.5%) repeat intervals
+Wrote 1 rows to illumina_variant_catalog.sorted.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38_ver17.catalog.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38_ver17.catalog.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38_ver17.catalog.annotated.json.gz
+
+Stats for hg38_ver17.catalog.annotated.json.gz:
+    1,340,266 total loci
+   22,952,364 base pairs spanned by all loci (0.743% of the genome)
+            0 out of  1,340,266 (  0.0%) loci define adjacent repeats
+    1,340,266 total repeat intervals
+    1,340,266 out of  1,340,266 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+      488,668 out of  1,340,266 ( 36.5%) repeat intervals are homopolymers
+           16 out of  1,340,266 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+Examples of overlapping repeats: chr2:1489652-1489684, chr20:2652733-2652757, chr15:96831014-96831039, chr5:146878728-146878758, chr15:96831011-96831036, chr20:2652732-2652756, chr5:123775552-123775596, chr9:27573528-27573546, chr9:27573523-27573541, chr2:1489650-1489682
+
+Ranges:
+   Motif size range: 1-20bp
+   Locus size range: 10-612bp
+   Num repeats range: 3-248x repeats
+
+   Maximum locus size =   612bp             @ chr4:10134483-10135095 (ATCCCAATTGATGGAGA)
+   Minimum fraction pure bases =  0.95      @ chr6:170561907-170562021 (CAG)
+   Minimum fraction pure repeats =  0.84    @ chr6:170561907-170562021 (CAG)
+
+          chrX:     65,719 out of  1,340,266 (  4.9%) repeat intervals
+          chrY:      8,979 out of  1,340,266 (  0.7%) repeat intervals
+          chrM:          0 out of  1,340,266 (  0.0%) repeat intervals
+   alt contigs:          0 out of  1,340,266 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:    488,668 out of  1,340,266 ( 36.5%) repeat intervals
+          2bp:    179,518 out of  1,340,266 ( 13.4%) repeat intervals
+          3bp:    150,463 out of  1,340,266 ( 11.2%) repeat intervals
+          4bp:    377,644 out of  1,340,266 ( 28.2%) repeat intervals
+          5bp:    106,135 out of  1,340,266 (  7.9%) repeat intervals
+          6bp:     27,654 out of  1,340,266 (  2.1%) repeat intervals
+       7-24bp:     10,184 out of  1,340,266 (  0.8%) repeat intervals
+        25+bp:          0 out of  1,340,266 (  0.0%) repeat intervals
+
+Num repeats in reference:
+           1x:          0 out of  1,340,266 (  0.0%) repeat intervals
+           2x:          0 out of  1,340,266 (  0.0%) repeat intervals
+           3x:    365,043 out of  1,340,266 ( 27.2%) repeat intervals
+           4x:    178,164 out of  1,340,266 ( 13.3%) repeat intervals
+           5x:     62,042 out of  1,340,266 (  4.6%) repeat intervals
+           6x:     81,945 out of  1,340,266 (  6.1%) repeat intervals
+           7x:     41,195 out of  1,340,266 (  3.1%) repeat intervals
+           8x:     22,799 out of  1,340,266 (  1.7%) repeat intervals
+           9x:     15,022 out of  1,340,266 (  1.1%) repeat intervals
+       10-15x:    270,718 out of  1,340,266 ( 20.2%) repeat intervals
+       16-25x:    260,685 out of  1,340,266 ( 19.5%) repeat intervals
+       26-35x:     37,641 out of  1,340,266 (  2.8%) repeat intervals
+       36-50x:      4,785 out of  1,340,266 (  0.4%) repeat intervals
+         51+x:        227 out of  1,340,266 (  0.0%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.1:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.2:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.3:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.4:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.5:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.6:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.7:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.8:          1 out of  1,340,266 (  0.0%) repeat intervals
+          0.9:          3 out of  1,340,266 (  0.0%) repeat intervals
+          1.0:  1,340,262 out of  1,340,266 (100.0%) repeat intervals
+Wrote 1 rows to hg38_ver17.catalog.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38.hipstr_reference.catalog.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38.hipstr_reference.catalog.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38.hipstr_reference.catalog.annotated.json.gz
+
+Stats for hg38.hipstr_reference.catalog.annotated.json.gz:
+    1,638,945 total loci
+   44,419,475 base pairs spanned by all loci (1.438% of the genome)
+            0 out of  1,638,945 (  0.0%) loci define adjacent repeats
+    1,638,945 total repeat intervals
+    1,111,877 out of  1,638,945 ( 67.8%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+      841,108 out of  1,638,945 ( 51.3%) repeat intervals are homopolymers
+           18 out of  1,638,945 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+          860 out of  1,638,945 (  0.1%) repeat intervals have non-ACGT motifs
+Examples of overlapping repeats: chrY:12500447-12500495, chrY:25930350-25930427, chrY:23739648-23739733, chrY:25930445-25930494, chrY:25930531-25930559, chrY:23739582-23739630, chrY:12500447-12500516, chrY:23739648-23739732, chrY:23739516-23739544, chrY:23739516-23739528
+
+Ranges:
+   Motif size range: 1-6bp
+   Locus size range: 9-132210bp
+   Num repeats range: 3-26442x repeats
+
+   Maximum locus size = 132210bp             @ chr17:21851231-21983441 (AATGG)
+   Minimum fraction pure bases =  0.00      @ chrY:57209842-57209870 (ACC)
+   Minimum fraction pure repeats =  0.00    @ chrY:57209842-57209870 (ACC)
+
+          chrX:     79,235 out of  1,638,945 (  4.8%) repeat intervals
+          chrY:     16,003 out of  1,638,945 (  1.0%) repeat intervals
+          chrM:          0 out of  1,638,945 (  0.0%) repeat intervals
+   alt contigs:          0 out of  1,638,945 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:    841,108 out of  1,638,945 ( 51.3%) repeat intervals
+          2bp:    300,335 out of  1,638,945 ( 18.3%) repeat intervals
+          3bp:     80,960 out of  1,638,945 (  4.9%) repeat intervals
+          4bp:    240,536 out of  1,638,945 ( 14.7%) repeat intervals
+          5bp:    101,960 out of  1,638,945 (  6.2%) repeat intervals
+          6bp:     74,046 out of  1,638,945 (  4.5%) repeat intervals
+       7-24bp:          0 out of  1,638,945 (  0.0%) repeat intervals
+        25+bp:          0 out of  1,638,945 (  0.0%) repeat intervals
+
+Num repeats in reference:
+           1x:          0 out of  1,638,945 (  0.0%) repeat intervals
+           2x:          0 out of  1,638,945 (  0.0%) repeat intervals
+           3x:     78,477 out of  1,638,945 (  4.8%) repeat intervals
+           4x:     96,987 out of  1,638,945 (  5.9%) repeat intervals
+           5x:     91,667 out of  1,638,945 (  5.6%) repeat intervals
+           6x:    109,726 out of  1,638,945 (  6.7%) repeat intervals
+           7x:     64,275 out of  1,638,945 (  3.9%) repeat intervals
+           8x:     57,971 out of  1,638,945 (  3.5%) repeat intervals
+           9x:     36,255 out of  1,638,945 (  2.2%) repeat intervals
+       10-15x:    486,199 out of  1,638,945 ( 29.7%) repeat intervals
+       16-25x:    453,720 out of  1,638,945 ( 27.7%) repeat intervals
+       26-35x:    109,360 out of  1,638,945 (  6.7%) repeat intervals
+       36-50x:     36,056 out of  1,638,945 (  2.2%) repeat intervals
+         51+x:     18,252 out of  1,638,945 (  1.1%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:      4,139 out of  1,638,945 (  0.3%) repeat intervals
+          0.1:      1,639 out of  1,638,945 (  0.1%) repeat intervals
+          0.2:      7,223 out of  1,638,945 (  0.4%) repeat intervals
+          0.3:     15,019 out of  1,638,945 (  0.9%) repeat intervals
+          0.4:     22,904 out of  1,638,945 (  1.4%) repeat intervals
+          0.5:     48,932 out of  1,638,945 (  3.0%) repeat intervals
+          0.6:     91,894 out of  1,638,945 (  5.6%) repeat intervals
+          0.7:    120,551 out of  1,638,945 (  7.4%) repeat intervals
+          0.8:    207,370 out of  1,638,945 ( 12.7%) repeat intervals
+          0.9:    239,978 out of  1,638,945 ( 14.6%) repeat intervals
+          1.0:    879,296 out of  1,638,945 ( 53.7%) repeat intervals
+Wrote 1 rows to hg38.hipstr_reference.catalog.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.annotated.json.gz
+
+Stats for hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.annotated.json.gz:
+    4,558,281 total loci
+   62,504,037 base pairs spanned by all loci (2.024% of the genome)
+            0 out of  4,558,281 (  0.0%) loci define adjacent repeats
+    4,558,281 total repeat intervals
+    2,799,051 out of  4,558,281 ( 61.4%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+    1,337,567 out of  4,558,281 ( 29.3%) repeat intervals are homopolymers
+            0 out of  4,558,281 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+
+Ranges:
+   Motif size range: 1-833bp
+   Locus size range: 9-2523bp
+   Num repeats range: 3-300x repeats
+
+   Maximum locus size =  2523bp             @ chrX:71520430-71522953 (CCAGCACTTTGGGAGGCCGAGGCAGGCTGATCACTAGGTCAGGAGTTCAAGACCAGCCTGGCCAACATGGTGAAACCCCCGTCTCTACTAAAAATACAAAAATTACCTGGGTGTGGGGGTGGGCACCTGTAATCCCAGCTACTCGGGAGGCTGGGGAGGCAGGAGAATTGCCTGAACCTGAGAGGCAGAGGCTGCAGTGAGCTGAGATTGTGCCACTGCACTCCAGCCTGGGCGACAGAGTGAGACTCAGTCTCAAAACAAAAAAAAAAAAAGATTTTAGTAACTTTTATCCTGTTTTAATAATACTGACTCAGAAACTATAATGTGTACTTTATAATTTACTTCCTAGATGACACTTGATTTTCTTCAAGAGCAAGATAGCTGCCCTGTGCAGTTGGTCTCCTTGAAAACTATTTTAGTTCTATCATAATTTCCTGTGATAAATATTTTGACCTTCTAAAATTTCAGAATATTGCACCAAGTAGAAAGAAAATAGGTTTTTTCTCTTTTCTTCTTCTTCCTTTTTTTTTTCTGAGAAAGAGGGAATGAGAACTTTAGTGTTCTTTCAATAGCGTTCTTATTTGTAGAAATGCATAATAGTGTCCTAGTAAGGCTTGACAATAACTCTGGTCTTCATCATATTTTGTGATAAAACTTTTGATTTAAAAAAACCTCTGATCTATTTATCATGGCAAATGGATAGAGCTTTCCTGCCTGTTTTCTTTCTTTTCTTTTTTCTTTCTTTCCTTTTTTTTCCTTTGAGCTTAGATTTTTAGAAGCACATATTTAAAAATCAGGTATAAGACTGGATGCAGTGGCTCACGCCTGTAATC)
+   Minimum fraction pure bases =  0.75      @ chr9:123405668-123405915 (TCCTGCCCACCCTTTGAGTTTCCAGGACAAGACAGGGAAGGGAAGCAGGCACACACTCCACT)
+   Minimum fraction pure repeats =  1.00    @ chrY:56887882-56887891 (TGA)
+
+          chrX:    232,977 out of  4,558,281 (  5.1%) repeat intervals
+          chrY:     38,867 out of  4,558,281 (  0.9%) repeat intervals
+          chrM:         14 out of  4,558,281 (  0.0%) repeat intervals
+   alt contigs:          0 out of  4,558,281 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:  1,337,567 out of  4,558,281 ( 29.3%) repeat intervals
+          2bp:    967,389 out of  4,558,281 ( 21.2%) repeat intervals
+          3bp:  1,418,341 out of  4,558,281 ( 31.1%) repeat intervals
+          4bp:    569,907 out of  4,558,281 ( 12.5%) repeat intervals
+          5bp:    172,187 out of  4,558,281 (  3.8%) repeat intervals
+          6bp:     52,023 out of  4,558,281 (  1.1%) repeat intervals
+       7-24bp:     31,185 out of  4,558,281 (  0.7%) repeat intervals
+        25+bp:      9,682 out of  4,558,281 (  0.2%) repeat intervals
+
+Num repeats in reference:
+           1x:          0 out of  4,558,281 (  0.0%) repeat intervals
+           2x:          0 out of  4,558,281 (  0.0%) repeat intervals
+           3x:  1,787,359 out of  4,558,281 ( 39.2%) repeat intervals
+           4x:    641,281 out of  4,558,281 ( 14.1%) repeat intervals
+           5x:    353,723 out of  4,558,281 (  7.8%) repeat intervals
+           6x:    148,753 out of  4,558,281 (  3.3%) repeat intervals
+           7x:     76,841 out of  4,558,281 (  1.7%) repeat intervals
+           8x:     43,343 out of  4,558,281 (  1.0%) repeat intervals
+           9x:    352,151 out of  4,558,281 (  7.7%) repeat intervals
+       10-15x:    756,034 out of  4,558,281 ( 16.6%) repeat intervals
+       16-25x:    347,635 out of  4,558,281 (  7.6%) repeat intervals
+       26-35x:     45,324 out of  4,558,281 (  1.0%) repeat intervals
+       36-50x:      5,550 out of  4,558,281 (  0.1%) repeat intervals
+         51+x:        287 out of  4,558,281 (  0.0%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:          0 out of  4,558,281 (  0.0%) repeat intervals
+          0.1:          0 out of  4,558,281 (  0.0%) repeat intervals
+          0.2:          0 out of  4,558,281 (  0.0%) repeat intervals
+          0.3:          0 out of  4,558,281 (  0.0%) repeat intervals
+          0.4:          0 out of  4,558,281 (  0.0%) repeat intervals
+          0.5:          0 out of  4,558,281 (  0.0%) repeat intervals
+          0.6:          0 out of  4,558,281 (  0.0%) repeat intervals
+          0.7:          0 out of  4,558,281 (  0.0%) repeat intervals
+          0.8:          0 out of  4,558,281 (  0.0%) repeat intervals
+          0.9:          0 out of  4,558,281 (  0.0%) repeat intervals
+          1.0:  4,558,281 out of  4,558,281 (100.0%) repeat intervals
+Wrote 1 rows to hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/combined.51_samples.positive_loci.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/combined.51_samples.positive_loci.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/combined.51_samples.positive_loci.annotated.json.gz
+
+Stats for combined.51_samples.positive_loci.annotated.json.gz:
+    1,575,395 total loci
+   29,787,120 base pairs spanned by all loci (0.965% of the genome)
+            0 out of  1,575,395 (  0.0%) loci define adjacent repeats
+    1,575,395 total repeat intervals
+    1,575,395 out of  1,575,395 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+    1,022,431 out of  1,575,395 ( 64.9%) repeat intervals are homopolymers
+      131,966 out of  1,575,395 (  8.4%) repeat intervals overlap each other by at least two motif lengths
+Examples of overlapping repeats: chr2:125456583-125456625, chrX:20300253-20300345, chr19:16939149-16939189, chr5:141802147-141802180, chr11:26476889-26476933, chr17:7446303-7446373, chr20:53902554-53902580, chr7:25452358-25452386, chr21:14892836-14892865, chr3:65950959-65951035
+
+Ranges:
+   Motif size range: 1-833bp
+   Locus size range: 1-2499bp
+   Num repeats range: 1-301x repeats
+
+   Maximum locus size =  2499bp             @ chrX:71520430-71522929 (CCAGCACTTTGGGAGGCCGAGGCAGGCTGATCACTAGGTCAGGAGTTCAAGACCAGCCTGGCCAACATGGTGAAACCCCCGTCTCTACTAAAAATACAAAAATTACCTGGGTGTGGGGGTGGGCACCTGTAATCCCAGCTACTCGGGAGGCTGGGGAGGCAGGAGAATTGCCTGAACCTGAGAGGCAGAGGCTGCAGTGAGCTGAGATTGTGCCACTGCACTCCAGCCTGGGCGACAGAGTGAGACTCAGTCTCAAAACAAAAAAAAAAAAAGATTTTAGTAACTTTTATCCTGTTTTAATAATACTGACTCAGAAACTATAATGTGTACTTTATAATTTACTTCCTAGATGACACTTGATTTTCTTCAAGAGCAAGATAGCTGCCCTGTGCAGTTGGTCTCCTTGAAAACTATTTTAGTTCTATCATAATTTCCTGTGATAAATATTTTGACCTTCTAAAATTTCAGAATATTGCACCAAGTAGAAAGAAAATAGGTTTTTTCTCTTTTCTTCTTCTTCCTTTTTTTTTTCTGAGAAAGAGGGAATGAGAACTTTAGTGTTCTTTCAATAGCGTTCTTATTTGTAGAAATGCATAATAGTGTCCTAGTAAGGCTTGACAATAACTCTGGTCTTCATCATATTTTGTGATAAAACTTTTGATTTAAAAAAACCTCTGATCTATTTATCATGGCAAATGGATAGAGCTTTCCTGCCTGTTTTCTTTCTTTTCTTTTTTCTTTCTTTCCTTTTTTTTCCTTTGAGCTTAGATTTTTAGAAGCACATATTTAAAAATCAGGTATAAGACTGGATGCAGTGGCTCACGCCTGTAATC)
+   Minimum fraction pure bases =  0.00      @ chrY:56954775-56954787 (GC)
+   Minimum fraction pure repeats =  0.00    @ chrY:56954775-56954787 (GC)
+
+          chrX:     70,903 out of  1,575,395 (  4.5%) repeat intervals
+          chrY:      5,398 out of  1,575,395 (  0.3%) repeat intervals
+          chrM:          0 out of  1,575,395 (  0.0%) repeat intervals
+   alt contigs:          0 out of  1,575,395 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:  1,022,431 out of  1,575,395 ( 64.9%) repeat intervals
+          2bp:    263,809 out of  1,575,395 ( 16.7%) repeat intervals
+          3bp:     65,103 out of  1,575,395 (  4.1%) repeat intervals
+          4bp:    141,085 out of  1,575,395 (  9.0%) repeat intervals
+          5bp:     34,953 out of  1,575,395 (  2.2%) repeat intervals
+          6bp:     13,715 out of  1,575,395 (  0.9%) repeat intervals
+       7-24bp:     23,474 out of  1,575,395 (  1.5%) repeat intervals
+        25+bp:     10,825 out of  1,575,395 (  0.7%) repeat intervals
+
+Num repeats in reference:
+           1x:      9,181 out of  1,575,395 (  0.6%) repeat intervals
+           2x:     29,431 out of  1,575,395 (  1.9%) repeat intervals
+           3x:     65,558 out of  1,575,395 (  4.2%) repeat intervals
+           4x:     52,852 out of  1,575,395 (  3.4%) repeat intervals
+           5x:     59,980 out of  1,575,395 (  3.8%) repeat intervals
+           6x:     52,299 out of  1,575,395 (  3.3%) repeat intervals
+           7x:     44,554 out of  1,575,395 (  2.8%) repeat intervals
+           8x:    101,032 out of  1,575,395 (  6.4%) repeat intervals
+           9x:    133,822 out of  1,575,395 (  8.5%) repeat intervals
+       10-15x:    595,966 out of  1,575,395 ( 37.8%) repeat intervals
+       16-25x:    368,240 out of  1,575,395 ( 23.4%) repeat intervals
+       26-35x:     53,880 out of  1,575,395 (  3.4%) repeat intervals
+       36-50x:      7,883 out of  1,575,395 (  0.5%) repeat intervals
+         51+x:        717 out of  1,575,395 (  0.0%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:        782 out of  1,575,395 (  0.0%) repeat intervals
+          0.1:      1,162 out of  1,575,395 (  0.1%) repeat intervals
+          0.2:      1,900 out of  1,575,395 (  0.1%) repeat intervals
+          0.3:      2,037 out of  1,575,395 (  0.1%) repeat intervals
+          0.4:      1,547 out of  1,575,395 (  0.1%) repeat intervals
+          0.5:      6,379 out of  1,575,395 (  0.4%) repeat intervals
+          0.6:     12,689 out of  1,575,395 (  0.8%) repeat intervals
+          0.7:      7,606 out of  1,575,395 (  0.5%) repeat intervals
+          0.8:     13,668 out of  1,575,395 (  0.9%) repeat intervals
+          0.9:     36,333 out of  1,575,395 (  2.3%) repeat intervals
+          1.0:  1,491,292 out of  1,575,395 ( 94.7%) repeat intervals
+Wrote 1 rows to combined.51_samples.positive_loci.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.catalog.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.catalog.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.catalog.annotated.json.gz
+
+Stats for human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.catalog.annotated.json.gz:
+    7,524,815 total loci
+   158,687,827 base pairs spanned by all loci (5.138% of the genome)
+            0 out of  7,524,815 (  0.0%) loci define adjacent repeats
+    7,524,815 total repeat intervals
+    3,465,083 out of  7,524,815 ( 46.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+    1,044,945 out of  7,524,815 ( 13.9%) repeat intervals are homopolymers
+            0 out of  7,524,815 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+           14 out of  7,524,815 (  0.0%) repeat intervals have non-ACGT motifs
+
+Ranges:
+   Motif size range: 1-822bp
+   Locus size range: 1-9545bp
+   Num repeats range: 1-2682x repeats
+
+   Maximum locus size =  9545bp             @ chr21:13122210-13131755 (TATGTGAGGGACAAACACTCAGAACCCAGCAGCAGTGTTCTGGAATCC)
+   Minimum fraction pure bases =  0.00      @ chrY:26588581-26588598 (CTGAA)
+   Minimum fraction pure repeats =  0.00    @ chrM:11051-11074 (TACAAATCTCCC)
+
+          chrX:    384,966 out of  7,524,815 (  5.1%) repeat intervals
+          chrY:     55,119 out of  7,524,815 (  0.7%) repeat intervals
+          chrM:         29 out of  7,524,815 (  0.0%) repeat intervals
+   alt contigs:          0 out of  7,524,815 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:  1,044,945 out of  7,524,815 ( 13.9%) repeat intervals
+          2bp:    391,633 out of  7,524,815 (  5.2%) repeat intervals
+          3bp:    501,649 out of  7,524,815 (  6.7%) repeat intervals
+          4bp:  1,345,281 out of  7,524,815 ( 17.9%) repeat intervals
+          5bp:  1,250,742 out of  7,524,815 ( 16.6%) repeat intervals
+          6bp:  1,337,409 out of  7,524,815 ( 17.8%) repeat intervals
+       7-24bp:  1,619,289 out of  7,524,815 ( 21.5%) repeat intervals
+        25+bp:     33,867 out of  7,524,815 (  0.5%) repeat intervals
+
+Num repeats in reference:
+           1x:    309,542 out of  7,524,815 (  4.1%) repeat intervals
+           2x:  4,029,167 out of  7,524,815 ( 53.5%) repeat intervals
+           3x:    783,963 out of  7,524,815 ( 10.4%) repeat intervals
+           4x:    276,173 out of  7,524,815 (  3.7%) repeat intervals
+           5x:    252,297 out of  7,524,815 (  3.4%) repeat intervals
+           6x:    152,757 out of  7,524,815 (  2.0%) repeat intervals
+           7x:    124,931 out of  7,524,815 (  1.7%) repeat intervals
+           8x:     88,858 out of  7,524,815 (  1.2%) repeat intervals
+           9x:     72,852 out of  7,524,815 (  1.0%) repeat intervals
+       10-15x:    621,251 out of  7,524,815 (  8.3%) repeat intervals
+       16-25x:    463,211 out of  7,524,815 (  6.2%) repeat intervals
+       26-35x:    164,790 out of  7,524,815 (  2.2%) repeat intervals
+       36-50x:     90,213 out of  7,524,815 (  1.2%) repeat intervals
+         51+x:     94,810 out of  7,524,815 (  1.3%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:    220,329 out of  7,524,815 (  2.9%) repeat intervals
+          0.1:    109,580 out of  7,524,815 (  1.5%) repeat intervals
+          0.2:    157,890 out of  7,524,815 (  2.1%) repeat intervals
+          0.3:    158,223 out of  7,524,815 (  2.1%) repeat intervals
+          0.4:    109,591 out of  7,524,815 (  1.5%) repeat intervals
+          0.5:    889,110 out of  7,524,815 ( 11.8%) repeat intervals
+          0.6:    428,519 out of  7,524,815 (  5.7%) repeat intervals
+          0.7:    198,782 out of  7,524,815 (  2.6%) repeat intervals
+          0.8:    284,865 out of  7,524,815 (  3.8%) repeat intervals
+          0.9:    161,498 out of  7,524,815 (  2.1%) repeat intervals
+          1.0:  4,806,428 out of  7,524,815 ( 63.9%) repeat intervals
+Wrote 1 rows to human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.catalog.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/adotto_tr_catalog_v1.2.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/adotto_tr_catalog_v1.2.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/adotto_tr_catalog_v1.2.annotated.json.gz
+
+Stats for adotto_tr_catalog_v1.2.annotated.json.gz:
+    2,934,805 total loci
+   133,917,279 base pairs spanned by all loci (4.336% of the genome)
+            0 out of  2,934,805 (  0.0%) loci define adjacent repeats
+    2,934,805 total repeat intervals
+      943,996 out of  2,934,805 ( 32.2%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+       17,580 out of  2,934,805 (  0.6%) repeat intervals are homopolymers
+       26,684 out of  2,934,805 (  0.9%) repeat intervals overlap each other by at least two motif lengths
+Examples of overlapping repeats: chr12:14827400-14827419, chr19:1299237-1299270, chr2:150995414-150995438, chr5:133037089-133037121, chr8:85346763-85346785, chr5:69183987-69184023, chr14:74342415-74342532, chrX:5740664-5740691, chr12:121853933-121853967, chr1:113921424-113921461
+
+Ranges:
+   Motif size range: 1-495bp
+   Locus size range: 4-49816bp
+   Num repeats range: 1-8836x repeats
+
+   Maximum locus size = 49816bp             @ chr19:20866534-20916350 (ACCTGTTCACTGTCACCCACTCATTCACACAGTGGGA)
+   Minimum fraction pure bases =  0.01      @ chr9:135091404-135091939 (CACACACACACACACTCA)
+   Minimum fraction pure repeats =  0.00    @ chrY:56884637-56884673 (AAAAAAC)
+
+          chrX:    109,743 out of  2,934,805 (  3.7%) repeat intervals
+          chrY:     16,589 out of  2,934,805 (  0.6%) repeat intervals
+          chrM:          0 out of  2,934,805 (  0.0%) repeat intervals
+   alt contigs:          0 out of  2,934,805 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:     17,580 out of  2,934,805 (  0.6%) repeat intervals
+          2bp:    580,980 out of  2,934,805 ( 19.8%) repeat intervals
+          3bp:    335,372 out of  2,934,805 ( 11.4%) repeat intervals
+          4bp:    532,393 out of  2,934,805 ( 18.1%) repeat intervals
+          5bp:    240,753 out of  2,934,805 (  8.2%) repeat intervals
+          6bp:    225,967 out of  2,934,805 (  7.7%) repeat intervals
+       7-24bp:    841,199 out of  2,934,805 ( 28.7%) repeat intervals
+        25+bp:    160,561 out of  2,934,805 (  5.5%) repeat intervals
+
+Num repeats in reference:
+           1x:     96,957 out of  2,934,805 (  3.3%) repeat intervals
+           2x:    999,315 out of  2,934,805 ( 34.1%) repeat intervals
+           3x:    555,207 out of  2,934,805 ( 18.9%) repeat intervals
+           4x:    311,003 out of  2,934,805 ( 10.6%) repeat intervals
+           5x:    240,465 out of  2,934,805 (  8.2%) repeat intervals
+           6x:    161,978 out of  2,934,805 (  5.5%) repeat intervals
+           7x:    105,053 out of  2,934,805 (  3.6%) repeat intervals
+           8x:     74,980 out of  2,934,805 (  2.6%) repeat intervals
+           9x:     54,455 out of  2,934,805 (  1.9%) repeat intervals
+       10-15x:    162,373 out of  2,934,805 (  5.5%) repeat intervals
+       16-25x:    103,415 out of  2,934,805 (  3.5%) repeat intervals
+       26-35x:     29,984 out of  2,934,805 (  1.0%) repeat intervals
+       36-50x:     16,056 out of  2,934,805 (  0.5%) repeat intervals
+         51+x:     23,564 out of  2,934,805 (  0.8%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:    375,154 out of  2,934,805 ( 12.8%) repeat intervals
+          0.1:     25,681 out of  2,934,805 (  0.9%) repeat intervals
+          0.2:     70,822 out of  2,934,805 (  2.4%) repeat intervals
+          0.3:    124,400 out of  2,934,805 (  4.2%) repeat intervals
+          0.4:     47,118 out of  2,934,805 (  1.6%) repeat intervals
+          0.5:    416,430 out of  2,934,805 ( 14.2%) repeat intervals
+          0.6:    202,304 out of  2,934,805 (  6.9%) repeat intervals
+          0.7:    159,784 out of  2,934,805 (  5.4%) repeat intervals
+          0.8:    186,420 out of  2,934,805 (  6.4%) repeat intervals
+          0.9:     48,309 out of  2,934,805 (  1.6%) repeat intervals
+          1.0:  1,278,383 out of  2,934,805 ( 43.6%) repeat intervals
+Wrote 1 rows to adotto_tr_catalog_v1.2.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/mukamel_VNTR_catalog.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/mukamel_VNTR_catalog.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/mukamel_VNTR_catalog.annotated.json.gz
+
+Stats for mukamel_VNTR_catalog.annotated.json.gz:
+          118 total loci
+      227,806 base pairs spanned by all loci (0.007% of the genome)
+            0 out of        118 (  0.0%) loci define adjacent repeats
+          118 total repeat intervals
+            6 out of        118 (  5.1%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+            0 out of        118 (  0.0%) repeat intervals are homopolymers
+            0 out of        118 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+
+Ranges:
+   Motif size range: 3-10553bp
+   Locus size range: 27-42600bp
+   Num repeats range: 2-203x repeats
+
+   Maximum locus size = 42600bp             @ chr6:160605061-160647661 (CTGGGGTCCGACTATGCGAGTGTGGTGTCATAGATGACCAAGCTTGGCAGGTTCTTCCTGTGACAGTGGTGGAGTATGTGCCTCGATAACTCTGTCCATTACCATGGTAGCACTCCTGCACCCCAGGCCTTTGCTCAGTCGGTGCTGAAATGAAAACACGGGAAATCAAGCTGAGTATCTCTGAGCATAGAGAAACATGTGAAGCCATTTGTGACACAACCAGAAAGGAGTCTATGAGAATTACGACCGTTCTCTTTTCCTTATCCATAGGCAGATGGATGTGAGAAAACCGACCAACAAACAAACACCAAAGCAACAGATTCCTCCCATTCTAGAACTGTAGTAAGTTCTTGGAAATATTTCACCTGACACCTTAGAGAAACACAACAGATCAGATTCCTCATTGGAAAGTGAGCTCACGAGGTAGCACCTTTCTAGGAAACTCTACTGAATCTTCATGCAAACGGCACCGCATTTGGCAATGCGGGCTGCAGGTGGTAATTGGCTGTCGGGGGCAGAGTTTGGGACAGACATGGAAATTTTGCATGTTTCCCTAGACCGTTGATCATGAAAGCCAAGGCCTTTGGCTTCCGGGCCATGGGGCAGAAAACGGTCCTATGTATCTGACTGAAGACAAAGACACTTTGCTTCTCAGGGATGTGTGCACGCCAAAAGCTTCTTCCCTTGGAGGAGAGAGGGAATCCTCTCATGCCCTGCATCCTGAATTGTAGTAAAGTAGGAGTCTACTACTCTTTCTCTCTAGACCCCTCACAGGTACAAGTGTCATCAGAAAGAGGTTTAAGAATACTGAGAAATCACTCCCTTCAAAGCCTAGGGCTGAAGAGCCTTAGAGCACTGGGAGCTCATGTACTGCTCCATAGACCCAGGGCCACATGGAATCAATGCAGCCCTCTTAGGTTTCTCGAGGGTGACAGGCTCCAGAGCCACATTTCTCAGAATCTGCAATGCTGAAGATTGCTCTGAATGCTGGCTACTTGAAGAAATCCCCGGAAAAGCTTACTGGCTTGGAAAGAGTGACACACCTGACAGCATGTTACAATAAAAATTTTGGCTGGGACACTGAGGTAGCCCGTTTTACAACAAGGTGAATTTTGAAGTCGATCCCCCTGGAGGGTTTGTGCCCATCCTAAAGACAAAGCCCAACCACGTTGCACCAGAAATCACTCCGCTGGCTCCCCCAGAGAGTGCACGGAGGCTTCCTCCTACATGGTAGAACTCAGGCAACACTCGAGCATCCGTTTACCATTGAAGGCGGCTGCATCAGTGGGAATTTCCATGGCTTTTCATCCCAGCATCGAAGCGTGTAGATGTCTGGCCACAGACTCCTTACCTTGTTCGGAAGGAGCCTCTAGGCTTGGAACCGGGGTAACAGTCGGAGGCGCGACGGCAGTCCCTTCTGCGTCTGAGCATTGCGTCAGGTTGCAGTACTCCCACCTGACACCGGGATCCCTCGTATAACAATAAGGAGCTGCCACAGCATCTGGATTCCTGCAGTAGTTCATGATCAAGCCACTGGAAATTCCAAAACGATACACGTCACAAGAGGTGGGACAACATGCAGGGGCACCCCACACTCTCTCCTTTGTGCTGCAACAAGGTCATTACCGGTGCCTTTCTAATATTCCCATTAAAAGTACCATATGATTGCCACCAGCAAAAATGGCTCTCGATCACTAATCCTCTCTGCACATCTCTCATACTTAATAGATTATTACTATTTTTTTTAAATAAAAAATCTAAAGTAGCAAACGCTTCTTAGAAACACTGAGATAACACACACACGTGGCCGAAAAACGATCAGAGTATTCTCCTTCTGCCTTCTGCCCAATCCATCTCTCTGGAATAACTGGTATGGGTTTTGACGTCTGTATTGTGGGATTGTGTATTCACATGCAAATGCATCTGTATCTGTCTAGTCTCCGTATCTCTCTCGGTAGGACTTCATATTCTAATGTGGGAGTTGCAACGAACATGTAGTTCTTCAGAAAACACACGTCATCCAGGAGGATAGCCGTTCCAGGTCAACCCTCACACTCTATGTACTCAATACGTAGTGAAAAGGCTCTACCTTTCCCACAGAAAAGCATTGTGCAAATAGTATTACTGTCTGTCAGGTTTAGTAGGTTTGTTTCTCCAAGACTTCTCAAAGCTGCCCTGGAAAACTTGCTCCCAGGCAGGATGCAGTATCTCTAGAAGGGGTTCCTAGGCAGGTCCTTCTCTCCTGCTCTCAGTCTACCCTCTGCTGGCCGCAGCTACTCCGGGACTGAGGGAAAGGGGGATGAGTTGAAAGAACAGTGGGACCCATGGCATAAAGGAAGACGGCAGGGTGGACTAAGAGATCTGAAGAGGTCGGACAGCTACGGAGCAGCAGAGAAAAATGCATTAGGGGGCAAAGCAGGCGAGTAGTTTGGGCTGCGGGGATCTTGAAGCATTCGCTCTTCCTTATGCCTCCCAAGAACGTTGCTCCAACCTCCCAGTATCCTCACATTCATGACCTCTGGCTGCCTGAGAAAATGGGAAATGTATTATGGGCCATGGGGTTCCAACACTGTCTCTCTAGAGACTCTAGACTTGTGGCCTAGTCTCAACCCCAGACCCTCCATTCCAGGAAGCTGGTTCAATGAGCAACTGGATGTATAAGAGCCTGAGCTCTTGAAAGACTTCTAGTTCTTCCTTGGCTTCCCTCTTTTGAATGCATGGACTATTCTTATTATACCAAAAACCTCAGAGTTCAAACCTTTGTGATTGCTCTAGGATTTGCAATATCCCTTCGAACCCGCACAGTACCCTTTTATTAATATGACACACCATCGTGCATGAGGTAAAGAAACTTACAACGGTACACTTCGAATTAATCCCTTCGTGATTTATGCTACCATTTCAAATTCTTACCTCTACATATGCTGAAGTTAAATATCTTGCTATCATTTTGTTTCAAGTAGTCAACTCTCATTTACAAAGATATAGAAATTTGATCAAGAAAATATTTTGCATTTACATCTATCTACATTTGCCAATTGCTGGATTCTTCATTACGTGGGCTGCAGAAAGTTCCTTTCTTGTTCAATTCTTCTTCTACCTAATTCCTTCGGGTCACCTCTCTTGTTACATAAGCCTGCTGATTTCCAATTCTTACAGTTTCCGGTTTCTTTCTTTGGGGCAGTGCACAATATGCATTTATCCGACATGGATGATCTTCAAGGCATTTTATTGCTGGATTCAGCATTCCCGGTTGATCTCTTTTTGTTCCTGATTATCATTTTAACAATATTCCCTGGTATCTGGCTTCCAGTGTTTCTGAGGTGAACACATTGGCAATTTGTATCAGTGTACTTGTAGGAAGACACAGCTCTTTTTCCTCCAGTTTCTCGTGACAGGTTTCTTCTTATTATATCTTTGCCTTGTTACCTTCGAACTGTGATGTACAAAAGTACATCATACAGGTTGGGTTTTTTTTCCGAAATTCCCTATATGATCCCTTGAGTTTCACGATTCTGTGATTTTTTTTAATGTTCTTCGTAATTGAAAAGTTATCAGCCATCCTTGATTCCGGTATTTGTTTCTATTCCAAACTCCCTTGCTCTTTACTGTGACTTGCTTCCCACATGCAGGAAATCTTTTCATATTTTCCTACATGTCTGTGAGGCTCGCTTAATTTTATATTTCACTGTTTCTTCAGGGGTGCGCGTGTCTGTGTGTGTTAGAACTTGTGAGTTTCTGCGTGTGTGTGAGTATGGGTGTGTTTTCAGTTTGTGTGTGTGTGTGTGTGTGTGTGTGTAGCTCATTCTGTAGGTTCTCTAGAATTGTGTGTTGGGTAATGTTTTCCTCTGAAACGTCTAAATTGATCAGCCGGCCATACAGTAATTTTTTTCAATTAAGACATACTTTTTTTATACTAGCTCTTTAATTTAATTTGGCTATTCTGTACTGTTAATTTCTCTTGATATGATATCTGCTTTCTTGCATGTTGTTTTTTTAAATATTTGAAATCAGTTATCATACTGATATGTCAAATTTTCACGCAATTCTAATCATTTCTCTCATTCCTGAGCCTGTTTGTATTACCCGATTTATTTCCTGGTCATGGGTCACACGAAACGCTTTTCTACATGTAGTCAGATTTTAAATTTAGGACTCACTCTGCGGATACCGCATAGCTGAGGCAATCGACTTTGTTGTTTACTTCTAAAGAGAGTTGAGATTTCCTCTCACAGGCACTTCATTGATTGGAAACCGATTTGATGCTTGGACACTTGCTTTCCAGCTGTGCAAGGGGTTGTCTGCAGCTGACTTTATTCTAGTAATATACTAAGTGTACCTTTAAATTACGGCTGTTCTGGGGTCTCCACTGAATTGGCAATGTGCTCCGTGAGGACTCTCTGGTCTAGCTGGGAAGAACTCCAGTATCCCAGAGTGCTATGTGATCTCTCTCTTCTTTATTGAGCTTCCTGTGCTCTTGTACTTGCTGTTTCTCAGTAAATGTTCTTTGCCACACTTTCTCGTGGAACCATTTCCTGTGCACAGGCAGCGTCATGTCAGGCCAACGACTGGAGGAGACTTCTATGCGTATTTGTAGAGCTCTTTTCCTCCACAAACCAGTTCTTATTTCTAGCAGACCTAGAAAAATTTCAGCTACCACAGTCATCCCAAACTCCAATCCCTCTCCTCCATTCAGCAAGATGGCTACAGTCTGCTTGGGCTCCATCTCCTTGCTATTCAGTGCAGGAAGGGTATCCAGGAAGAAAGCCAAGGCATCTGCGGAGTGGAGCCCATCATTGCCCCTCTCTCAATTCTCTAGGTCCTCTACCATCTGTTGTCCCACATGTAGAAACCATTTTTCCATGTCTCTGGTAGTCGCTTGTGGCCAAAATATTGGCCATTGGGTGGTCAGACCCGGGCTTCTCTCCATCCACCCATCCCTTTTACTTTTCAGCATCCCTCTCTGTGCTGACTCTCATCTGCCTTCCTTCCTTGGATCTTCTCTTGCTGGGAACCTGTATCCCTTCAGGCCACTGGTACTTAGGAACGAGTGTTTTTCTGACAATCGGAATATACGTAGATATAGAAACAGATCAATTCACCTGTCCATAAATAAGCACCTATTCTTTCCTCTTGAACCCAGAGAGAAAAGGCAAACGCAACCTTCCCTTCAGGAAGTGGAAGCCAGAATAACGGAATTCCAACTGGAAAGTCTCCATTGACGTTTAGTTGGTGTTGTGGAAGGGTAATCTAAGTGTCTGGTCCTTTGTCATTCTGACTTTCTTCATAATGTGATCTCCTCACCTCCAGATTTCCCTTCTGCTCAATAGAACTAGGAGGAAGGAGAGGGAGCTTAACATTTCCCTTCTCTCAGACCCTTAGCTCCAAGGCAATCATCCTGAGACATTTTGCTACGCCATCTGCATCTGTCACAAGTTGAGTTCGGAGAACTCAGCTTGAGACACATCTCTTGTAACAGAAACTTCACTTGGCCCTTTCTTCTCTTATGGTAAAGAACAAAGACATACGCATTTGGGTAGTATT)
+   Minimum fraction pure bases =  0.21      @ chr19:7765775-7766151 (GCTGAAGGCTGCAGTGGGTGAGTTGCCAGAGAAATCCAAGCTGCAGGAGATCTACCAGGAGCTGACCCG)
+   Minimum fraction pure repeats =  0.00    @ chr22:37723760-37724957 (CCAGAACATCCTGTGCCCAGCGGGACAATCCCAGAGCCTCCTCTCCCAATAGAGCCACACGAGACAACC)
+
+          chrX:          0 out of        118 (  0.0%) repeat intervals
+          chrY:          0 out of        118 (  0.0%) repeat intervals
+          chrM:          0 out of        118 (  0.0%) repeat intervals
+   alt contigs:          0 out of        118 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:          0 out of        118 (  0.0%) repeat intervals
+          2bp:          0 out of        118 (  0.0%) repeat intervals
+          3bp:          1 out of        118 (  0.8%) repeat intervals
+          4bp:          0 out of        118 (  0.0%) repeat intervals
+          5bp:          0 out of        118 (  0.0%) repeat intervals
+          6bp:          0 out of        118 (  0.0%) repeat intervals
+       7-24bp:         39 out of        118 ( 33.1%) repeat intervals
+        25+bp:         78 out of        118 ( 66.1%) repeat intervals
+
+Num repeats in reference:
+           1x:          0 out of        118 (  0.0%) repeat intervals
+           2x:          2 out of        118 (  1.7%) repeat intervals
+           3x:         32 out of        118 ( 27.1%) repeat intervals
+           4x:         19 out of        118 ( 16.1%) repeat intervals
+           5x:         12 out of        118 ( 10.2%) repeat intervals
+           6x:          6 out of        118 (  5.1%) repeat intervals
+           7x:          6 out of        118 (  5.1%) repeat intervals
+           8x:          5 out of        118 (  4.2%) repeat intervals
+           9x:          2 out of        118 (  1.7%) repeat intervals
+       10-15x:          8 out of        118 (  6.8%) repeat intervals
+       16-25x:         15 out of        118 ( 12.7%) repeat intervals
+       26-35x:          3 out of        118 (  2.5%) repeat intervals
+       36-50x:          2 out of        118 (  1.7%) repeat intervals
+         51+x:          6 out of        118 (  5.1%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:         59 out of        118 ( 50.0%) repeat intervals
+          0.1:          7 out of        118 (  5.9%) repeat intervals
+          0.2:          8 out of        118 (  6.8%) repeat intervals
+          0.3:         14 out of        118 ( 11.9%) repeat intervals
+          0.4:          3 out of        118 (  2.5%) repeat intervals
+          0.5:          6 out of        118 (  5.1%) repeat intervals
+          0.6:          9 out of        118 (  7.6%) repeat intervals
+          0.7:          2 out of        118 (  1.7%) repeat intervals
+          0.8:          3 out of        118 (  2.5%) repeat intervals
+          0.9:          0 out of        118 (  0.0%) repeat intervals
+          1.0:          7 out of        118 (  5.9%) repeat intervals
+Wrote 1 rows to mukamel_VNTR_catalog.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/vamos_catalog.v2.1.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/vamos_catalog.v2.1.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/vamos_catalog.v2.1.annotated.json.gz
+
+Stats for vamos_catalog.v2.1.annotated.json.gz:
+    1,243,954 total loci
+   94,952,055 base pairs spanned by all loci (3.075% of the genome)
+            0 out of  1,243,954 (  0.0%) loci define adjacent repeats
+    1,243,954 total repeat intervals
+      452,937 out of  1,243,954 ( 36.4%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+      200,283 out of  1,243,954 ( 16.1%) repeat intervals are homopolymers
+            0 out of  1,243,954 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+
+Ranges:
+   Motif size range: 1-667bp
+   Locus size range: 1-9977bp
+   Num repeats range: 0-7186x repeats
+
+   Maximum locus size =  9977bp             @ chr10:18563565-18573542 (ATTCC)
+   Minimum fraction pure bases =  0.00      @ chrY:57215630-57215892 (CGGCGCGCCTCTCTGCGCCTGCGCCGGCG)
+   Minimum fraction pure repeats =  0.00    @ chrY:57215630-57215892 (CGGCGCGCCTCTCTGCGCCTGCGCCGGCG)
+
+          chrX:     56,535 out of  1,243,954 (  4.5%) repeat intervals
+          chrY:     10,282 out of  1,243,954 (  0.8%) repeat intervals
+          chrM:          0 out of  1,243,954 (  0.0%) repeat intervals
+   alt contigs:          0 out of  1,243,954 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:    200,283 out of  1,243,954 ( 16.1%) repeat intervals
+          2bp:    219,819 out of  1,243,954 ( 17.7%) repeat intervals
+          3bp:     82,179 out of  1,243,954 (  6.6%) repeat intervals
+          4bp:    172,790 out of  1,243,954 ( 13.9%) repeat intervals
+          5bp:     95,968 out of  1,243,954 (  7.7%) repeat intervals
+          6bp:     87,357 out of  1,243,954 (  7.0%) repeat intervals
+       7-24bp:    275,758 out of  1,243,954 ( 22.2%) repeat intervals
+        25+bp:    109,800 out of  1,243,954 (  8.8%) repeat intervals
+
+Num repeats in reference:
+           1x:     58,497 out of  1,243,954 (  4.7%) repeat intervals
+           2x:    188,504 out of  1,243,954 ( 15.2%) repeat intervals
+           3x:     44,261 out of  1,243,954 (  3.6%) repeat intervals
+           4x:     30,702 out of  1,243,954 (  2.5%) repeat intervals
+           5x:     73,330 out of  1,243,954 (  5.9%) repeat intervals
+           6x:     78,951 out of  1,243,954 (  6.3%) repeat intervals
+           7x:     62,776 out of  1,243,954 (  5.0%) repeat intervals
+           8x:     52,995 out of  1,243,954 (  4.3%) repeat intervals
+           9x:     44,258 out of  1,243,954 (  3.6%) repeat intervals
+       10-15x:    169,652 out of  1,243,954 ( 13.6%) repeat intervals
+       16-25x:    214,728 out of  1,243,954 ( 17.3%) repeat intervals
+       26-35x:    110,428 out of  1,243,954 (  8.9%) repeat intervals
+       36-50x:     58,004 out of  1,243,954 (  4.7%) repeat intervals
+         51+x:     55,568 out of  1,243,954 (  4.5%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:     39,816 out of  1,243,954 (  3.2%) repeat intervals
+          0.1:     63,659 out of  1,243,954 (  5.1%) repeat intervals
+          0.2:     90,712 out of  1,243,954 (  7.3%) repeat intervals
+          0.3:     89,903 out of  1,243,954 (  7.2%) repeat intervals
+          0.4:     72,993 out of  1,243,954 (  5.9%) repeat intervals
+          0.5:    238,418 out of  1,243,954 ( 19.2%) repeat intervals
+          0.6:     97,908 out of  1,243,954 (  7.9%) repeat intervals
+          0.7:     73,126 out of  1,243,954 (  5.9%) repeat intervals
+          0.8:    113,944 out of  1,243,954 (  9.2%) repeat intervals
+          0.9:     82,639 out of  1,243,954 (  6.6%) repeat intervals
+          1.0:    280,836 out of  1,243,954 ( 22.6%) repeat intervals
+Wrote 1 rows to vamos_catalog.v2.1.annotated.catalog_stats.tsv
+Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.annotated.catalog_stats.tsv
+----------------------------------------------------------------------------------------------------
+python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.annotated.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.annotated.json.gz
+
+Stats for variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.annotated.json.gz:
+           63 total loci
+        3,204 base pairs spanned by all loci (0.000% of the genome)
+            0 out of         63 (  0.0%) loci define adjacent repeats
+           63 total repeat intervals
+           62 out of         63 ( 98.4%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+            0 out of         63 (  0.0%) repeat intervals are homopolymers
+            0 out of         63 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+           11 out of         63 ( 17.5%) repeat intervals have non-ACGT motifs
+
+Ranges:
+   Motif size range: 3-24bp
+   Locus size range: 15-150bp
+   Num repeats range: 2-50x repeats
+
+   Maximum locus size =   150bp             @ chr13:102161574-102161724 (AAG)
+   Minimum fraction pure bases =  0.59      @ chr8:118366812-118366918 (AAAAT)
+   Minimum fraction pure repeats =  0.00    @ chr13:99985448-99985493 (GCN)
+
+          chrX:          7 out of         63 ( 11.1%) repeat intervals
+          chrY:          0 out of         63 (  0.0%) repeat intervals
+          chrM:          0 out of         63 (  0.0%) repeat intervals
+   alt contigs:          0 out of         63 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:          0 out of         63 (  0.0%) repeat intervals
+          2bp:          0 out of         63 (  0.0%) repeat intervals
+          3bp:         46 out of         63 ( 73.0%) repeat intervals
+          4bp:          1 out of         63 (  1.6%) repeat intervals
+          5bp:         10 out of         63 ( 15.9%) repeat intervals
+          6bp:          2 out of         63 (  3.2%) repeat intervals
+       7-24bp:          4 out of         63 (  6.3%) repeat intervals
+        25+bp:          0 out of         63 (  0.0%) repeat intervals
+
+Num repeats in reference:
+           1x:          0 out of         63 (  0.0%) repeat intervals
+           2x:          1 out of         63 (  1.6%) repeat intervals
+           3x:          2 out of         63 (  3.2%) repeat intervals
+           4x:          3 out of         63 (  4.8%) repeat intervals
+           5x:          2 out of         63 (  3.2%) repeat intervals
+           6x:          2 out of         63 (  3.2%) repeat intervals
+           7x:          4 out of         63 (  6.3%) repeat intervals
+           8x:          1 out of         63 (  1.6%) repeat intervals
+           9x:          1 out of         63 (  1.6%) repeat intervals
+       10-15x:         26 out of         63 ( 41.3%) repeat intervals
+       16-25x:         17 out of         63 ( 27.0%) repeat intervals
+       26-35x:          2 out of         63 (  3.2%) repeat intervals
+       36-50x:          2 out of         63 (  3.2%) repeat intervals
+         51+x:          0 out of         63 (  0.0%) repeat intervals
+
+Fraction pure bases distribution:
+          0.0:         11 out of         63 ( 17.5%) repeat intervals
+          0.1:          0 out of         63 (  0.0%) repeat intervals
+          0.2:          0 out of         63 (  0.0%) repeat intervals
+          0.3:          0 out of         63 (  0.0%) repeat intervals
+          0.4:          0 out of         63 (  0.0%) repeat intervals
+          0.5:          1 out of         63 (  1.6%) repeat intervals
+          0.6:          0 out of         63 (  0.0%) repeat intervals
+          0.7:          1 out of         63 (  1.6%) repeat intervals
+          0.8:          6 out of         63 (  9.5%) repeat intervals
+          0.9:          8 out of         63 ( 12.7%) repeat intervals
+          1.0:         36 out of         63 ( 57.1%) repeat intervals
+Wrote 1 rows to variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.annotated.catalog_stats.tsv
+Combining stats from all 13 catalogs
+Sorting 13 rows
+Done with comparisons. Took 1h, 36m, 41s
