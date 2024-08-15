@@ -18,9 +18,10 @@ fi
 parser = argparse.ArgumentParser()
 parser.add_argument("--hg38-reference-fasta", default="hg38.fa", help="Path of hg38 reference genome FASTA file")
 parser.add_argument("--gencode-gtf", default="gencode.v46.basic.annotation.gtf.gz", help="Gene annotations GTF file")
-parser.add_argument("--variation-clusters-bed", default="vcs_merged.bed.gz", help="Variation clusters file shared by Egor Dolzhenko")
-parser.add_argument("--skip-variation-cluster-annotations", action="store_true", help="Skip adding variation cluster annotations to the catalog")
 parser.add_argument("--output-prefix", default="simple_repeat_catalog_v1.hg38")
+parser.add_argument("--skip-variation-cluster-annotations", action="store_true", help="Skip adding variation cluster annotations to the catalog")
+parser.add_argument("--variation-clusters-bed", default="vcs_merged.bed.gz", help="Variation clusters file shared by Egor Dolzhenko")
+parser.add_argument("--variation-clusters-output-prefix", default="variation_clusters_v1.hg38")
 parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
 
 args = parser.parse_args()
@@ -124,12 +125,12 @@ run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
 
 run(f"python3 -m str_analysis.compute_catalog_stats --verbose {primary_disease_associated_loci_path}")
 
-for motif_size_label, min_motif_size, max_motif_size in [
-	("1_to_1000bp",  1, 1000),
-	("2_to_1000bp",  2, 1000),
-	("homopolymers", 1, 1),
-	("2_to_6bp",     2, 6),
-	("7_to_1000bp",  7, 1000)
+for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
+	("1_to_1000bp_motifs",  1, 1000, None),
+	("2_to_1000bp_motifs",  2, 1000, f"{args.output_prefix}.subset.all_loci_except_homopolymers.tar.gz"),
+	("homopolymers",        1, 1,    f"{args.output_prefix}.subset.only_homopolymer_loci.tar.gz"),
+	("2_to_6bp_motifs",     2, 6,    f"{args.output_prefix}.subset.only_loci_with_2_to_6bp_motifs.tar.gz"),
+	("7_to_1000bp_motifs",  7, 1000, f"{args.output_prefix}.subset.only_loci_with_7_to_1000bp_motifs.tar.gz"),
 ]:
 	print("="*200)
 	chdir(working_dir)
@@ -223,14 +224,32 @@ for motif_size_label, min_motif_size, max_motif_size in [
 	#		run(f"grep $'\t{end_coord}$'  {output_prefix}.TRGT.bed")
 
 	# STEP #4: copy files to the release_draft folder and compute catalog stats
-	for path in (f"{output_prefix}.bed.gz",
-				 f"{output_prefix}.bed.gz.tbi",
-				 f"{output_prefix}.merged_and_annotated.json.gz",
-				 f"{output_prefix}.TRGT.bed",
-				 f"{output_prefix}.LongTR.bed",
-				 f"{output_prefix}.HipSTR.bed",
-				 f"{output_prefix}.GangSTR.bed"):
-		run(f"cp {path} {release_draft_folder}")
+	release_files = [
+		f"{output_prefix}.bed.gz",
+		f"{output_prefix}.bed.gz.tbi",
+		f"{output_prefix}.merged_and_annotated.json.gz",
+		f"{output_prefix}.TRGT.bed",
+		f"{output_prefix}.LongTR.bed",
+		f"{output_prefix}.HipSTR.bed",
+		f"{output_prefix}.GangSTR.bed",
+	]
+
+	if release_tar_gz_path is None:
+		for path in release_files:
+			if path.endswith(".bed"):
+				run(f"bgzip {path}")
+				run(f"cp {path}.gz {release_draft_folder}")
+			else:
+				run(f"cp {path} {release_draft_folder}")
+
+	else:
+		run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in release_files]))
+		run(f"cp {release_tar_gz_path} {release_draft_folder}")
+
+	variation_clusters_release_filename = f"{args.variation_clusters_output_prefix}.TRGT.bed" + (
+		".gz" if args.variation_clusters_bed.endswith("gz") else "")
+	run(f"cp {args.variation_clusters_bed} {os.path.join(release_draft_folder, variation_clusters_release_filename)}")
+
 
 	run(f"python3 -m str_analysis.compute_catalog_stats --verbose {output_prefix}.merged_and_annotated.json.gz")
 
@@ -238,7 +257,7 @@ for motif_size_label, min_motif_size, max_motif_size in [
 	diff = time.time() - start_time
 	print(f"Done generating {output_prefix} catalog. Took {diff//3600:.0f}h, {(diff%3600)//60:.0f}m, {diff%60:.0f}s")
 
-	if motif_size_label != "1_to_1000bp":
+	if motif_size_label != "1_to_1000bp_motifs":
 		continue
 
 	# compare to the GangSTR_v17 catalog to make sure it's included
