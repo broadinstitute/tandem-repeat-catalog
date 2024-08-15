@@ -1,4 +1,5 @@
 # Creating a series of bar plots, one for each row in the table
+import argarpse
 import matplotlib.pyplot as plt
 import os
 import pandas as pd
@@ -24,7 +25,7 @@ pprint(list(df.columns))
 
 columns_of_interest = []
 column_name_map = {}
-for label in list(range(0, 21)) + ["21-25", "26-30", "31-35", "36-50", "51+"]:
+for label in list(range(1, 25)) + ["25-50", "51+"]:
     new_column_name = f"{label}x"
     column_name_map[f"motif_sizes_per_locus_size:{label}x"] = new_column_name
     columns_of_interest.append(new_column_name)
@@ -70,7 +71,6 @@ for idx_i in range(grid_rows):
         axes.set_ylabel("% of loci", fontsize=15)
         axes.set_xlabel(" ", fontsize=15)
         axes.grid(axis="y", linestyle="-", linewidth=0.5, color="lightgray")
-        axes.set_ylim(0, 70)
 
         # add second y axis with repeat counts
         #ax2 = axes.twinx()
@@ -80,6 +80,10 @@ for idx_i in range(grid_rows):
         # add y padding to the plot title
         axes.title.set_position([.5, 1.05])
 
+        axes.tick_params(axis="x", labelsize=14, rotation=0, length=0)  # No x-axis tick marks
+        axes.tick_params(axis="y", labelsize=14, length=0)
+
+        axes.set_ylim(0, 70)
 
         # add label to each bar
         largest_5_values = set(list(sorted(row_values_seaborn_i["Count"]))[-5:])
@@ -93,8 +97,6 @@ for idx_i in range(grid_rows):
                              textcoords="offset points", rotation=90)
 
         axes.set_yticks(range(0, 71, 10))
-        axes.tick_params(axis="x", labelsize=14, rotation=0, length=0)  # No x-axis tick marks
-        axes.tick_params(axis="y", labelsize=14, length=0)
         # rotate x-axis labels by 90 degrees
         axes.set_xticklabels(axes.get_xticklabels(), rotation=90)
 
@@ -105,9 +107,9 @@ for idx_i in range(grid_rows):
 plt.tight_layout()
 
 # save the image
-output_path = f"variant_catalog_stats.{len(df)}_catalogs.locus_sizes.png"
+output_path = f"variant_catalog_stats.{len(df)}_catalogs.{grid_rows}x{grid_columns}.locus_sizes.png"
 print(f"Saving plot to {output_path}")
-plt.savefig(output_path, dpi=300)
+plt.savefig(output_path) #, dpi=300)
 
 #plt.show()
 print("Done")
