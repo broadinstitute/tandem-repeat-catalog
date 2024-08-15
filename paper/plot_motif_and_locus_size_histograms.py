@@ -9,15 +9,14 @@ import seaborn as sns
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--stats-table-path", default="compare_catalogs/combined_catalog_stats.all_13_catalogs.tsv")
-
-    parser.add_argument("--skip-motif-size-plots", action="store_true", help="Skip plotting motif size histograms")
-    parser.add_argument("--skip-locus-size-plots", action="store_true", help="Skip plotting locus size histograms")
-    parser.add_argument("--only-plot-motif-size", action="store_true", help="Only plot motif size histograms")
-    parser.add_argument("--only-plot-locus-size", action="store_true", help="Only plot locus size histograms")
-
     parser.add_argument("--grid-width", type=int, default=3, help="Number of columns in the trellis grid")
     parser.add_argument("--grid-height", type=int, default=4, help="Number of rows in the trellis grid")
-
+    g1 = parser.add_mutually_exclusive_group()
+    g1.add_argument("--skip-motif-size-plots", action="store_true", help="Skip plotting motif size histograms")
+    g1.add_argument("--only-plot-motif-size", action="store_true", help="Only plot motif size histograms")
+    g2 = parser.add_mutually_exclusive_group()
+    g2.add_argument("--skip-locus-size-plots", action="store_true", help="Skip plotting locus size histograms")
+    g2.add_argument("--only-plot-locus-size", action="store_true", help="Only plot locus size histograms")
     args = parser.parse_args()
 
     catalog_stats_table_path = args.stats_table_path
@@ -41,8 +40,14 @@ def main():
     print(f"Parsed {len(df)} catalogs from {catalog_stats_table_path}")
 
     #pprint(list(df.columns))
+    histogram_types = []
+    if not args.skip_motif_size_plots and not args.only_plot_locus_size:
+        histogram_types.append("motif_sizes")
+    if not args.skip_locus_size_plots and not args.only_plot_motif_size:
+        histogram_types.append("locus_sizes")
+
     output_paths = []
-    for histogram_type in "motif_sizes", "locus_sizes":
+    for histogram_type in histogram_types:
         output_path = create_plot(histogram_type, df, args)
         output_paths.append(output_path)
 
