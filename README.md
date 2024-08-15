@@ -12,7 +12,7 @@ It includes filenames that start with `simple_repeat_catalog_v1.hg38` and have t
 <br />
 <table>
 <tr><td><b>File suffix</b></td><td><b>Description</b></td></tr>
-<tr><td>.merged_and_annotated.json.gz</td><td>For use with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a>. It includes all annotations as extra fields which ExpansionHunter ignores.</td></tr>
+<tr><td>.merged_and_annotated.json.gz</td><td>For use with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a>. It includes all annotations as extra fields that are ignored by ExpansionHunter.</td></tr>
 <tr><td>.bed.gz</td><td>Sorted and indexed BED file for IGV</td></tr>
 <tr><td>.TRGT.bed</td><td>For use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
 <tr><td>.LongTR.bed</td><td>For use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
