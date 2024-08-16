@@ -170,9 +170,14 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 		print(f"Stats for {catalog_path}")
 		run(f"python3 -m str_analysis.compute_catalog_stats --verbose {filtered_catalog_path}")
 
+	# NOTE: we don't use the --merge-adjacent-loci-with-same-motif  option for str_analysis.merge_loci because
+	# it's important to presenve locus definitions as they appear in the individual source catalogs. If loci
+	# are merged together, this can create incompatibility with loci in source catalogs (ie. the illumina catalog) or
+	# between future versions of the overall Simple Repeat Catalog since newly-added loci could merge with previously
+	# added loci, causing loss of those loci from new vesions of the catalog. Variation cluster analysis is a better
+	# way to merge adjacent loci where needed.
 	catalog_paths = " ".join([filtered_source_catalog_paths[catalog_name] for catalog_name, _ in source_catalogs_in_order])
 	run(f"""python3 -u -m str_analysis.merge_loci \
-		--merge-adjacent-loci-with-same-motif \
 		--add-source-field \
 		--output-format JSON \
 		--write-bed-files-with-new-loci \
