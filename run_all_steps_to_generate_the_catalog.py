@@ -152,8 +152,8 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 		filtered_catalog_path = os.path.abspath(os.path.basename(filtered_catalog_path))
 		filtered_source_catalog_paths[catalog_name] = filtered_catalog_path
 
-		if not os.path.isfile(filtered_catalog_path):
-			run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
+
+		run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
 				--verbose \
 				--reference-fasta {args.hg38_reference_fasta} \
 				--min-motif-size {min_motif_size} \
@@ -200,9 +200,13 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 	mv temp.json.gz {output_prefix}.merged_and_annotated.json.gz""")
 
 	if args.variation_clusters_bed and motif_size_label != "homopolymers":
+		variation_clusters_release_filename = f"{args.variation_clusters_output_prefix}.TRGT.bed" + (
+			".gz" if args.variation_clusters_bed.endswith("gz") else "")
 		run(f"""python3 {base_dir}/scripts/add_variation_cluster_annotations_to_catalog.py \
 			--verbose \
-			--output-json-path {output_prefix}.merged_and_annotated.with_variation_clusters.json.gz \
+			--output-catalog-json-path {output_prefix}.merged_and_annotated.with_variation_clusters.json.gz \
+			--known-pathogenic-loci-json-path {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']} \
+			--output-variation-clusters-bed-path {variation_clusters_release_filename} \
 			{args.variation_clusters_bed} \
 			{output_prefix}.merged_and_annotated.json.gz""")
 
@@ -246,10 +250,8 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 		run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in release_files]))
 		run(f"cp {release_tar_gz_path} {release_draft_folder}")
 
-	variation_clusters_release_filename = f"{args.variation_clusters_output_prefix}.TRGT.bed" + (
-		".gz" if args.variation_clusters_bed.endswith("gz") else "")
-	run(f"cp {args.variation_clusters_bed} {os.path.join(release_draft_folder, variation_clusters_release_filename)}")
-
+	#if args.variation_clusters_bed:
+	#	run(f"cp {variation_clusters_release_filename} {os.path.join(release_draft_folder, variation_clusters_release_filename)}")
 
 	run(f"python3 -m str_analysis.compute_catalog_stats --verbose {output_prefix}.merged_and_annotated.json.gz")
 
