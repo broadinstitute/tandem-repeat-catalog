@@ -9,6 +9,7 @@ results*
 nohup.out
 paper/compare_catalogs
 paper/*.png
+paper/*.svg
 
 
 # Byte-compiled / optimized / DLL files

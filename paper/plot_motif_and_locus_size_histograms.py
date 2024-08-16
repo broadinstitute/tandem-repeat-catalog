@@ -48,18 +48,18 @@ def main():
 
     output_paths = []
     for histogram_type in histogram_types:
-        output_path = create_plot(histogram_type, df, args)
-        output_paths.append(output_path)
+        output_paths.extend(
+            create_plot(histogram_type, df, args))
 
-    print("Done generating", " and ".join(output_paths))
+    print("Done generating", ", ".join(output_paths))
 
 
 def create_plot(histogram_type, df, args):
     grid_rows = args.grid_height
     grid_columns = args.grid_width
 
-    output_path = f"variant_catalog_stats.{len(df)}_catalogs.{grid_rows}x{grid_columns}.{histogram_type}.png"
-    print(f"Generating plots for {output_path}")
+    output_path_prefix = f"variant_catalog_stats.{len(df)}_catalogs.{grid_rows}x{grid_columns}.{histogram_type}"
+    print(f"Generating plots for {output_path_prefix}")
     columns_of_interest = []
     column_name_map = {}
     if histogram_type == "motif_sizes":
@@ -159,10 +159,14 @@ def create_plot(histogram_type, df, args):
 
     plt.tight_layout()
 
-    print(f"Saving plot to {output_path}")
-    plt.savefig(output_path)  # , dpi=300)
+    output_paths = []
+    for suffix in "png", "svg":
+        output_path = f"{output_path_prefix}.{suffix}"
+        print(f"Saving plot to {output_path}")
+        plt.savefig(output_path)  # , dpi=300)
+        output_paths.append(output_path)
 
-    return output_path
+    return output_paths
 
 
 if __name__ == "__main__":
