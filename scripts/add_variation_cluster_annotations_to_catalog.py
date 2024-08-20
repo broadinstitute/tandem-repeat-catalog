@@ -9,7 +9,7 @@ import tqdm
 
 from str_analysis.utils.misc_utils import parse_interval
 
-ALMOST_NO_CHANGE_TO_BOUNDARIES_THRESHOLD = 1
+MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD = 5
 
 def main():
 	parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -34,7 +34,8 @@ def main():
 	if not os.path.isfile(args.known_pathogenic_loci_json_path):
 		parser.error(f"File not found: {args.known_pathogenic_loci_json_path}")
 
-	with open(args.known_pathogenic_loci_json_path, "rt") as f:
+	fopen = gzip.open if args.catalog_json_path.endswith("gz") else open
+	with fopen(args.known_pathogenic_loci_json_path, "rt") as f:
 		known_pathogenic_loci = json.load(f)
 		known_pathogenic_reference_regions_lookup = {}
 		for locus in known_pathogenic_loci:
@@ -99,7 +100,7 @@ def main():
 				if size_diff < 0:
 					print(f"WARNING: {locus_id} variation cluster {region} is smaller than the original locus {region2}")
 
-				if abs(size_diff) <= ALMOST_NO_CHANGE_TO_BOUNDARIES_THRESHOLD:
+				if abs(size_diff) < MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD:
 					almost_no_change_to_boundaries += 1
 				else:
 					variation_cluster_differs_from_simple_repeat = True
@@ -119,7 +120,7 @@ def main():
 		print(f"Found {almost_no_change_to_boundaries:,d} out of {input_variation_clusters_counter:,d} "
 			  f"({almost_no_change_to_boundaries/input_variation_clusters_counter:.1%}) "
 			  f"variation clusters did not change the original locus boundaries "
-			  f"by more than {ALMOST_NO_CHANGE_TO_BOUNDARIES_THRESHOLD} bases")
+			  f"by {MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD} bases or more")
 		print(f"Wrote {output_variation_clusters_counter:,d} out of {input_variation_clusters_counter:,d} "
 			  f"({output_variation_clusters_counter/input_variation_clusters_counter:.1%}) variation clusters "
 			  f"to {args.output_variation_clusters_bed_path}")
