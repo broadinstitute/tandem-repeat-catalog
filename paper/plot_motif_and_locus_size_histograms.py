@@ -70,7 +70,7 @@ def create_plot(histogram_type, df, args):
     elif histogram_type == "locus_sizes":
         for label in list(range(1, 25)) + ["25-50", "51+"]:
             new_column_name = f"{label}x"
-            column_name_map[f"motif_sizes_per_locus_size:{label}x"] = new_column_name
+            column_name_map[f"num_repeats_per_locus:{label}x"] = new_column_name
             columns_of_interest.append(new_column_name)
     else:
         raise ValueError(f"Invalid histogram_type: {histogram_type}")
