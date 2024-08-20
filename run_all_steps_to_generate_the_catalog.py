@@ -11,7 +11,7 @@ import time
 os.system("""
 if ! python3 -m pip show str-analysis &> /dev/null
 then
-    python3 -m pip install --upgrade git+https://github.com/broadinstitute/str-analysis.git
+	python3 -m pip install --upgrade git+https://github.com/broadinstitute/str-analysis.git
 fi
 """)
 
@@ -201,20 +201,17 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 		{output_prefix}.merged.json.gz""")
 
 	# create a version of the ExpansionHunter catalog without extra annotations
-	run(f"""python3 <<< EOF
-import gzip
-import ijson
+	run(f"""python3 << EOF
+import gzip, ijson, json
 
-with gzip.open("{annotated_catalog_path}", "rt") as f, \
-		gzip.open("{output_prefix}.EH.json.gz", "wt") as out:
-	out.write("[")
-	for record in ijson.items(f, "item"):
-		output_record = {{}}
-		for key in record:
-			if key in {{"LocusId", "ReferenceRegion", "VariantType", "LocusStructure"}}:
-				output_record[key] = record[key]
-		out.write(json.dumps(output_record, indent=4))
-	out.write("]")
+f = gzip.open("{annotated_catalog_path}", "rt")
+out = gzip.open("{output_prefix}.EH.json.gz", "wt")
+out.write("[")
+for record in ijson.items(f, "item", use_float=True): 
+	out.write(json.dumps({{ 
+		k: v for k, v in record.items() if k not in {{"LocusId", "ReferenceRegion", "VariantType", "LocusStructure"}} 
+	}}, indent=4))
+out.write("]")
 EOF
 """)
 
@@ -250,7 +247,7 @@ EOF
 	run(f"trgt validate --genome {args.hg38_reference_fasta}  --repeats {output_prefix}.TRGT.bed")
 
 	# Perform basic internal consistency checks on the JSON catalog
-	run(f"python3 {base_dir}/scripts/validate_catalogs.py --known-pathogenic-loci-json-path {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']} {annotated_catalog_path}")
+	run(f"python3 {base_dir}/scripts/validate_catalog.py --known-pathogenic-loci-json-path {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']} {annotated_catalog_path}")
 
 	# STEP #4: copy files to the release_draft folder and compute catalog stats
 	release_files = [
