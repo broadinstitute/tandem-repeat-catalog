@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import gzip
 import json
 import os
 import re
@@ -75,7 +76,7 @@ source_catalogs_in_order = [
 	("KNOWN_DISEASE_ASSOCIATED_LOCI", "https://raw.githubusercontent.com/broadinstitute/str-analysis/main/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json"),
 	("ILLUMINA_CATALOG", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz"),
 	("ALL_PERFECT_REPEATS_CATALOG", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz"),
-	("TRUTH_SET_CATALOG", "https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/combined.51_samples.positive_loci.json")
+	("TRUTH_SET_CATALOG", "https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/merged_expansion_hunter_catalog.78_samples.json.gz")
 ]
 
 
@@ -90,10 +91,12 @@ run(f"python3 -m str_analysis.split_adjacent_loci_in_expansion_hunter_catalog {s
 source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI'] = source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI'].replace(".json", ".split.json")
 # change motif definition for the RFC1 locus from AARRG => AAAAG since our catalog doesn't currently support IUPAC codes
 run(f"sed -i 's/AARRG/AAAAG/g' {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']}")
+run(f"gzip -f {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']}")
 
+source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI'] += ".gz"
 
 # compute stats for primary disease-associated loci
-with open(source_catalog_paths["KNOWN_DISEASE_ASSOCIATED_LOCI"]) as f:
+with gzip.open(source_catalog_paths["KNOWN_DISEASE_ASSOCIATED_LOCI"]) as f:
 	known_disease_associated_loci = json.load(f)
 
 primary_disease_associated_loci = [
@@ -106,9 +109,9 @@ primary_disease_associated_loci = [
 assert len(primary_disease_associated_loci) == 63
 
 primary_disease_associated_loci_path = source_catalog_paths["KNOWN_DISEASE_ASSOCIATED_LOCI"].replace(
-	".json", ".primary_disease_associated_loci.json")
+	".json.gz", ".primary_disease_associated_loci.json.gz")
 
-with open(primary_disease_associated_loci_path, "wt") as f:
+with gzip.open(primary_disease_associated_loci_path, "wt") as f:
 	json.dump(primary_disease_associated_loci, f, indent=4)
 
 run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
@@ -142,8 +145,8 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 	filtered_source_catalog_paths = {}
 	for catalog_name, _ in source_catalogs_in_order:
 		catalog_path = source_catalog_paths[catalog_name]
-		if catalog_path.endswith(".json") or catalog_path.endswith(".json.gz"):
-			filtered_catalog_path = catalog_path.replace(".json", ".filtered.json.gz")
+		if catalog_path.endswith(".json.gz"):
+			filtered_catalog_path = catalog_path.replace(".json.gz", ".filtered.json.gz")
 		elif catalog_path.endswith(".bed.gz"):
 			filtered_catalog_path = catalog_path.replace(".bed.gz", ".filtered.json.gz")
 		else:
@@ -151,7 +154,6 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 
 		filtered_catalog_path = os.path.abspath(os.path.basename(filtered_catalog_path))
 		filtered_source_catalog_paths[catalog_name] = filtered_catalog_path
-
 
 		run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
 				--verbose \
@@ -180,10 +182,13 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 	run(f"""python3 -u -m str_analysis.merge_loci \
 		--add-source-field \
 		--output-format JSON \
+		--overlapping-loci-action keep-first \
+		--write-merge-stats-tsv \
 		--write-bed-files-with-new-loci \
 		--output-prefix {output_prefix}.merged \
 		{catalog_paths}""")
 
+	annotated_catalog_path = f"{output_prefix}.EH.with_annotations.json.gz"
 	run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
 		--reference-fasta {args.hg38_reference_fasta} \
 		--genes-gtf {args.gencode_gtf} \
@@ -192,51 +197,67 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 		--max-motif-size {max_motif_size} \
 		--min-interval-size-bp 1 \
 		--discard-overlapping-intervals-with-similar-motifs \
-		--output-path {output_prefix}.merged_and_annotated.json.gz \
+		--output-path {annotated_catalog_path} \
 		{output_prefix}.merged.json.gz""")
 
+	# create a version of the ExpansionHunter catalog without extra annotations
+	run(f"""python3 <<< EOF
+import gzip
+import ijson
+
+with gzip.open("{annotated_catalog_path}", "rt") as f, \
+		gzip.open("{output_prefix}.EH.json.gz", "wt") as out:
+	out.write("[")
+	for record in ijson.items(f, "item"):
+		output_record = {{}}
+		for key in record:
+			if key in {{"LocusId", "ReferenceRegion", "VariantType", "LocusStructure"}}:
+				output_record[key] = record[key]
+		out.write(json.dumps(output_record, indent=4))
+	out.write("]")
+EOF
+""")
 
 	# Replace "Source" field filenames with more user-friendly source names
-	run(f"""cp {output_prefix}.merged_and_annotated.json.gz  temp.json.gz
+	run(f"""cp {annotated_catalog_path}  temp.json.gz
 	gunzip -c temp.json.gz | sed 's/{os.path.basename(filtered_source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI'])}/known disease-associated loci/' | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
 	gunzip -c temp.json.gz | sed 's/{os.path.basename(filtered_source_catalog_paths['ILLUMINA_CATALOG'])}/Illumina catalog of 174k polymorphic loci/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
 	gunzip -c temp.json.gz | sed 's/{os.path.basename(filtered_source_catalog_paths['ALL_PERFECT_REPEATS_CATALOG'])}/perfect repeats in hg38/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
 	gunzip -c temp.json.gz | sed 's/{os.path.basename(filtered_source_catalog_paths['TRUTH_SET_CATALOG'])}/polymorphic TR loci in HPRC assemblies/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
-	mv temp.json.gz {output_prefix}.merged_and_annotated.json.gz""")
+	mv temp.json.gz {annotated_catalog_path}""")
 
 	if args.variation_clusters_bed and motif_size_label != "homopolymers":
 		variation_clusters_release_filename = f"{args.variation_clusters_output_prefix}.TRGT.bed" + (
 			".gz" if args.variation_clusters_bed.endswith("gz") else "")
 		run(f"""python3 {base_dir}/scripts/add_variation_cluster_annotations_to_catalog.py \
 			--verbose \
-			--output-catalog-json-path {output_prefix}.merged_and_annotated.with_variation_clusters.json.gz \
+			--output-catalog-json-path {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz \
 			--known-pathogenic-loci-json-path {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']} \
 			--output-variation-clusters-bed-path {variation_clusters_release_filename} \
 			{args.variation_clusters_bed} \
-			{output_prefix}.merged_and_annotated.json.gz""")
+			{annotated_catalog_path}""")
 
-		run(f"mv {output_prefix}.merged_and_annotated.with_variation_clusters.json.gz {output_prefix}.merged_and_annotated.json.gz")
+		run(f"mv {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz {annotated_catalog_path}")
 
 	# STEP #3: convert the catalog from ExpansionHunter catalog format to bed, TRGT, LongTR, HipSTR, and GangSTR formats
-	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_bed --split-adjacent-repeats {output_prefix}.merged_and_annotated.json.gz  --output-file {output_prefix}.bed.gz")
-	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_trgt_catalog --split-adjacent-repeats {output_prefix}.merged_and_annotated.json.gz  --output-file {output_prefix}.TRGT.bed")
-	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_longtr_format  {output_prefix}.merged_and_annotated.json.gz  --output-file {output_prefix}.LongTR.bed")
-	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_hipstr_format  {output_prefix}.merged_and_annotated.json.gz  --output-file {output_prefix}.HipSTR.bed")
-	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_gangstr_spec   {output_prefix}.merged_and_annotated.json.gz  --output-file {output_prefix}.GangSTR.bed")
+	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_bed --split-adjacent-repeats {annotated_catalog_path}  --output-file {output_prefix}.bed.gz")
+	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_trgt_catalog --split-adjacent-repeats {annotated_catalog_path}  --output-file {output_prefix}.TRGT.bed")
+	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_longtr_format  {annotated_catalog_path}  --output-file {output_prefix}.LongTR.bed")
+	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_hipstr_format  {annotated_catalog_path}  --output-file {output_prefix}.HipSTR.bed")
+	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_gangstr_spec   {annotated_catalog_path}  --output-file {output_prefix}.GangSTR.bed")
 
 	# Confirm that the TRGT catalog passes 'trgt validate'
 	run(f"trgt validate --genome {args.hg38_reference_fasta}  --repeats {output_prefix}.TRGT.bed")
 
-	# Spot-check several known disease-associated loci to make sure they made it into the final catalog
-	#if min_motif_size <= 3 and max_motif_size >= 24:
-	#	for end_coord in 3074933, 69037304, 39348479, 41746032, 80147139:    # HTT, FXN, RFC1, PHOX2B, EIF4A3
-	#		run(f"grep $'\t{end_coord}$'  {output_prefix}.TRGT.bed")
+	# Perform basic internal consistency checks on the JSON catalog
+	run(f"python3 {base_dir}/scripts/validate_catalogs.py --known-pathogenic-loci-json-path {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']} {annotated_catalog_path}")
 
 	# STEP #4: copy files to the release_draft folder and compute catalog stats
 	release_files = [
 		f"{output_prefix}.bed.gz",
 		f"{output_prefix}.bed.gz.tbi",
-		f"{output_prefix}.merged_and_annotated.json.gz",
+		f"{annotated_catalog_path}",
+		f"{output_prefix}.EH.json.gz",
 		f"{output_prefix}.TRGT.bed",
 		f"{output_prefix}.LongTR.bed",
 		f"{output_prefix}.HipSTR.bed",
@@ -246,7 +267,7 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 	if release_tar_gz_path is None:
 		for path in release_files:
 			if path.endswith(".bed"):
-				run(f"bgzip {path}")
+				run(f"bgzip -f {path}")
 				run(f"cp {path}.gz {release_draft_folder}")
 			else:
 				run(f"cp {path} {release_draft_folder}")
@@ -258,7 +279,7 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 	#if args.variation_clusters_bed:
 	#	run(f"cp {variation_clusters_release_filename} {os.path.join(release_draft_folder, variation_clusters_release_filename)}")
 
-	run(f"python3 -m str_analysis.compute_catalog_stats --verbose {output_prefix}.merged_and_annotated.json.gz")
+	run(f"python3 -m str_analysis.compute_catalog_stats --verbose {annotated_catalog_path}")
 
 	# report hours, minutes, seconds relative to start_time
 	diff = time.time() - start_time
@@ -270,6 +291,7 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 	# compare to the GangSTR_v17 catalog to make sure it's included
 	comparison_catalogs_in_order = [
 		("GangSTR_v17", "https://s3.amazonaws.com/gangstr/hg38/genomewide/hg38_ver17.bed.gz"),
+		("vamos_catalog_v2.1", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/vamos_catalog.v2.1.bed.gz"),
 	]
 
 	comparison_catalog_paths = {}
@@ -302,10 +324,14 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 		run(f"python3 -m str_analysis.compute_catalog_stats --verbose {filtered_comparison_catalog_path}")
 
 		run(f"""python3 -u -m str_analysis.merge_loci \
-			--verbose \
 			--output-prefix {catalog_name} \
+			--add-source-field \
+			--output-format JSON \
+			--overlapping-loci-action keep-first \
+			--verbose \
+			--write-merge-stats-tsv \
 			--write-bed-files-with-new-loci \
-			{output_prefix}.merged_and_annotated.json.gz \
+			{annotated_catalog_path} \
 			{filtered_comparison_catalog_path}""")
 
 	diff = time.time() - start_time
