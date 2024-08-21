@@ -11,6 +11,7 @@ import time
 parser = argparse.ArgumentParser()
 parser.add_argument("--hg38-reference-fasta", default="hg38.fa", help="Path of hg38 reference genome FASTA file")
 parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
+parser.add_argument("--force", action="store_true", help="Run annotation step even if the output files already exist")
 
 args = parser.parse_args()
 
@@ -137,11 +138,10 @@ if "comprehensive_catalog_from_Chiu_et_al" in catalog_paths:
 all_stats_tsv_paths = {}
 for catalog_name, path in catalog_paths.items():
 	annotated_catalog_path = re.sub("(.json|.bed)(.gz)?$", "", path) + ".annotated.json.gz"
-	if not os.path.isfile(annotated_catalog_path):
+	if not os.path.isfile(annotated_catalog_path) or args.force:
 		run(f"""python3 -m str_analysis.annotate_and_filter_str_catalog \
 			--reference-fasta {args.hg38_reference_fasta} \
 			--skip-gene-annotations \
-			--skip-mappability-annotations \
 			--skip-disease-loci-annotations \
 			--output-path {annotated_catalog_path} \
 			{path}""")

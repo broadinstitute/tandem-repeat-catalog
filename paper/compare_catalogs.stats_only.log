@@ -71,6 +71,18 @@ Fraction pure bases distribution:
           0.8:          8 out of         83 (  9.6%) repeat intervals
           0.9:          9 out of         83 ( 10.8%) repeat intervals
           1.0:         52 out of         83 ( 62.7%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:     25 bp to    25 bp  (median:   25 bp) based on     1 loci
+     2bp motifs: locus size range:     36 bp to    36 bp  (median:   36 bp) based on     1 loci
+     3bp motifs: locus size range:      6 bp to   150 bp  (median:   39 bp) based on    60 loci
+     4bp motifs: locus size range:     40 bp to    80 bp  (median:   60 bp) based on     2 loci
+     5bp motifs: locus size range:     35 bp to   106 bp  (median:   67 bp) based on    10 loci
+     6bp motifs: locus size range:     12 bp to    24 bp  (median:   18 bp) based on     4 loci
+    10bp motifs: locus size range:     20 bp to    20 bp  (median:   20 bp) based on     1 loci
+    12bp motifs: locus size range:     36 bp to    36 bp  (median:   36 bp) based on     1 loci
+    20bp motifs: locus size range:     80 bp to    80 bp  (median:   80 bp) based on     1 loci
+    24bp motifs: locus size range:     96 bp to    96 bp  (median:   96 bp) based on     1 loci
 Wrote 1 rows to variant_catalog_without_offtargets.GRCh38.split.annotated.catalog_stats.tsv
 Generating hg38.Chiu_et_al.v1.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -86,7 +98,7 @@ Stats for hg38.Chiu_et_al.v1.annotated.json.gz:
     6,482,414 out of 18,759,399 ( 34.6%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
             0 out of 18,759,399 (  0.0%) repeat intervals are homopolymers
     1,940,944 out of 18,759,399 ( 10.3%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chr17:20607665-20607787, chr5:35254500-35254506, chr8:66068470-66068526, chr12:103738325-103738344, chr18:68252081-68252145, chr13:32443791-32443797, chr4:127001789-127001822, chr9:87927466-87927509, chr4:156541925-156541932, chr18:40492793-40492816
+Examples of overlapping repeats: chr6:71742544-71742565, chr21:46097673-46097687, chr13:19893739-19893803, chr13:113786226-113786281, chr4:165373367-165373386, chr9:104673448-104673463, chr21:32586415-32586423, chr4:62757520-62757540, chr18:31588035-31588056, chr19:40101203-40101215
 
 Ranges:
    Motif size range: 2-100bp
@@ -140,6 +152,18 @@ Fraction pure bases distribution:
           0.8:    567,715 out of 18,759,399 (  3.0%) repeat intervals
           0.9:     62,154 out of 18,759,399 (  0.3%) repeat intervals
           1.0:  9,805,360 out of 18,759,399 ( 52.3%) repeat intervals
+
+Locus sizes at each motif size:
+     2bp motifs: locus size range:      2 bp to 54,354 bp  (median:    8 bp) based on 2,711,589 loci
+     3bp motifs: locus size range:      2 bp to 50,411 bp  (median:    9 bp) based on 2,994,904 loci
+     4bp motifs: locus size range:      2 bp to 25,731 bp  (median:   10 bp) based on 3,274,551 loci
+     5bp motifs: locus size range:      2 bp to 185,860 bp  (median:   12 bp) based on 2,206,466 loci
+     6bp motifs: locus size range:      2 bp to 3,968 bp  (median:   13 bp) based on 2,211,871 loci
+     7bp motifs: locus size range:      2 bp to 39,169 bp  (median:   17 bp) based on 1,134,877 loci
+     8bp motifs: locus size range:      2 bp to 4,405 bp  (median:   19 bp) based on 851,414 loci
+     9bp motifs: locus size range:      2 bp to 156,722 bp  (median:   19 bp) based on 883,813 loci
+    10bp motifs: locus size range:      2 bp to 69,068 bp  (median:   22 bp) based on 523,403 loci
+    11bp motifs: locus size range:      2 bp to 23,067 bp  (median:   24 bp) based on 372,546 loci
 Wrote 1 rows to hg38.Chiu_et_al.v1.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/popstr_catalog_v2.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -155,7 +179,7 @@ Stats for popstr_catalog_v2.annotated.json.gz:
     2,270,677 out of  5,401,401 ( 42.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
       822,329 out of  5,401,401 ( 15.2%) repeat intervals are homopolymers
        11,227 out of  5,401,401 (  0.2%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chr1:207510781-207510830, chr1:17708631-17708679, chr1:200528683-200528720, chr20:21263665-21263770, chr8:140206718-140206759, chr1:25733777-25733805, chr15:66130608-66130691, chr10:9217280-9217296, chr13:89947360-89947379, chr7:143883481-143883503
+Examples of overlapping repeats: chr8:15511267-15511297, chr5:58250027-58250065, chr7:44865460-44865483, chr12:45206007-45206032, chr12:112605373-112605404, chr14:94349840-94349867, chr10:116254508-116254533, chr4:24706370-24706413, chr10:119774490-119774506, chr4:143948271-143948290
 
 Ranges:
    Motif size range: 1-6bp
@@ -209,6 +233,14 @@ Fraction pure bases distribution:
           0.8:    258,605 out of  5,401,401 (  4.8%) repeat intervals
           0.9:    214,947 out of  5,401,401 (  4.0%) repeat intervals
           1.0:  4,283,784 out of  5,401,401 ( 79.3%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:     11 bp to   128 bp  (median:   17 bp) based on 822,329 loci
+     2bp motifs: locus size range:     11 bp to   137 bp  (median:   20 bp) based on 394,920 loci
+     3bp motifs: locus size range:     11 bp to   137 bp  (median:   14 bp) based on 322,170 loci
+     4bp motifs: locus size range:     11 bp to   137 bp  (median:   13 bp) based on 824,476 loci
+     5bp motifs: locus size range:     11 bp to   137 bp  (median:   11 bp) based on 1,404,172 loci
+     6bp motifs: locus size range:     12 bp to   137 bp  (median:   12 bp) based on 1,633,334 loci
 Wrote 1 rows to popstr_catalog_v2.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/illumina_variant_catalog.sorted.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -278,6 +310,18 @@ Fraction pure bases distribution:
           0.8:      4,113 out of    174,286 (  2.4%) repeat intervals
           0.9:      3,180 out of    174,286 (  1.8%) repeat intervals
           1.0:    166,401 out of    174,286 ( 95.5%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:      4 bp to    36 bp  (median:   22 bp) based on   365 loci
+     2bp motifs: locus size range:      4 bp to    82 bp  (median:   24 bp) based on 98,531 loci
+     3bp motifs: locus size range:      6 bp to   240 bp  (median:   27 bp) based on 14,442 loci
+     4bp motifs: locus size range:      8 bp to   532 bp  (median:   24 bp) based on 43,263 loci
+     5bp motifs: locus size range:     10 bp to   220 bp  (median:   25 bp) based on 12,551 loci
+     6bp motifs: locus size range:     12 bp to   106 bp  (median:   24 bp) based on 3,931 loci
+     7bp motifs: locus size range:     14 bp to    70 bp  (median:   14 bp) based on   630 loci
+     8bp motifs: locus size range:     16 bp to    72 bp  (median:   16 bp) based on   428 loci
+     9bp motifs: locus size range:     18 bp to    90 bp  (median:   27 bp) based on    34 loci
+    10bp motifs: locus size range:     20 bp to    60 bp  (median:   30 bp) based on    15 loci
 Wrote 1 rows to illumina_variant_catalog.sorted.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38_ver17.catalog.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -293,7 +337,7 @@ Stats for hg38_ver17.catalog.annotated.json.gz:
     1,340,266 out of  1,340,266 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
       488,668 out of  1,340,266 ( 36.5%) repeat intervals are homopolymers
            16 out of  1,340,266 (  0.0%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chr2:1489652-1489684, chr20:2652733-2652757, chr15:96831014-96831039, chr5:146878728-146878758, chr15:96831011-96831036, chr20:2652732-2652756, chr5:123775552-123775596, chr9:27573528-27573546, chr9:27573523-27573541, chr2:1489650-1489682
+Examples of overlapping repeats: chr7:84160225-84160277, chr5:146878728-146878758, chr15:96831011-96831036, chr5:123775555-123775599, chr9:27573523-27573541, chr5:146878727-146878757, chr5:123775552-123775596, chr20:2652732-2652756, chr2:1489652-1489684, chr2:1489650-1489682
 
 Ranges:
    Motif size range: 1-20bp
@@ -347,6 +391,18 @@ Fraction pure bases distribution:
           0.8:          1 out of  1,340,266 (  0.0%) repeat intervals
           0.9:          3 out of  1,340,266 (  0.0%) repeat intervals
           1.0:  1,340,262 out of  1,340,266 (100.0%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:     12 bp to    90 bp  (median:   16 bp) based on 488,668 loci
+     2bp motifs: locus size range:     10 bp to   496 bp  (median:   16 bp) based on 179,518 loci
+     3bp motifs: locus size range:     12 bp to   180 bp  (median:   12 bp) based on 150,463 loci
+     4bp motifs: locus size range:     12 bp to   332 bp  (median:   12 bp) based on 377,644 loci
+     5bp motifs: locus size range:     15 bp to   305 bp  (median:   15 bp) based on 106,135 loci
+     6bp motifs: locus size range:     18 bp to   372 bp  (median:   18 bp) based on 27,654 loci
+     7bp motifs: locus size range:     21 bp to   119 bp  (median:   21 bp) based on 5,708 loci
+     8bp motifs: locus size range:     24 bp to   144 bp  (median:   24 bp) based on 1,707 loci
+     9bp motifs: locus size range:     27 bp to   108 bp  (median:   27 bp) based on   760 loci
+    10bp motifs: locus size range:     30 bp to   110 bp  (median:   30 bp) based on   344 loci
 Wrote 1 rows to hg38_ver17.catalog.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38.hipstr_reference.catalog.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -363,7 +419,7 @@ Stats for hg38.hipstr_reference.catalog.annotated.json.gz:
       841,108 out of  1,638,945 ( 51.3%) repeat intervals are homopolymers
            18 out of  1,638,945 (  0.0%) repeat intervals overlap each other by at least two motif lengths
           860 out of  1,638,945 (  0.1%) repeat intervals have non-ACGT motifs
-Examples of overlapping repeats: chrY:12500447-12500495, chrY:25930350-25930427, chrY:23739648-23739733, chrY:25930445-25930494, chrY:25930531-25930559, chrY:23739582-23739630, chrY:12500447-12500516, chrY:23739648-23739732, chrY:23739516-23739544, chrY:23739516-23739528
+Examples of overlapping repeats: chrY:23739648-23739733, chrY:25930445-25930494, chrY:25930547-25930559, chrY:25930531-25930559, chrY:12500447-12500516, chrY:3772641-3772698, chrY:23739648-23739732, chrY:3772642-3772698, chrY:23739516-23739528, chrY:24294378-24294418
 
 Ranges:
    Motif size range: 1-6bp
@@ -417,6 +473,14 @@ Fraction pure bases distribution:
           0.8:    207,370 out of  1,638,945 ( 12.7%) repeat intervals
           0.9:    239,978 out of  1,638,945 ( 14.6%) repeat intervals
           1.0:    879,296 out of  1,638,945 ( 53.7%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:      9 bp to   415 bp  (median:   16 bp) based on 841,108 loci
+     2bp motifs: locus size range:     12 bp to 6,113 bp  (median:   25 bp) based on 300,335 loci
+     3bp motifs: locus size range:     15 bp to 3,793 bp  (median:   21 bp) based on 80,960 loci
+     4bp motifs: locus size range:     15 bp to 6,240 bp  (median:   23 bp) based on 240,536 loci
+     5bp motifs: locus size range:     17 bp to 132,210 bp  (median:   26 bp) based on 101,960 loci
+     6bp motifs: locus size range:     18 bp to 2,127 bp  (median:   26 bp) based on 74,046 loci
 Wrote 1 rows to hg38.hipstr_reference.catalog.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -485,6 +549,18 @@ Fraction pure bases distribution:
           0.8:          0 out of  4,558,281 (  0.0%) repeat intervals
           0.9:          0 out of  4,558,281 (  0.0%) repeat intervals
           1.0:  4,558,281 out of  4,558,281 (100.0%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:      9 bp to    90 bp  (median:   12 bp) based on 1,337,567 loci
+     2bp motifs: locus size range:      9 bp to   600 bp  (median:   10 bp) based on 967,389 loci
+     3bp motifs: locus size range:      9 bp to   632 bp  (median:    9 bp) based on 1,418,341 loci
+     4bp motifs: locus size range:     12 bp to   533 bp  (median:   15 bp) based on 569,907 loci
+     5bp motifs: locus size range:     15 bp to   341 bp  (median:   18 bp) based on 172,187 loci
+     6bp motifs: locus size range:     18 bp to 1,103 bp  (median:   21 bp) based on 52,023 loci
+     7bp motifs: locus size range:     21 bp to   151 bp  (median:   23 bp) based on 13,079 loci
+     8bp motifs: locus size range:     24 bp to   149 bp  (median:   26 bp) based on 5,531 loci
+     9bp motifs: locus size range:     27 bp to   116 bp  (median:   29 bp) based on 2,284 loci
+    10bp motifs: locus size range:     30 bp to   111 bp  (median:   34 bp) based on 1,693 loci
 Wrote 1 rows to hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/combined.51_samples.positive_loci.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -500,7 +576,7 @@ Stats for combined.51_samples.positive_loci.annotated.json.gz:
     1,575,395 out of  1,575,395 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
     1,022,431 out of  1,575,395 ( 64.9%) repeat intervals are homopolymers
       131,966 out of  1,575,395 (  8.4%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chr2:125456583-125456625, chrX:20300253-20300345, chr19:16939149-16939189, chr5:141802147-141802180, chr11:26476889-26476933, chr17:7446303-7446373, chr20:53902554-53902580, chr7:25452358-25452386, chr21:14892836-14892865, chr3:65950959-65951035
+Examples of overlapping repeats: chr18:73386151-73386179, chrX:3307039-3307063, chr3:13165538-13165580, chr2:137931420-137931464, chr6:166955235-166955269, chr2:216263493-216263537, chr8:23708577-23708607, chr3:164537113-164537161, chr15:45042519-45042531, chr6:163603737-163603793
 
 Ranges:
    Motif size range: 1-833bp
@@ -554,6 +630,18 @@ Fraction pure bases distribution:
           0.8:     13,668 out of  1,575,395 (  0.9%) repeat intervals
           0.9:     36,333 out of  1,575,395 (  2.3%) repeat intervals
           1.0:  1,491,292 out of  1,575,395 ( 94.7%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:      1 bp to    90 bp  (median:   13 bp) based on 1,022,431 loci
+     2bp motifs: locus size range:      2 bp to   602 bp  (median:   20 bp) based on 263,809 loci
+     3bp motifs: locus size range:      3 bp to   561 bp  (median:   15 bp) based on 65,103 loci
+     4bp motifs: locus size range:      4 bp to   484 bp  (median:   24 bp) based on 141,085 loci
+     5bp motifs: locus size range:      5 bp to   435 bp  (median:   20 bp) based on 34,953 loci
+     6bp motifs: locus size range:      6 bp to   498 bp  (median:   18 bp) based on 13,715 loci
+     7bp motifs: locus size range:      7 bp to   546 bp  (median:   21 bp) based on 4,538 loci
+     8bp motifs: locus size range:      8 bp to   352 bp  (median:   24 bp) based on 3,300 loci
+     9bp motifs: locus size range:      9 bp to   243 bp  (median:   27 bp) based on 1,799 loci
+    10bp motifs: locus size range:     10 bp to   310 bp  (median:   30 bp) based on 1,752 loci
 Wrote 1 rows to combined.51_samples.positive_loci.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.catalog.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -623,6 +711,18 @@ Fraction pure bases distribution:
           0.8:    284,865 out of  7,524,815 (  3.8%) repeat intervals
           0.9:    161,498 out of  7,524,815 (  2.1%) repeat intervals
           1.0:  4,806,428 out of  7,524,815 ( 63.9%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:      1 bp to 2,682 bp  (median:   17 bp) based on 1,044,945 loci
+     2bp motifs: locus size range:      2 bp to 4,947 bp  (median:   17 bp) based on 391,633 loci
+     3bp motifs: locus size range:      3 bp to 7,978 bp  (median:   11 bp) based on 501,649 loci
+     4bp motifs: locus size range:      4 bp to 9,105 bp  (median:   11 bp) based on 1,345,281 loci
+     5bp motifs: locus size range:      5 bp to 9,041 bp  (median:   11 bp) based on 1,250,742 loci
+     6bp motifs: locus size range:      6 bp to 7,859 bp  (median:   12 bp) based on 1,337,409 loci
+     7bp motifs: locus size range:      7 bp to 7,677 bp  (median:   15 bp) based on 512,023 loci
+     8bp motifs: locus size range:      8 bp to 4,176 bp  (median:   18 bp) based on 318,309 loci
+     9bp motifs: locus size range:      9 bp to 8,530 bp  (median:   19 bp) based on 265,634 loci
+    10bp motifs: locus size range:     10 bp to 9,279 bp  (median:   20 bp) based on 167,082 loci
 Wrote 1 rows to human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.catalog.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/adotto_tr_catalog_v1.2.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -638,7 +738,7 @@ Stats for adotto_tr_catalog_v1.2.annotated.json.gz:
       943,996 out of  2,934,805 ( 32.2%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
        17,580 out of  2,934,805 (  0.6%) repeat intervals are homopolymers
        26,684 out of  2,934,805 (  0.9%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chr12:14827400-14827419, chr19:1299237-1299270, chr2:150995414-150995438, chr5:133037089-133037121, chr8:85346763-85346785, chr5:69183987-69184023, chr14:74342415-74342532, chrX:5740664-5740691, chr12:121853933-121853967, chr1:113921424-113921461
+Examples of overlapping repeats: chr3:145166419-145166445, chr10:55066586-55066597, chrX:116916662-116916693, chr12:120277481-120277502, chr2:9568045-9568069, chr20:36078866-36078909, chr10:89637905-89637949, chr12:83054691-83054715, chr1:241263097-241263126, chr7:64397922-64397943
 
 Ranges:
    Motif size range: 1-495bp
@@ -692,6 +792,18 @@ Fraction pure bases distribution:
           0.8:    186,420 out of  2,934,805 (  6.4%) repeat intervals
           0.9:     48,309 out of  2,934,805 (  1.6%) repeat intervals
           1.0:  1,278,383 out of  2,934,805 ( 43.6%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:      6 bp to   276 bp  (median:    6 bp) based on 17,580 loci
+     2bp motifs: locus size range:      4 bp to 5,660 bp  (median:   13 bp) based on 580,980 loci
+     3bp motifs: locus size range:      6 bp to 3,722 bp  (median:   12 bp) based on 335,372 loci
+     4bp motifs: locus size range:      8 bp to 3,993 bp  (median:   15 bp) based on 532,393 loci
+     5bp motifs: locus size range:     10 bp to 44,181 bp  (median:   18 bp) based on 240,753 loci
+     6bp motifs: locus size range:     12 bp to 3,578 bp  (median:   18 bp) based on 225,967 loci
+     7bp motifs: locus size range:     13 bp to 4,457 bp  (median:   21 bp) based on 114,669 loci
+     8bp motifs: locus size range:     15 bp to 4,440 bp  (median:   24 bp) based on 100,662 loci
+     9bp motifs: locus size range:     17 bp to 25,072 bp  (median:   19 bp) based on 128,796 loci
+    10bp motifs: locus size range:     18 bp to 16,596 bp  (median:   27 bp) based on 67,076 loci
 Wrote 1 rows to adotto_tr_catalog_v1.2.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/mukamel_VNTR_catalog.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -760,6 +872,18 @@ Fraction pure bases distribution:
           0.8:          3 out of        118 (  2.5%) repeat intervals
           0.9:          0 out of        118 (  0.0%) repeat intervals
           1.0:          7 out of        118 (  5.9%) repeat intervals
+
+Locus sizes at each motif size:
+     3bp motifs: locus size range:     87 bp to    87 bp  (median:   87 bp) based on     1 loci
+     9bp motifs: locus size range:     27 bp to    73 bp  (median:   45 bp) based on     6 loci
+    12bp motifs: locus size range:     38 bp to   472 bp  (median:   43 bp) based on     7 loci
+    15bp motifs: locus size range:     45 bp to    71 bp  (median:   54 bp) based on    12 loci
+    18bp motifs: locus size range:     56 bp to   443 bp  (median:   74 bp) based on     6 loci
+    20bp motifs: locus size range:     77 bp to    77 bp  (median:   77 bp) based on     1 loci
+    21bp motifs: locus size range:    104 bp to   616 bp  (median:  153 bp) based on     4 loci
+    24bp motifs: locus size range:     77 bp to   186 bp  (median:  128 bp) based on     3 loci
+    27bp motifs: locus size range:     84 bp to   104 bp  (median:   94 bp) based on     2 loci
+    30bp motifs: locus size range:    120 bp to 4,042 bp  (median:  178 bp) based on    12 loci
 Wrote 1 rows to mukamel_VNTR_catalog.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/vamos_catalog.v2.1.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -828,6 +952,18 @@ Fraction pure bases distribution:
           0.8:    113,944 out of  1,243,954 (  9.2%) repeat intervals
           0.9:     82,639 out of  1,243,954 (  6.6%) repeat intervals
           1.0:    280,836 out of  1,243,954 ( 22.6%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:      1 bp to 7,186 bp  (median:   26 bp) based on 200,283 loci
+     2bp motifs: locus size range:      1 bp to 8,605 bp  (median:   44 bp) based on 219,819 loci
+     3bp motifs: locus size range:      1 bp to 8,233 bp  (median:   34 bp) based on 82,179 loci
+     4bp motifs: locus size range:      1 bp to 7,719 bp  (median:   39 bp) based on 172,790 loci
+     5bp motifs: locus size range:      1 bp to 9,977 bp  (median:   38 bp) based on 95,968 loci
+     6bp motifs: locus size range:      1 bp to 6,553 bp  (median:   42 bp) based on 87,357 loci
+     7bp motifs: locus size range:      1 bp to 4,089 bp  (median:   44 bp) based on 48,866 loci
+     8bp motifs: locus size range:      1 bp to 3,180 bp  (median:   44 bp) based on 15,618 loci
+     9bp motifs: locus size range:      1 bp to 4,179 bp  (median:   41 bp) based on 7,668 loci
+    10bp motifs: locus size range:      1 bp to 5,217 bp  (median:   37 bp) based on 8,471 loci
 Wrote 1 rows to vamos_catalog.v2.1.annotated.catalog_stats.tsv
 Generating /Users/weisburd/code/tandem-repeat-catalogs/paper/compare_catalogs/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.annotated.catalog_stats.tsv
 ----------------------------------------------------------------------------------------------------
@@ -897,7 +1033,17 @@ Fraction pure bases distribution:
           0.8:          6 out of         63 (  9.5%) repeat intervals
           0.9:          8 out of         63 ( 12.7%) repeat intervals
           1.0:         36 out of         63 ( 57.1%) repeat intervals
+
+Locus sizes at each motif size:
+     3bp motifs: locus size range:     15 bp to   150 bp  (median:   42 bp) based on    46 loci
+     4bp motifs: locus size range:     80 bp to    80 bp  (median:   80 bp) based on     1 loci
+     5bp motifs: locus size range:     35 bp to   106 bp  (median:   67 bp) based on    10 loci
+     6bp motifs: locus size range:     18 bp to    24 bp  (median:   21 bp) based on     2 loci
+    10bp motifs: locus size range:     20 bp to    20 bp  (median:   20 bp) based on     1 loci
+    12bp motifs: locus size range:     36 bp to    36 bp  (median:   36 bp) based on     1 loci
+    20bp motifs: locus size range:     80 bp to    80 bp  (median:   80 bp) based on     1 loci
+    24bp motifs: locus size range:     96 bp to    96 bp  (median:   96 bp) based on     1 loci
 Wrote 1 rows to variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.annotated.catalog_stats.tsv
 Combining stats from all 13 catalogs
 Sorting 13 rows
-Done with comparisons. Took 1h, 36m, 41s
+Done with comparisons. Took 1h, 43m, 55s
