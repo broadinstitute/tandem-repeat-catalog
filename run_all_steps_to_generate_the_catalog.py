@@ -247,7 +247,10 @@ EOF
 	run(f"trgt validate --genome {args.hg38_reference_fasta}  --repeats {output_prefix}.TRGT.bed")
 
 	# Perform basic internal consistency checks on the JSON catalog
-	run(f"python3 {base_dir}/scripts/validate_catalog.py --known-pathogenic-loci-json-path {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']} {annotated_catalog_path}")
+	run(f"python3 {base_dir}/scripts/validate_catalog.py " +
+		f"--known-pathogenic-loci-json-path {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']} " +
+		("--check-for-presence-of-annotations --check-for-presence-of-all-known-loci " if motif_size_label == "1_to_1000bp_motifs" else "") +
+		f"{annotated_catalog_path}")
 
 	# STEP #4: copy files to the release_draft folder and compute catalog stats
 	release_files = [
