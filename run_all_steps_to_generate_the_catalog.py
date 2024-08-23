@@ -21,7 +21,7 @@ parser.add_argument("--hg38-reference-fasta", default="hg38.fa", help="Path of h
 parser.add_argument("--gencode-gtf", default="gencode.v46.basic.annotation.gtf.gz", help="Gene annotations GTF file")
 parser.add_argument("--output-prefix", default="simple_repeat_catalog_v1.hg38")
 parser.add_argument("--skip-variation-cluster-annotations", action="store_true", help="Skip adding variation cluster annotations to the catalog")
-parser.add_argument("--variation-clusters-bed", default="vcs_merged.bed.gz", help="Variation clusters file shared by Egor Dolzhenko")
+parser.add_argument("--variation-clusters-bed", default="vcs_v1.0.bed.gz", help="Variation clusters file shared by Egor Dolzhenko")
 parser.add_argument("--variation-clusters-output-prefix", default="variation_clusters_v1.hg38")
 parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
 
