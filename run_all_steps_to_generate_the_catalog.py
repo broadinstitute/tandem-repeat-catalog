@@ -73,10 +73,10 @@ start_time = time.time()
 # same motif), then the definition in the catalog that's earlier in the list will take precedence over definitions in
 # subsequent catalogs.
 source_catalogs_in_order = [
-	("KNOWN_DISEASE_ASSOCIATED_LOCI", "https://raw.githubusercontent.com/broadinstitute/str-analysis/main/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json"),
-	("ILLUMINA_CATALOG", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz"),
-	("ALL_PERFECT_REPEATS_CATALOG", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz"),
-	("TRUTH_SET_CATALOG", "https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/merged_expansion_hunter_catalog.78_samples.json.gz")
+	("KnownDiseaseAssociatedLoci", "https://raw.githubusercontent.com/broadinstitute/str-analysis/main/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json"),
+	("Illumina174kPolymorphicTRs", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz"),
+	("PerfectRepeatsInReference", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz"),
+	("PolymorphicTRsInT2TAssemblies", "https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/merged_expansion_hunter_catalog.78_samples.json.gz")
 ]
 
 
@@ -87,16 +87,16 @@ for catalog_name, url in source_catalogs_in_order:
 	source_catalog_paths[catalog_name] = os.path.abspath(os.path.basename(url))
 
 # preprocess catalog of known disease-associated loci: split compound definitions
-run(f"python3 -m str_analysis.split_adjacent_loci_in_expansion_hunter_catalog {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']}")
-source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI'] = source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI'].replace(".json", ".split.json")
+run(f"python3 -m str_analysis.split_adjacent_loci_in_expansion_hunter_catalog {source_catalog_paths['KnownDiseaseAssociatedLoci']}")
+source_catalog_paths['KnownDiseaseAssociatedLoci'] = source_catalog_paths['KnownDiseaseAssociatedLoci'].replace(".json", ".split.json")
 # change motif definition for the RFC1 locus from AARRG => AAAAG since our catalog doesn't currently support IUPAC codes
-run(f"sed -i 's/AARRG/AAAAG/g' {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']}")
-run(f"gzip -f {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']}")
+run(f"sed -i 's/AARRG/AAAAG/g' {source_catalog_paths['KnownDiseaseAssociatedLoci']}")
+run(f"gzip -f {source_catalog_paths['KnownDiseaseAssociatedLoci']}")
 
-source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI'] += ".gz"
+source_catalog_paths['KnownDiseaseAssociatedLoci'] += ".gz"
 
 # compute stats for primary disease-associated loci
-with gzip.open(source_catalog_paths["KNOWN_DISEASE_ASSOCIATED_LOCI"]) as f:
+with gzip.open(source_catalog_paths["KnownDiseaseAssociatedLoci"]) as f:
 	known_disease_associated_loci = json.load(f)
 
 primary_disease_associated_loci = [
@@ -108,7 +108,7 @@ primary_disease_associated_loci = [
 # are not currently considered monogenic
 assert len(primary_disease_associated_loci) == 63
 
-primary_disease_associated_loci_path = source_catalog_paths["KNOWN_DISEASE_ASSOCIATED_LOCI"].replace(
+primary_disease_associated_loci_path = source_catalog_paths["KnownDiseaseAssociatedLoci"].replace(
 	".json.gz", ".primary_disease_associated_loci.json.gz")
 
 with gzip.open(primary_disease_associated_loci_path, "wt") as f:
@@ -156,18 +156,18 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 		filtered_source_catalog_paths[catalog_name] = filtered_catalog_path
 
 		run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
-				--verbose \
-				--reference-fasta {args.hg38_reference_fasta} \
-				--min-motif-size {min_motif_size} \
-				--max-motif-size {max_motif_size} \
-				--min-interval-size-bp 1 \
-				--skip-gene-annotations \
-				--skip-mappability-annotations \
-				--skip-disease-loci-annotations \
-				--discard-loci-with-non-ACGT-bases-in-reference \
-				--discard-loci-with-non-ACGTN-bases-in-motif \
-				--output-path {filtered_catalog_path} \
-				{catalog_path}""")
+			--verbose \
+			--reference-fasta {args.hg38_reference_fasta} \
+			--min-motif-size {min_motif_size} \
+			--max-motif-size {max_motif_size} \
+			--min-interval-size-bp 1 \
+			--skip-gene-annotations \
+			--skip-mappability-annotations \
+			--skip-disease-loci-annotations \
+			--discard-loci-with-non-ACGT-bases-in-reference \
+			--discard-loci-with-non-ACGTN-bases-in-motif \
+			--output-path {filtered_catalog_path} \
+			{catalog_path}""")
 
 		print(f"Stats for {catalog_path}")
 		run(f"python3 -m str_analysis.compute_catalog_stats --verbose {filtered_catalog_path}")
@@ -178,18 +178,23 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 	# between future versions of the overall Simple Repeat Catalog since newly-added loci could merge with previously
 	# added loci, causing loss of those loci from new vesions of the catalog. Variation cluster analysis is a better
 	# way to merge adjacent loci where needed.
-	catalog_paths = " ".join([filtered_source_catalog_paths[catalog_name] for catalog_name, _ in source_catalogs_in_order])
-	run(f"""python3 -u -m str_analysis.merge_loci \
+	catalog_paths = " ".join([
+		f"{catalog_name}:{filtered_source_catalog_paths[catalog_name]}" for catalog_name, _ in source_catalogs_in_order
+	])
+	run(f"""python3 -u -m str_analysis.merge_loci --verbose \
 		--add-source-field \
+		--add-found-in-fields \
 		--output-format JSON \
 		--overlapping-loci-action keep-first \
 		--write-merge-stats-tsv \
+		--write-outer-join-overlap-table \
 		--write-bed-files-with-new-loci \
+		--outer-join-overlap-table-min-sources 1 \
 		--output-prefix {output_prefix}.merged \
 		{catalog_paths}""")
 
 	annotated_catalog_path = f"{output_prefix}.EH.with_annotations.json.gz"
-	run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
+	run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose \
 		--reference-fasta {args.hg38_reference_fasta} \
 		--genes-gtf {args.gencode_gtf} \
 		--gene-models-source gencode \
@@ -215,21 +220,13 @@ out.write("]")
 EOF
 """)
 
-	# Replace "Source" field filenames with more user-friendly source names
-	run(f"""cp {annotated_catalog_path}  temp.json.gz
-	gunzip -c temp.json.gz | sed 's/{os.path.basename(filtered_source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI'])}/known disease-associated loci/' | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
-	gunzip -c temp.json.gz | sed 's/{os.path.basename(filtered_source_catalog_paths['ILLUMINA_CATALOG'])}/Illumina catalog of 174k polymorphic loci/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
-	gunzip -c temp.json.gz | sed 's/{os.path.basename(filtered_source_catalog_paths['ALL_PERFECT_REPEATS_CATALOG'])}/perfect repeats in hg38/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
-	gunzip -c temp.json.gz | sed 's/{os.path.basename(filtered_source_catalog_paths['TRUTH_SET_CATALOG'])}/polymorphic TR loci in HPRC assemblies/'  | gzip -c - > temp2.json.gz && mv temp2.json.gz temp.json.gz
-	mv temp.json.gz {annotated_catalog_path}""")
-
 	if args.variation_clusters_bed and motif_size_label != "homopolymers":
 		variation_clusters_release_filename = f"{args.variation_clusters_output_prefix}.TRGT.bed" + (
 			".gz" if args.variation_clusters_bed.endswith("gz") else "")
 		run(f"""python3 {base_dir}/scripts/add_variation_cluster_annotations_to_catalog.py \
 			--verbose \
 			--output-catalog-json-path {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz \
-			--known-pathogenic-loci-json-path {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']} \
+			--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} \
 			--output-variation-clusters-bed-path {variation_clusters_release_filename} \
 			{args.variation_clusters_bed} \
 			{annotated_catalog_path}""")
@@ -248,7 +245,7 @@ EOF
 
 	# Perform basic internal consistency checks on the JSON catalog
 	run(f"python3 {base_dir}/scripts/validate_catalog.py " +
-		f"--known-pathogenic-loci-json-path {source_catalog_paths['KNOWN_DISEASE_ASSOCIATED_LOCI']} " +
+		f"--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} " +
 		("--check-for-presence-of-annotations --check-for-presence-of-all-known-loci " if motif_size_label == "1_to_1000bp_motifs" else "") +
 		f"{annotated_catalog_path}")
 
