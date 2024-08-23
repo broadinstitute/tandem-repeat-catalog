@@ -54,6 +54,7 @@ def main():
 	input_locus_ids_counter = 0
 	almost_no_change_to_boundaries = 0
 	output_variation_clusters_counter = 0
+	examples = set()
 	if args.verbose:
 		print(f"Parsing {args.variation_clusters_bed_path}")
 
@@ -96,13 +97,13 @@ def main():
 				original_start_0based = int(original_start_0based)
 				original_end_1based = int(original_end_1based)
 
-				size_diff = (end_1based - start_0based) - (original_end_1based - original_start_0based)
-				if size_diff < 0:
-					print(f"WARNING: {locus_id} variation cluster {region} is smaller than the original locus {region2}")
-
-				if abs(size_diff) < MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD:
+				if abs(end_1based - original_end_1based) < MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD and abs(original_start_0based - start_0based) < MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD:
 					almost_no_change_to_boundaries += 1
+					if len(examples) < 5:
+						examples.add(f"VC:{region} and locus:{locus_id}")
+					#print(f"{region} doesn't change {locus_id} by {MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD}bp or more")
 				else:
+					size_diff = abs(end_1based - original_end_1based) + abs(original_start_0based - start_0based)
 					variation_cluster_differs_from_simple_repeat = True
 					locus_id_to_variation_cluster_interval[locus_id] = region
 					locus_id_to_variation_cluster_size_difference_from_simple_repeat_boundaries[locus_id] = size_diff
@@ -112,24 +113,21 @@ def main():
 				output_bed_file.write(line)
 				output_variation_clusters_counter += 1
 
-	total_locus_ids = len(locus_id_to_variation_cluster_interval)
+	locus_ids_in_variation_cluster_above_threshold = len(locus_id_to_variation_cluster_interval)
 	if args.verbose:
-		print(f"Found {total_locus_ids:,d} out of {input_locus_ids_counter:,d} "
-			  f"({total_locus_ids/input_locus_ids_counter:.1%}) locus IDs in the input catalog "
-			  f"were in variation clusters")
+		print(f"Parsed {input_variation_clusters_counter:,d} variation clusters that contained {input_locus_ids_counter:,d} simple TR ids")
 		print(f"Found {almost_no_change_to_boundaries:,d} out of {input_variation_clusters_counter:,d} "
 			  f"({almost_no_change_to_boundaries/input_variation_clusters_counter:.1%}) "
-			  f"variation clusters did not change the original locus boundaries "
+			  f"variation clusters that did not change the original locus boundaries "
 			  f"by {MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD} bases or more")
+		print(f"These contained {input_locus_ids_counter - locus_ids_in_variation_cluster_above_threshold:,d} out of {input_locus_ids_counter:,d} "
+			  f"({(input_locus_ids_counter - locus_ids_in_variation_cluster_above_threshold)/input_locus_ids_counter:.1%}) locus IDs. "
+			  f"Examples: ", ", ".join(examples))
 		print(f"Wrote {output_variation_clusters_counter:,d} out of {input_variation_clusters_counter:,d} "
 			  f"({output_variation_clusters_counter/input_variation_clusters_counter:.1%}) variation clusters "
 			  f"to {args.output_variation_clusters_bed_path}")
-		print(f"Found {output_variation_clusters_counter:,d} out of {input_variation_clusters_counter:,d} "
-			  f"({output_variation_clusters_counter/input_variation_clusters_counter:.1%}) "
-			  f"variation clusters that differed from locus definitions in the "
-			  f"input catalog {args.catalog_json_path}")
 
-
+	print(f"Annotating {args.catalog_json_path} with variation cluster annotations")
 	fopen = gzip.open if args.catalog_json_path.endswith("gz") else open
 	with fopen(args.catalog_json_path, "rt") as f:
 		f2open = gzip.open if args.output_catalog_json_path.endswith("gz") else open
@@ -168,6 +166,7 @@ def main():
 		#print(size_diff_histogram)
 
 		# plot using seaborn
+		print(f"Generating VC size diff histograms")
 		import seaborn as sns
 		import matplotlib.pyplot as plt
 		plt.figure(figsize=(12, 6))
@@ -175,11 +174,12 @@ def main():
 		plt.xlabel("Size difference")
 		plt.ylabel("Count")
 		plt.title("Size difference between variation clusters and original loci")
-		plt.savefig(args.output_variation_clusters_bed_path.replace(".bed.gz", "") + ".size_diff_histogram.png")
+		output_prefix = args.output_variation_clusters_bed_path.replace(".bed.gz", "") + ".size_diff_histogram"
+		plt.savefig(f"{output_prefix}.png")
 		# also create a plot with log y-scale
 		plt.yscale("log")
-		plt.savefig(args.output_variation_clusters_bed_path.replace(".bed.gz", "") + ".size_diff_histogram.log.png")
-
+		plt.savefig(f"{output_prefix}.log.png")
+		print(f"Wrote VC size diff histograms to {output_prefix}.png and {output_prefix}.log.png")
 
 if __name__ == "__main__":
 	main()
