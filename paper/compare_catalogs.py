@@ -104,11 +104,11 @@ catalog_paths["PrimaryKnownDiseaseAssociatedLoci"] = primary_disease_associated_
 
 # convert PlatinumTR catalog to ExpansionHunter catalog format for comparison
 if "PlatinumTRs_v1.0" in catalog_paths and (
-	not args.keyword or args.keyword.lower() in "platinumTRs_v1.0".lower() or args.keyword.lower() in catalog_paths["platinumTRs_v1.0"].lower()):
-	path_after_conversion = catalog_paths["platinumTRs_v1.0"].replace(".bed.gz", ".catalog.json.gz")
+	not args.keyword or args.keyword.lower() in "PlatinumTRs_v1.0".lower() or args.keyword.lower() in catalog_paths["PlatinumTRs_v1.0"].lower()):
+	path_after_conversion = catalog_paths["PlatinumTRs_v1.0"].replace(".bed.gz", ".catalog.json.gz")
 	if not os.path.isfile(path_after_conversion):
-		run(f"python3 -u -m str_analysis.convert_trgt_catalog_to_expansion_hunter_catalog -r {args.hg38_reference_fasta} {catalog_paths['platinumTRs_v1.0']} -o {path_after_conversion}")
-	catalog_paths["platinumTRs_v1.0"] = path_after_conversion
+		run(f"python3 -u -m str_analysis.convert_trgt_catalog_to_expansion_hunter_catalog -r {args.hg38_reference_fasta} {catalog_paths['PlatinumTRs_v1.0']} -o {path_after_conversion}")
+	catalog_paths["PlatinumTRs_v1.0"] = path_after_conversion
 else:
 	print("WARNING: PlatinumTRs catalog not included in list of catalogs")
 
@@ -123,12 +123,12 @@ else:
 	print("WARNING: GangSTR catalog not included in list of catalogs")
 
 # convert HipSTR catalog to ExpansionHunter catalog format for comparison
-if "HipSTR_catalog" in catalog_paths and (
-	not args.keyword or args.keyword.lower() in "HipSTR_catalog".lower() or args.keyword.lower() in catalog_paths["HipSTR_catalog"].lower()):
-	path_after_conversion = catalog_paths["HipSTR_catalog"].replace(".bed.gz", ".catalog.bed.gz")
+if "HipSTR_Catalog" in catalog_paths and (
+	not args.keyword or args.keyword.lower() in "HipSTR_Catalog".lower() or args.keyword.lower() in catalog_paths["HipSTR_Catalog"].lower()):
+	path_after_conversion = catalog_paths["HipSTR_Catalog"].replace(".bed.gz", ".catalog.bed.gz")
 	if not os.path.isfile(path_after_conversion):
-		run(f"python3 -u {scripts_dir}/convert_hipstr_catalog_to_regular_bed_file.py {catalog_paths['HipSTR_catalog']} -o {path_after_conversion}")
-	catalog_paths["HipSTR_catalog"] = path_after_conversion
+		run(f"python3 -u {scripts_dir}/convert_hipstr_catalog_to_regular_bed_file.py {catalog_paths['HipSTR_Catalog']} -o {path_after_conversion}")
+	catalog_paths["HipSTR_Catalog"] = path_after_conversion
 else:
 	print("WARNING: HipSTR catalog not included in list of catalogs")
 
@@ -137,7 +137,7 @@ if "UCSC_SimpleRepeatTrack" in catalog_paths and (
 	not args.keyword or args.keyword.lower() in "UCSC_SimpleRepeatTrack".lower() or args.keyword.lower() in catalog_paths["UCSC_SimpleRepeatTrack"].lower()):
 	path_after_conversion = catalog_paths["UCSC_SimpleRepeatTrack"].replace(".txt.gz", "") + "_track_from_UCSC.bed.gz"
 	if not os.path.isfile(path_after_conversion):
-		run(f"python3 -u {scripts_dir}/convert_UCSC_SimpleRepeatTrack_to_bed.py {catalog_paths['UCSC_SimpleRepeatTrack']} -o {path_after_conversion}")
+		run(f"python3 -u {scripts_dir}/convert_ucsc_simple_repeat_track_to_bed.py {catalog_paths['UCSC_SimpleRepeatTrack']} -o {path_after_conversion}")
 	catalog_paths["UCSC_SimpleRepeatTrack"] = path_after_conversion
 
 # convert Chiu et al catalog to ExpansionHunter catalog format for comparison
@@ -168,7 +168,7 @@ for catalog_name, _ in catalogs_in_order:
 			--output-path {annotated_catalog_path} \
 			{path}""")
 
-	if args.outer_join:
+	if args.outer_join and catalog_name not in {"PerfectRepeatsInReference", "PolymorphicTRsInT2TAssemblies", "MukamelVNTRs"}:
 		catalog_paths_for_outer_join.append(f"{catalog_name.title().replace(' ', '_')}:{annotated_catalog_path}")
 
 	# just compute stats
