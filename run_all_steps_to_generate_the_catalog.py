@@ -212,7 +212,8 @@ import gzip, ijson, json
 f = gzip.open("{annotated_catalog_path}", "rt")
 out = gzip.open("{output_prefix}.EH.json.gz", "wt")
 out.write("[")
-for record in ijson.items(f, "item", use_float=True): 
+for i, record in enumerate(ijson.items(f, "item", use_float=True)):
+	if i > 0: out.write(", ") 
 	out.write(json.dumps({{ 
 		k: v for k, v in record.items() if k not in {{"LocusId", "ReferenceRegion", "VariantType", "LocusStructure"}} 
 	}}, indent=4))
