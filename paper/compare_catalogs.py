@@ -12,7 +12,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--hg38-reference-fasta", default="hg38.fa", help="Path of hg38 reference genome FASTA file")
 parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
 parser.add_argument("--outer-join", action="store_true", help="Perform an outer join on the catalogs")
-parser.add_argument("--force", action="store_true", help="Run annotation step even if the output files already exist")
+parser.add_argument("--force-annotate", action="store_true", help="Run annotation step even if the output files already exist")
+parser.add_argument("--force-stats", action="store_true", help="Run annotation step even if the output files already exist")
 parser.add_argument("-k", "--keyword", help="Only process catalogs that contain this keyword")
 args = parser.parse_args()
 
@@ -158,7 +159,7 @@ for catalog_name, _ in catalogs_in_order:
 		continue
 
 	annotated_catalog_path = re.sub("(.json|.bed)(.gz)?$", "", path) + ".annotated.json.gz"
-	if not os.path.isfile(annotated_catalog_path) or args.force:
+	if not os.path.isfile(annotated_catalog_path) or args.force_annotate:
 		run(f"""python3 -m str_analysis.annotate_and_filter_str_catalog \
 			--verbose \
 			--trim-loci \
@@ -173,13 +174,11 @@ for catalog_name, _ in catalogs_in_order:
 
 	# just compute stats
 	stats_tsv_path = re.sub("(.json|.bed)(.gz)?$", "", annotated_catalog_path) + ".catalog_stats.tsv"
-	if not os.path.isfile(stats_tsv_path) or args.force:
+	if not os.path.isfile(stats_tsv_path) or args.force_annotate or args.force_stats:
 		print(f"Generating {stats_tsv_path}")
 		run(f"python3 -m str_analysis.compute_catalog_stats --verbose {annotated_catalog_path}")
 
 	all_stats_tsv_paths[catalog_name] = stats_tsv_path
-
-
 
 if args.outer_join:
 	run(f"""python3 -u -m str_analysis.merge_loci \
@@ -189,6 +188,7 @@ if args.outer_join:
 		--overlapping-loci-action keep-first \
 		--write-merge-stats-tsv \
 		--write-outer-join-overlap-table \
+		--write-bed-files-with-new-loci \
 		--outer-join-overlap-table-min-sources 2 \
 		--output-prefix merged.all_{len(all_stats_tsv_paths)}_catalogs \
 		{' '.join(catalog_paths_for_outer_join)}""")
