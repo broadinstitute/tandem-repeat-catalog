@@ -12,12 +12,13 @@ It includes filenames that start with `simple_repeat_catalog_v1.hg38` and have t
 <br />
 <table>
 <tr><td><b>File suffix</b></td><td><b>Description</b></td></tr>
-<tr><td>.merged_and_annotated.json.gz</td><td>For use with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a>. It includes all annotations as extra fields that are ignored by ExpansionHunter.</td></tr>
-<tr><td>.bed.gz</td><td>Sorted and indexed BED file for IGV</td></tr>
+<tr><td>.EH.with_annotations.json.gz</td><td>For use with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a>. It includes all annotations as extra fields that are ignored by ExpansionHunter.</td></tr>
+<tr><td>.EH.json.gz</td><td>For use with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a></td></tr>
 <tr><td>.TRGT.bed.gz</td><td>For use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
 <tr><td>.LongTR.bed.gz</td><td>For use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
 <tr><td>.GangSTR.bed.gz</td><td>For use with <a href="https://github.com/gymreklab/GangSTR">GangSTR</a></td></tr>
 <tr><td>.HipSTR.bed.gz</td><td>For use with <a href="https://github.com/HipSTR-Tool/HipSTR">HipSTR</a></td></tr>
+<tr><td>.bed.gz</td><td>Sorted and indexed BED file for IGV</td></tr>
 </table>
 <br />
 
@@ -49,80 +50,95 @@ A genome-wide catalog would contain such entries for all repeat regions of inter
 The following catalog stats for v1.0 were computed using [str_analysis/compute_catalog_stats.py](https://github.com/broadinstitute/str-analysis/blob/main/str_analysis/compute_catalog_stats.py):
 
 ```
-Stats for simple_repeat_catalog_v1.hg38.1_to_1000bp_motifs.merged_and_annotated.json.gz:
-    4,623,360 total loci
-   64,363,319 base pairs spanned by all loci (2.084% of the genome)
-            0 out of  4,623,360 (  0.0%) loci define adjacent repeats
-    4,623,360 total repeat intervals
-    3,005,968 out of  4,623,360 ( 65.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
-    1,395,502 out of  4,623,360 ( 30.2%) repeat intervals are homopolymers
-       17,637 out of  4,623,360 (  0.4%) repeat intervals overlap each other by at least two motif lengths
-           11 out of  4,623,360 (  0.0%) repeat intervals have non-ACGT motifs
-Examples of overlapping repeats: chr4:10997247-10997259, chr17:54429149-54429165, chr7:75324911-75324935, chr10:34074010-34074030, chr1:17191894-17191906, chr6:1512741-1512765, chr14:28801139-28801165, chr6:12921458-12921494, chr6:144337148-144337191, ch
-r1:207100053-207100097
+Stats for simple_repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz:
+    4,863,043 total loci
+   65,678,129 base pairs spanned by all loci (2.127% of the genome)
+            0 out of  4,863,043 (  0.0%) loci define adjacent repeats
+    4,863,043 total repeat intervals
+    3,210,117 out of  4,863,043 ( 66.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+    1,567,337 out of  4,863,043 ( 32.2%) repeat intervals are homopolymers
+       18,340 out of  4,863,043 (  0.4%) repeat intervals overlap each other by at least two motif lengths
+           11 out of  4,863,043 (  0.0%) repeat intervals have non-ACGT motifs
+Examples of overlapping repeats: chr6:157039646-157039697, chr6:136309907-136309923, chr16:22663061-22663108, chr10:118053197-118053242, chr9:72024653-72024669, chr1:193880089-193880107, chr11:68644599-68644607, chr8:112342983-112342999, chr12:100569922-100569982, chr16:53171861-53171902
 
 Ranges:
    Motif size range: 1-833bp
    Locus size range: 1-2523bp
    Num repeats range: 1-300x repeats
-   Maximum locus size = 2,523bp               @ chrX:71520430-71522953
 
-          chrX:    234,392 out of  4,623,360 (  5.1%) repeat intervals
-          chrY:     38,171 out of  4,623,360 (  0.8%) repeat intervals
-          chrM:         14 out of  4,623,360 (  0.0%) repeat intervals
-   alt contigs:          0 out of  4,623,360 (  0.0%) repeat intervals
+   Max locus size =   2,523bp           @ chrX:71520430-71522953 (CCAGCACTTTGGGAGGCCGAGGCAGGCTGATCACTAGGTCAGGAGTTCAAGACCAGCCTGGCCAACATGGTGAAACCCCCGTCTCTACTAAAAATACAAAAATTACCTGGGTGTGGGGGTGGGCACCTGTAATCCCAGCTACTCGGGAGGCTGGGGAGGCAGGAGAATTGCCTGAACCTGAGAGGCAGAGGCTGCAGTGAGCTGAGATTGTGCCACTGCACTCCAGCCTGGGCGACAGAGTGAGACTCAGTCTCAAAACAAAAAAAAAAAAAGATTTTAGTAACTTTTATCCTGTTTTAATAATACTGACTCAGAAACTATAATGTGTACTTTATAATTTACTTCCTAGATGACACTTGATTTTCTTCAAGAGCAAGATAGCTGCCCTGTGCAGTTGGTCTCCTTGAAAACTATTTTAGTTCTATCATAATTTCCTGTGATAAATATTTTGACCTTCTAAAATTTCAGAATATTGCACCAAGTAGAAAGAAAATAGGTTTTTTCTCTTTTCTTCTTCTTCCTTTTTTTTTTCTGAGAAAGAGGGAATGAGAACTTTAGTGTTCTTTCAATAGCGTTCTTATTTGTAGAAATGCATAATAGTGTCCTAGTAAGGCTTGACAATAACTCTGGTCTTCATCATATTTTGTGATAAAACTTTTGATTTAAAAAAACCTCTGATCTATTTATCATGGCAAATGGATAGAGCTTTCCTGCCTGTTTTCTTTCTTTTCTTTTTTCTTTCTTTCCTTTTTTTTCCTTTGAGCTTAGATTTTTAGAAGCACATATTTAAAAATCAGGTATAAGACTGGATGCAGTGGCTCACGCCTGTAATC)
+   Min fraction pure bases   =  0.43    @ chr3:112804380-112804514 (TCT)
+   Min fraction pure repeats =  0.00    @ chr4:41745972-41746032 (GCN)
+   Min overall mappability   =  0.00    @ chrY:56887882-56887891 (TGA)
+
+          chrX:    244,192 out of  4,863,043 (  5.0%) repeat intervals
+          chrY:     39,257 out of  4,863,043 (  0.8%) repeat intervals
+          chrM:         14 out of  4,863,043 (  0.0%) repeat intervals
+   alt contigs:          0 out of  4,863,043 (  0.0%) repeat intervals
 
 Motif size distribution:
-          1bp:  1,395,502 out of  4,623,360 ( 30.2%) repeat intervals
-          2bp:    939,879 out of  4,623,360 ( 20.3%) repeat intervals
-          3bp:  1,421,178 out of  4,623,360 ( 30.7%) repeat intervals
-          4bp:    578,904 out of  4,623,360 ( 12.5%) repeat intervals
-          5bp:    175,107 out of  4,623,360 (  3.8%) repeat intervals
-          6bp:     55,842 out of  4,623,360 (  1.2%) repeat intervals
-       7-24bp:     42,231 out of  4,623,360 (  0.9%) repeat intervals
-        25+bp:     14,717 out of  4,623,360 (  0.3%) repeat intervals
+          1bp:  1,567,337 out of  4,863,043 ( 32.2%) repeat intervals
+          2bp:    978,973 out of  4,863,043 ( 20.1%) repeat intervals
+          3bp:  1,432,118 out of  4,863,043 ( 29.4%) repeat intervals
+          4bp:    590,787 out of  4,863,043 ( 12.1%) repeat intervals
+          5bp:    177,422 out of  4,863,043 (  3.6%) repeat intervals
+          6bp:     56,731 out of  4,863,043 (  1.2%) repeat intervals
+       7-24bp:     43,996 out of  4,863,043 (  0.9%) repeat intervals
+        25+bp:     15,679 out of  4,863,043 (  0.3%) repeat intervals
 
 Num repeats in reference:
-           1x:      7,236 out of  4,623,360 (  0.2%) repeat intervals
-           2x:     33,399 out of  4,623,360 (  0.7%) repeat intervals
-           3x:  1,775,953 out of  4,623,360 ( 38.4%) repeat intervals
-           4x:    621,237 out of  4,623,360 ( 13.4%) repeat intervals
-           5x:    332,203 out of  4,623,360 (  7.2%) repeat intervals
-           6x:    140,297 out of  4,623,360 (  3.0%) repeat intervals
-           7x:     78,379 out of  4,623,360 (  1.7%) repeat intervals
-           8x:    108,624 out of  4,623,360 (  2.3%) repeat intervals
-           9x:    346,452 out of  4,623,360 (  7.5%) repeat intervals
-       10-15x:    756,349 out of  4,623,360 ( 16.4%) repeat intervals
-       16-25x:    365,283 out of  4,623,360 (  7.9%) repeat intervals
-       26-35x:     51,261 out of  4,623,360 (  1.1%) repeat intervals
-       36-50x:      6,312 out of  4,623,360 (  0.1%) repeat intervals
-         51+x:        375 out of  4,623,360 (  0.0%) repeat intervals
+           1x:     10,444 out of  4,863,043 (  0.2%) repeat intervals
+           2x:     38,922 out of  4,863,043 (  0.8%) repeat intervals
+           3x:  1,799,189 out of  4,863,043 ( 37.0%) repeat intervals
+           4x:    650,397 out of  4,863,043 ( 13.4%) repeat intervals
+           5x:    356,525 out of  4,863,043 (  7.3%) repeat intervals
+           6x:    151,893 out of  4,863,043 (  3.1%) repeat intervals
+           7x:     85,761 out of  4,863,043 (  1.8%) repeat intervals
+           8x:    257,475 out of  4,863,043 (  5.3%) repeat intervals
+           9x:    352,993 out of  4,863,043 (  7.3%) repeat intervals
+       10-15x:    759,188 out of  4,863,043 ( 15.6%) repeat intervals
+       16-25x:    348,837 out of  4,863,043 (  7.2%) repeat intervals
+       26-35x:     45,478 out of  4,863,043 (  0.9%) repeat intervals
+       36-50x:      5,610 out of  4,863,043 (  0.1%) repeat intervals
+         51+x:        331 out of  4,863,043 (  0.0%) repeat intervals
 
 Fraction pure bases distribution:
-          0.0:        176 out of  4,623,360 (  0.0%) repeat intervals
-          0.1:      1,020 out of  4,623,360 (  0.0%) repeat intervals
-          0.2:      1,575 out of  4,623,360 (  0.0%) repeat intervals
-          0.3:      1,515 out of  4,623,360 (  0.0%) repeat intervals
-          0.4:        977 out of  4,623,360 (  0.0%) repeat intervals
-          0.5:      4,769 out of  4,623,360 (  0.1%) repeat intervals
-          0.6:      9,805 out of  4,623,360 (  0.2%) repeat intervals
-          0.7:      3,718 out of  4,623,360 (  0.1%) repeat intervals
-          0.8:     23,714 out of  4,623,360 (  0.5%) repeat intervals
-          0.9:     54,214 out of  4,623,360 (  1.2%) repeat intervals
-          1.0:  4,521,877 out of  4,623,360 ( 97.8%) repeat intervals
+          0.0:        211 out of  4,863,043 (  0.0%) repeat intervals
+          0.1:      1,200 out of  4,863,043 (  0.0%) repeat intervals
+          0.2:      1,842 out of  4,863,043 (  0.0%) repeat intervals
+          0.3:      1,711 out of  4,863,043 (  0.0%) repeat intervals
+          0.4:      1,112 out of  4,863,043 (  0.0%) repeat intervals
+          0.5:      5,536 out of  4,863,043 (  0.1%) repeat intervals
+          0.6:     11,194 out of  4,863,043 (  0.2%) repeat intervals
+          0.7:      3,902 out of  4,863,043 (  0.1%) repeat intervals
+          0.8:      5,041 out of  4,863,043 (  0.1%) repeat intervals
+          0.9:      3,330 out of  4,863,043 (  0.1%) repeat intervals
+          1.0:  4,827,964 out of  4,863,043 ( 99.3%) repeat intervals
 
 Mappability distribution:
-          0.0:    134,451 out of  4,623,360 (  2.9%) loci
-          0.1:    154,470 out of  4,623,360 (  3.3%) loci
-          0.2:    189,922 out of  4,623,360 (  4.1%) loci
-          0.3:    266,520 out of  4,623,360 (  5.8%) loci
-          0.4:    399,582 out of  4,623,360 (  8.6%) loci
-          0.5:    571,542 out of  4,623,360 ( 12.4%) loci
-          0.6:    343,106 out of  4,623,360 (  7.4%) loci
-          0.7:    308,318 out of  4,623,360 (  6.7%) loci
-          0.8:    334,406 out of  4,623,360 (  7.2%) loci
-          0.9:    646,363 out of  4,623,360 ( 14.0%) loci
-          1.0:  1,274,680 out of  4,623,360 ( 27.6%) loci
+          0.0:    154,279 out of  4,863,043 (  3.2%) loci
+          0.1:    214,471 out of  4,863,043 (  4.4%) loci
+          0.2:    246,877 out of  4,863,043 (  5.1%) loci
+          0.3:    236,856 out of  4,863,043 (  4.9%) loci
+          0.4:    391,389 out of  4,863,043 (  8.0%) loci
+          0.5:    561,639 out of  4,863,043 ( 11.5%) loci
+          0.6:    352,273 out of  4,863,043 (  7.2%) loci
+          0.7:    306,208 out of  4,863,043 (  6.3%) loci
+          0.8:    337,715 out of  4,863,043 (  6.9%) loci
+          0.9:    626,048 out of  4,863,043 ( 12.9%) loci
+          1.0:  1,435,288 out of  4,863,043 ( 29.5%) loci
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:      1 bp to      90 bp  (median:   11 bp) based on  1,567,337 loci. Mean base purity: 1.00, mean repeat purity: 1.00.  Mean mappability: 0.66
+     2bp motifs: locus size range:      2 bp to     600 bp  (median:   10 bp) based on    978,973 loci. Mean base purity: 1.00, mean repeat purity: 1.00.  Mean mappability: 0.76
+     3bp motifs: locus size range:      3 bp to     632 bp  (median:    9 bp) based on  1,432,118 loci. Mean base purity: 1.00, mean repeat purity: 1.00.  Mean mappability: 0.75
+     4bp motifs: locus size range:      4 bp to     533 bp  (median:   14 bp) based on    590,787 loci. Mean base purity: 1.00, mean repeat purity: 0.99.  Mean mappability: 0.68
+     5bp motifs: locus size range:      5 bp to     400 bp  (median:   18 bp) based on    177,422 loci. Mean base purity: 1.00, mean repeat purity: 1.00.  Mean mappability: 0.61
+     6bp motifs: locus size range:      6 bp to   1,103 bp  (median:   20 bp) based on     56,731 loci. Mean base purity: 1.00, mean repeat purity: 0.98.  Mean mappability: 0.62
+     7bp motifs: locus size range:      7 bp to     151 bp  (median:   22 bp) based on     15,083 loci. Mean base purity: 1.00, mean repeat purity: 0.99.  Mean mappability: 0.58
+     8bp motifs: locus size range:      8 bp to     312 bp  (median:   25 bp) based on      7,107 loci. Mean base purity: 1.00, mean repeat purity: 0.99.  Mean mappability: 0.57
+     9bp motifs: locus size range:      9 bp to     153 bp  (median:   28 bp) based on      3,231 loci. Mean base purity: 1.00, mean repeat purity: 0.97.  Mean mappability: 0.51
+    10bp motifs: locus size range:     10 bp to     150 bp  (median:   31 bp) based on      2,713 loci. Mean base purity: 1.00, mean repeat purity: 0.96.  Mean mappability: 0.50
 ```
 
 Additional stats can be found in the [[run log](https://raw.githubusercontent.com/broadinstitute/tandem-repeat-catalogs/main/all_steps.merge_and_annotate_loci.log)]
