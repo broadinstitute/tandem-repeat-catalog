@@ -9,7 +9,7 @@ import tqdm
 
 from str_analysis.utils.misc_utils import parse_interval
 
-MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD = 5
+MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD = 6
 
 def main():
 	parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
