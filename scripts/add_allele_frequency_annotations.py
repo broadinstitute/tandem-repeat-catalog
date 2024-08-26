@@ -9,7 +9,7 @@ from str_analysis.utils.misc_utils import parse_interval
 from intervaltree import Interval, IntervalTree
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("-o", ]"--output-path", help="Output JSON path for annotated catalog")
+parser.add_argument("-o", "--output-path", help="Output JSON path for annotated catalog")
 parser.add_argument("variant_catalog", help="Variant catalog in JSON format")
 args = parser.parse_args()
 
@@ -76,9 +76,11 @@ for row in df2.itertuples():
 	start_0based = start_1based - 1
 	chrom = chrom.replace("chr", "")
 	key = (chrom, start_0based, end)
-	histogram_dict = collections.Counter([
-		int(float(getattr(row, c))) for c in allele_columns if not pd.isna(getattr(row, c))
-	])
+	histogram_dict = collections.Counter()
+	for c in allele_columns:
+		allele_size = getattr(row, c) if not pd.isna(getattr(row, c)) else row.NumRepeatsInReference
+		histogram_dict[int(float(allele_size))] += 1
+
 	histograms_from_t2t_assemblies[key] = convert_allele_histogram_dict_to_string(histogram_dict)
 	stdev_from_t2t_assemblies[key] = get_stdev_of_allele_histogram_dict(histogram_dict)
 	if end > start_0based:
