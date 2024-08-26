@@ -103,6 +103,25 @@ with open(primary_disease_associated_loci_path, "wt") as f:
 catalogs_in_order = [("PrimaryKnownDiseaseAssociatedLoci", primary_disease_associated_loci_path)] + catalogs_in_order
 catalog_paths["PrimaryKnownDiseaseAssociatedLoci"] = primary_disease_associated_loci_path
 
+if "PolymorphicTRsInT2TAssemblies" in catalog_paths and (
+	not args.keyword or args.keyword.lower() in "PolymorphicTRsInT2TAssemblies".lower() or args.keyword.lower() in catalog_paths["PolymorphicTRsInT2TAssemblies"].lower()):
+	# subset the catalog to 3-6bp motif sizes
+	output_path = catalog_paths["PolymorphicTRsInT2TAssemblies"].replace(".json", ".3_to_6bp_motifs.json")
+	if not os.path.isfile(output_path):
+		run(f"python3 -m str_analysis.annotate_and_filter_str_catalog "
+			f"--reference-fasta {args.hg38_reference_fasta} "
+			f"--verbose "
+			f"--skip-gene-annotations "
+			f"--skip-disease-loci-annotations "
+			f"--min-interval-size-bp 1 "
+			f"--min-motif-size 3 "
+			f"--max-motif-size 6 "
+			f"--output-path {output_path} "
+			f"{catalog_paths['PolymorphicTRsInT2TAssemblies']}")
+	catalog_paths["PolymorphicTRsInT2TAssemblies"] = output_path
+else:
+	print("WARNING: PolymorphicTRsInT2TAssemblies catalog not included in list of catalogs")
+
 # convert PlatinumTR catalog to ExpansionHunter catalog format for comparison
 if "PlatinumTRs_v1.0" in catalog_paths and (
 	not args.keyword or args.keyword.lower() in "PlatinumTRs_v1.0".lower() or args.keyword.lower() in catalog_paths["PlatinumTRs_v1.0"].lower()):
@@ -169,7 +188,7 @@ for catalog_name, _ in catalogs_in_order:
 			--output-path {annotated_catalog_path} \
 			{path}""")
 
-	if args.outer_join and catalog_name not in {"PerfectRepeatsInReference", "PolymorphicTRsInT2TAssemblies", "MukamelVNTRs"}:
+	if args.outer_join and catalog_name not in {"PerfectRepeatsInReference", "MukamelVNTRs"}:
 		catalog_paths_for_outer_join.append(f"{catalog_name.title().replace(' ', '_')}:{annotated_catalog_path}")
 
 	# just compute stats
