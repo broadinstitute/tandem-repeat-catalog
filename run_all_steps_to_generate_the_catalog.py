@@ -29,7 +29,7 @@ parser.add_argument("--dry-run", action="store_true", help="Print commands witho
 args = parser.parse_args()
 
 timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
-#timestamp = "2024-08-23"
+#timestamp = "2024-08-25"
 
 def run(command, step_number=None):
 	command = re.sub("[ \\t]{2,}", "  ", command)  # remove extra spaces
@@ -201,8 +201,8 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 	annotated_catalog_path = f"{output_prefix}.EH.with_annotations.json.gz"
 	run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose \
 		--reference-fasta {args.hg38_reference_fasta} \
-		--genes-gtf {args.gencode_gtf} \
 		--gene-models-source gencode \
+		--gene-models-source refseq \
 		--min-motif-size {min_motif_size} \
 		--max-motif-size {max_motif_size} \
 		--min-interval-size-bp 1 \
@@ -290,6 +290,7 @@ core_columns = [
 	'VariationCluster', 'VariationClusterSizeDiff',
 ]
 drop_columns = ['VariantType', ]
+for c in set(core_columns)  - set(df.columns): df[c] = None
 df = df[core_columns + [c for c in df.columns if c not in (core_columns + drop_columns)]]
 
 output_tsv_path = "{annotated_catalog_path.replace('.json.gz', '') + '.tsv.gz'}"
