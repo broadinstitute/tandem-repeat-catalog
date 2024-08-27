@@ -88,11 +88,12 @@ def main():
 					print(f"ERROR: Expected {key} to be of type {value_type} but got {type(record[key])}")
 					error_counter += 1
 
-			if record["GencodeGeneRegion"] != "intergenic":
-				for key in ["GencodeGeneName", "GencodeGeneId", "GencodeTranscriptId"]:
-					if key not in record or record[key] is None:
-						print(f"ERROR: Missing {key} in record {i}: {record}")
-						error_counter += 1
+			for prefix in ["Gencode", "Refseq"]:
+				if record[f"{prefix}GeneRegion"] != "intergenic":
+					for key in [f"{prefix}GeneId", f"{prefix}TranscriptId"]:  # f"{prefix}GeneName",
+						if key not in record or record[key] is None:
+							print(f"ERROR: Missing {key} in record {i}: {record}")
+							error_counter += 1
 
 	# check that all known disease loci are in the simple repeat catalog
 	if args.check_for_presence_of_all_known_loci:
