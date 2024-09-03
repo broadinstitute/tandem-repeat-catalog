@@ -33,7 +33,10 @@ timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
 
 def run(command, step_number=None):
 	command = re.sub("[ \\t]{2,}", "  ", command)  # remove extra spaces
-	print(command)
+	if step_number is not None:
+		print(f"STEP #{step_number}: {command}")
+	else:
+		print(command)
 	if not args.dry_run or command.startswith("mkdir"):
 		if not args.start_with_step or step_number is None or step_number >= args.start_with_step:
 			subprocess.run(command, shell=True, check=True)
