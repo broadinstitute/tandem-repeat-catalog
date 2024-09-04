@@ -56,7 +56,7 @@ def main():
 
 	# get locus ids of TRs in variation clusters
 	locus_ids_in_variation_clusters = set()
-	counters = collections.Counter()
+	counter = collections.Counter()
 	output_bed_file = open(args.output_bed_path, "wt")
 	fopen = gzip.open if args.input_variation_clusters_bed_path.endswith("gz") else open
 	with fopen(args.input_variation_clusters_bed_path, "rt") as f:
@@ -64,10 +64,10 @@ def main():
 			f = tqdm.tqdm(f, unit=" records", unit_scale=True)
 
 		for line in f:
-			counters['output_total'] += 1
+			counter['output_total'] += 1
 			output_bed_file.write(line)
 
-			counters["variation_clusters"] += 1
+			counter["variation_clusters"] += 1
 			fields = line.strip("\n").split("\t")
 			chrom = fields[0]
 			start_0based = int(fields[1])
@@ -92,21 +92,35 @@ def main():
 				else:
 					raise ValueError(f"Unexpected locus_id '{locus_id}'")
 
+	print(f"Parsed {counter['variation_clusters']:,d} variation clusters from {args.input_variation_clusters_bed_path}")
 
+	all_catalog_ids = set()
 	for record in get_variant_catalog_iterator(args.input_repeat_catalog, show_progress_bar=args.show_progress_bar):
+		counter["TRs_from_catalog"] += 1
+		all_catalog_ids.add(record["LocusId"])
+
 		if record["LocusId"] in locus_ids_in_variation_clusters:
+			counter["TRs_in_variation_clusters"] += 1
 			continue
 		output_row = convert_expansion_hunter_record_to_trgt_row(record)
 		output_bed_file.write("\t".join(map(str, output_row)) + "\n")
-		counters['output_total'] += 1
-		counters['isolated_TRs'] += 1
+		counter['output_total'] += 1
+		counter['isolated_TRs'] += 1
 
+	print(f"Parsed {counter['TRs_from_catalog']:,d} TRs from {args.input_repeat_catalog}")
 	output_bed_file.close()
 
+	unexpected_locus_ids_in_variation_cluster_catalog = locus_ids_in_variation_clusters - all_catalog_ids
+	if unexpected_locus_ids_in_variation_cluster_catalog:
+		raise ValueError(f"{len(unexpected_locus_ids_in_variation_cluster_catalog)} locus IDs in the variation cluster catalog "
+						 f"were not found in the input repeat catalog: {unexpected_locus_ids_in_variation_cluster_catalog}")
+
+	print(f"{counter['TRs_in_variation_clusters']:,d} out of {counter['TRs_from_catalog']:,d} "
+		  f"({counter['TRs_in_variation_clusters']/counter['TRs_from_catalog']*100:.2f}%) TRs were in variation clusters")
 	os.system(f"bedtools sort -i {args.output_bed_path} | bgzip > {args.output_bed_path}.sorted")
 	os.system(f"mv {args.output_bed_path}.sorted {args.output_bed_path}.gz")
-	print(f"Added {counters['isolated_TRs']:,d} isolated TRs to {args.output_bed_path}.gz")
-	print(f"Wrote {counters['output_total']:,d} rows to {args.output_bed_path}.gz")
+	print(f"Added {counter['isolated_TRs']:,d} isolated TRs to {args.output_bed_path}.gz")
+	print(f"Wrote {counter['output_total']:,d} rows to {args.output_bed_path}.gz")
 
 	
 if __name__ == "__main__":
