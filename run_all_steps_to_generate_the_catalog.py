@@ -227,11 +227,26 @@ out.write("]")
 EOF
 """, step_number=7)
 
+	release_files = [
+		f"{output_prefix}.bed.gz",
+		f"{output_prefix}.bed.gz.tbi",
+		f"{annotated_catalog_path}",
+		f"{output_prefix}.EH.json.gz",
+		f"{output_prefix}.TRGT.bed",
+		f"{output_prefix}.LongTR.bed",
+		f"{output_prefix}.HipSTR.bed",
+		f"{output_prefix}.GangSTR.bed",
+	]
+
 
 	# add variation cluster annotations to the catalog
 	if args.variation_clusters_bed:
-		variation_clusters_release_filename = f"{args.variation_clusters_output_prefix}.TRGT.bed" + (
-			".gz" if args.variation_clusters_bed.endswith("gz") else "")
+		variation_clusters_release_filename = f"{args.variation_clusters_output_prefix}.TRGT.bed.gz"
+		variation_clusters_and_isolated_TRs_release_filename = args.variation_clusters_output_prefix.replace(
+			"variation_clusters", "variation_clusters_and_isolated_TRs")
+
+		assert variation_clusters_and_isolated_TRs_release_filename != variation_clusters_release_filename
+
 		run(f"""python3 {base_dir}/scripts/add_variation_cluster_annotations_to_catalog.py \
 			--verbose \
 			--output-catalog-json-path {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz \
@@ -242,16 +257,15 @@ EOF
 
 		run(f"mv {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz {annotated_catalog_path}", step_number=8)
 
-		variation_clusters_and_isolated_TRs_release_filename = args.variation_clusters_output_prefix.replace(
-			"variation_clusters", "variation_clusters_and_isolated_TRs")
-		assert variation_clusters_and_isolated_TRs_release_filename != variation_clusters_release_filename
+
 		run(f"""python3 {base_dir}/scripts/add_isolated_loci_to_variation_cluster_catalog.py \
 			--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} \
 			-o {variation_clusters_and_isolated_TRs_release_filename}.TRGT.bed \
 			{args.variation_clusters_bed} \
 			{annotated_catalog_path}""", step_number=8)
 
-
+		release_files.append(variation_clusters_release_filename)
+		release_files.append(variation_clusters_and_isolated_TRs_release_filename)
 
 	# add allele frequencies to the catalog
 	run(f"""python3 -u {base_dir}/scripts/add_allele_frequency_annotations.py \
@@ -326,17 +340,6 @@ EOF
 		f"{annotated_catalog_path}", step_number=18)
 
 	# STEP #4: copy files to the release_draft folder and compute catalog stats
-	release_files = [
-		f"{output_prefix}.bed.gz",
-		f"{output_prefix}.bed.gz.tbi",
-		f"{annotated_catalog_path}",
-		f"{output_prefix}.EH.json.gz",
-		f"{output_prefix}.TRGT.bed",
-		f"{output_prefix}.LongTR.bed",
-		f"{output_prefix}.HipSTR.bed",
-		f"{output_prefix}.GangSTR.bed",
-	]
-
 	if release_tar_gz_path is None:
 		for path in release_files:
 			if path.endswith(".bed"):
