@@ -223,7 +223,7 @@ out.write("[")
 for i, record in enumerate(ijson.items(f, "item", use_float=True)):
 	if i > 0: out.write(", ") 
 	out.write(json.dumps({{ 
-		k: v for k, v in record.items() if k not in {{"LocusId", "ReferenceRegion", "VariantType", "LocusStructure"}} 
+		k: v for k, v in record.items() if k in {{"LocusId", "ReferenceRegion", "VariantType", "LocusStructure"}} 
 	}}, indent=4))
 out.write("]")
 EOF
@@ -252,7 +252,7 @@ EOF
 	run(f"mv {annotated_catalog_path}.with_allele_frequencies.json.gz {annotated_catalog_path}", step_number=9)
 
 	# convert to BED
-	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_bed --split-adjacent-repeats "
+	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_bed --split-adjacent-repeats "
 		f"{annotated_catalog_path}  --output-file {output_prefix}.bed.gz", step_number=10)
 
 	# annotate with "TRsInRegion" based on adjacent loci
@@ -303,10 +303,10 @@ EOF
 """, step_number=12)
 
 	# STEP #3: convert the catalog from ExpansionHunter catalog format to TRGT, LongTR, HipSTR, and GangSTR formats
-	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_trgt_catalog --split-adjacent-repeats {annotated_catalog_path}  --output-file {output_prefix}.TRGT.bed", step_number=13)
-	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_longtr_format  {annotated_catalog_path}  --output-file {output_prefix}.LongTR.bed", step_number=14)
-	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_hipstr_format  {annotated_catalog_path}  --output-file {output_prefix}.HipSTR.bed", step_number=15)
-	run(f"python3 -m str_analysis.convert_expansion_hunter_variant_catalog_to_gangstr_spec   {annotated_catalog_path}  --output-file {output_prefix}.GangSTR.bed", step_number=16)
+	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_trgt_catalog --split-adjacent-repeats {annotated_catalog_path}  --output-file {output_prefix}.TRGT.bed", step_number=13)
+	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_longtr_format  {annotated_catalog_path}  --output-file {output_prefix}.LongTR.bed", step_number=14)
+	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_hipstr_format  {annotated_catalog_path}  --output-file {output_prefix}.HipSTR.bed", step_number=15)
+	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_gangstr_spec   {annotated_catalog_path}  --output-file {output_prefix}.GangSTR.bed", step_number=16)
 
 	# Confirm that the TRGT catalog passes 'trgt validate'
 	run(f"trgt validate --genome {args.hg38_reference_fasta}  --repeats {output_prefix}.TRGT.bed", step_number=17)
@@ -366,7 +366,7 @@ EOF
 		comparison_catalog_paths[catalog_name] = os.path.abspath(os.path.basename(url))
 
 	path_after_conversion = comparison_catalog_paths["GangSTR_v17"].replace(".bed.gz", ".json.gz")
-	run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_variant_catalog --verbose {comparison_catalog_paths['GangSTR_v17']} -o {path_after_conversion}", step_number=21)
+	run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose {comparison_catalog_paths['GangSTR_v17']} -o {path_after_conversion}", step_number=21)
 	comparison_catalog_paths["GangSTR_v17"] = path_after_conversion
 
 	# STEP #5:  compare catalog to other catalogs
