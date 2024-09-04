@@ -24,12 +24,10 @@ parser.add_argument("--skip-variation-cluster-annotations", action="store_true",
 parser.add_argument("--start-with-step", type=int, help="Start with a specific step number")
 parser.add_argument("--variation-clusters-bed", default="vcs_v1.0.bed.gz", help="Variation clusters file shared by Egor Dolzhenko")
 parser.add_argument("--variation-clusters-output-prefix", default="variation_clusters_v1.hg38")
+parser.add_argument("--timestamp", default=datetime.datetime.now().strftime('%Y-%m-%d'), help="Timestamp to use in the output directory name")
 parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
 
 args = parser.parse_args()
-
-timestamp = datetime.datetime.now().strftime('%Y-%m-%d')
-#timestamp = "2024-08-25"
 
 def run(command, step_number=None):
 	command = re.sub("[ \\t]{2,}", "  ", command)  # remove extra spaces
@@ -55,13 +53,13 @@ for key in "hg38_reference_fasta", "gencode_gtf", "variation_clusters_bed":
 	setattr(args, key, os.path.abspath(path))
 
 base_dir = os.path.abspath(".")
-working_dir = os.path.abspath(f"results__{timestamp}")
+working_dir = os.path.abspath(f"results__{args.timestamp}")
 
 run(f"mkdir -p {working_dir}")
 chdir(working_dir)
 
 # create a release draft folder
-release_draft_folder = os.path.abspath(f"release_draft_{timestamp}")
+release_draft_folder = os.path.abspath(f"release_draft_{args.timestamp}")
 run(f"mkdir -p {release_draft_folder}")
 
 
@@ -240,9 +238,19 @@ EOF
 			--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} \
 			--output-variation-clusters-bed-path {variation_clusters_release_filename} \
 			{args.variation_clusters_bed} \
+			{annotated_catalog_path}""", step_number=7.9)
+
+		run(f"mv {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz {annotated_catalog_path}", step_number=7.9)
+
+		variation_clusters_and_isolated_TRs_release_filename = args.variation_clusters_output_prefix.replace(
+			"variation_clusters", "variation_clusters_and_isolated_TRs")
+		assert variation_clusters_and_isolated_TRs_release_filename != variation_clusters_release_filename
+		run(f"""python3 {base_dir}/scripts/add_isolated_loci_to_variation_cluster_catalog.py \
+			--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} \
+			-o {variation_clusters_and_isolated_TRs_release_filename}.TRGT.bed \
+			{args.variation_clusters_bed} \
 			{annotated_catalog_path}""", step_number=8)
 
-		run(f"mv {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz {annotated_catalog_path}", step_number=8)
 
 
 	# add allele frequencies to the catalog
