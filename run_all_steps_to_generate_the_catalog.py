@@ -238,9 +238,9 @@ EOF
 			--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} \
 			--output-variation-clusters-bed-path {variation_clusters_release_filename} \
 			{args.variation_clusters_bed} \
-			{annotated_catalog_path}""", step_number=7.9)
+			{annotated_catalog_path}""", step_number=8)
 
-		run(f"mv {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz {annotated_catalog_path}", step_number=7.9)
+		run(f"mv {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz {annotated_catalog_path}", step_number=8)
 
 		variation_clusters_and_isolated_TRs_release_filename = args.variation_clusters_output_prefix.replace(
 			"variation_clusters", "variation_clusters_and_isolated_TRs")
