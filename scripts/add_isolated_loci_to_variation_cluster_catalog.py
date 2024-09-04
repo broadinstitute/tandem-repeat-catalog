@@ -119,6 +119,8 @@ def main():
 		  f"({counter['TRs_in_variation_clusters']/counter['TRs_from_catalog']*100:.2f}%) TRs were in variation clusters")
 	os.system(f"bedtools sort -i {args.output_bed_path} | bgzip > {args.output_bed_path}.sorted")
 	os.system(f"mv {args.output_bed_path}.sorted {args.output_bed_path}.gz")
+	os.remove(args.output_bed_path)
+
 	print(f"Added {counter['isolated_TRs']:,d} isolated TRs to {args.output_bed_path}.gz")
 	print(f"Wrote {counter['output_total']:,d} rows to {args.output_bed_path}.gz")
 
