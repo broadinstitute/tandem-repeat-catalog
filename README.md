@@ -9,7 +9,7 @@ This project is being developed as part of a collaboration between Ben Weisburd,
 
 [Release v1.0](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v1.0) is now available in draft form. 
 
-It includes filenames that start with `repeat_catalog_v1.hg38` and have the following suffixes:
+Filenames that start with `repeat_catalog_v1.hg38` specify narrow locus boundaries around TRs and are designed for repeat copy number analysis. Files with the following suffixes are provided:
 
 <br />
 <table>
@@ -24,7 +24,7 @@ It includes filenames that start with `repeat_catalog_v1.hg38` and have the foll
 </table>
 <br />
 
-Additionally, variation clusters are available in these files:
+Variation clusters extend the boundaries of TRs to encompass any adjacent polymorphic regions. The exended boundaries enable more accurate sequence-level analysis, particularly in regions that contain many adjacent or multi-scale repeats with different motifs. The following files contain the extended boundary defintions:
 
 <br />
 <table>
