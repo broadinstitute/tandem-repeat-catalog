@@ -28,9 +28,9 @@ Additionally, variation clusters are available in these files:
 
 <br />
 <table>
-   <tr><td><b>File name</b></td><td><b>Description</b></td></tr>
-   <tr><td>variation_clusters_v1.hg38.TRGT.bed.gz</td><td>variation clusters in TRGT format</td></tr>
-   <tr><td>variation_clusters_and_isolated_repeats_v1.hg38.TRGT.bed.gz</td><td>variation clusters + isolated repeats (ie. repeats that are not within variation clusters)</td></tr>
+   <tr><td><b>File name</b></td><td>Size</td><td><b>Description</b></td></tr>
+   <tr><td>variation_clusters_v1.hg38.TRGT.bed.gz</td><td>273,112</td><td>variation clusters in TRGT format</td></tr>
+   <tr><td>variation_clusters_and_isolated_repeats_v1.hg38.TRGT.bed.gz</td><td>4,542,828</td><td>variation clusters + all isolated repeats in TRGT format</td></tr>
 </table>
 
 
