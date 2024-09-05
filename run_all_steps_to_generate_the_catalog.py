@@ -324,7 +324,7 @@ print(f"Wrote {{len(df):,d}} rows to {{output_tsv_path}} with columns: {{pformat
 EOF
 """, step_number=12)
 
-	# STEP #3: convert the catalog from ExpansionHunter catalog format to TRGT, LongTR, HipSTR, and GangSTR formats
+	# convert the catalog from ExpansionHunter catalog format to TRGT, LongTR, HipSTR, and GangSTR formats
 	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_trgt_catalog --split-adjacent-repeats {annotated_catalog_path}  --output-file {output_prefix}.TRGT.bed", step_number=13)
 	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_longtr_format  {annotated_catalog_path}  --output-file {output_prefix}.LongTR.bed", step_number=14)
 	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_hipstr_format  {annotated_catalog_path}  --output-file {output_prefix}.HipSTR.bed", step_number=15)
@@ -339,21 +339,20 @@ EOF
 		("--check-for-presence-of-annotations --check-for-presence-of-all-known-loci " if motif_size_label == "1_to_1000bp_motifs" else "") +
 		f"{annotated_catalog_path}", step_number=18)
 
-	# STEP #4: copy files to the release_draft folder and compute catalog stats
+	# copy files to the release_draft folder and compute catalog stats
 	if release_tar_gz_path is None:
 		for path in release_files:
 			if path.endswith(".bed"):
 				run(f"bgzip -f {path}", step_number=19)
 				run(f"cp {path}.gz {release_draft_folder}", step_number=19)
 			else:
+				if path.endswith(".json") or path.endswith(".json.gz") and ".EH." in path:
+					run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=19)
 				run(f"cp {path} {release_draft_folder}", step_number=19)
 
 	else:
 		run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in release_files]), step_number=19)
 		run(f"cp {release_tar_gz_path} {release_draft_folder}", step_number=19)
-
-	#if args.variation_clusters_bed:
-	#	run(f"cp {variation_clusters_release_filename} {os.path.join(release_draft_folder, variation_clusters_release_filename)}")
 
 	run(f"python3 -m str_analysis.compute_catalog_stats --verbose {annotated_catalog_path}", step_number=20)
 
