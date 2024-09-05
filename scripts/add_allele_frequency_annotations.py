@@ -106,7 +106,7 @@ if not args.skip_t2t_assembly_frequencies:
 				"CanonicalMotif": record.CanonicalMotif,
 			}))
 
-	print(f"Processed allele frequency histograms from {len(df2):,d} rows and computed {len(histograms_from_t2t_assemblies):,d} recordds")
+	print(f"Processed allele frequency histograms from {len(df2):,d} rows and computed {len(histograms_from_t2t_assemblies):,d} records")
 df2 = None
 
 #%%
