@@ -1,3 +1,5 @@
+"""Add variation cluster annotations to catalog"""
+
 import argparse
 import collections
 import gzip
@@ -13,24 +15,21 @@ MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD = 6
 
 def main():
 	parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-	parser.add_argument("--verbose", action="store_true")
 	parser.add_argument("--known-pathogenic-loci-json-path", required=True, help="Path of ExpansionHunter catalog "
 						"containing known pathogenic loci. This is used to retrieve the original locus boundaries for "
 						"these loci since their IDs don't contain these coordinates the way that IDs of other loci do.")
+	parser.add_argument("--verbose", action="store_true")
 	parser.add_argument("--show-progress-bar", action="store_true", help="Show a progress bar")
-	parser.add_argument("--output-catalog-json-path", 
+	parser.add_argument("--output-catalog-json-path",
 						help="Path of the output catalog JSON file that includes variation cluster annotations")
-	parser.add_argument("--output-variation-clusters-bed-path", 
-						help="Path of the output variation clusters BED file that excludes variation clusters whose "
-						"boundaries exactly match those of loci found in the input catalog")
+	parser.add_argument("--generate-plot", action="store_true", help="Generate a plot of the size differences between "
+																	 "variation clusters and simple repeats")
 	parser.add_argument("variation_clusters_bed_path", help="Path of the variation clusters BED file")
 	parser.add_argument("catalog_json_path", help="Path of the JSON catalog to annotate")
 	args = parser.parse_args()
 
 	if not args.output_catalog_json_path:
 		args.output_catalog_json_path = args.catalog_json_path.replace(".json", ".with_variation_clusters.json")
-	if not args.output_variation_clusters_bed_path:
-		args.output_variation_clusters_bed_path = args.variation_clusters_bed_path.replace(".bed", ".excluding_duplicates_of_catalog_loci.bed")
 	if not os.path.isfile(args.known_pathogenic_loci_json_path):
 		parser.error(f"File not found: {args.known_pathogenic_loci_json_path}")
 
@@ -59,8 +58,7 @@ def main():
 		print(f"Parsing {args.variation_clusters_bed_path}")
 
 	fopen = gzip.open if args.variation_clusters_bed_path.endswith("gz") else open
-	fopen2 = gzip.open if args.output_variation_clusters_bed_path.endswith("gz") else open
-	with fopen(args.variation_clusters_bed_path, "rt") as f, fopen2(args.output_variation_clusters_bed_path, "wt") as output_bed_file:
+	with fopen(args.variation_clusters_bed_path, "rt") as f:
 		if args.show_progress_bar:
 			f = tqdm.tqdm(f, unit=" records", unit_scale=True)
 
@@ -101,7 +99,7 @@ def main():
 					almost_no_change_to_boundaries += 1
 					if len(examples) < 5:
 						examples.add(f"VC:{region} and locus:{locus_id}")
-					#print(f"{region} doesn't change {locus_id} by {MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD}bp or more")
+					print(f"{region} doesn't change {locus_id} by {MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD}bp or more")
 				else:
 					size_diff = abs(end_1based - original_end_1based) + abs(original_start_0based - start_0based)
 					variation_cluster_differs_from_simple_repeat = True
@@ -110,22 +108,22 @@ def main():
 					size_diff_histogram[size_diff] += 1
 
 			if variation_cluster_differs_from_simple_repeat:
-				output_bed_file.write(line)
 				output_variation_clusters_counter += 1
 
 	locus_ids_in_variation_cluster_above_threshold = len(locus_id_to_variation_cluster_interval)
 	if args.verbose:
 		print(f"Parsed {input_variation_clusters_counter:,d} variation clusters that contained {input_locus_ids_counter:,d} simple TR ids")
-		print(f"Found {almost_no_change_to_boundaries:,d} out of {input_variation_clusters_counter:,d} "
-			  f"({almost_no_change_to_boundaries/input_variation_clusters_counter:.1%}) "
-			  f"variation clusters that did not change the original locus boundaries "
-			  f"by {MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD} bases or more")
-		print(f"These contained {input_locus_ids_counter - locus_ids_in_variation_cluster_above_threshold:,d} out of {input_locus_ids_counter:,d} "
-			  f"({(input_locus_ids_counter - locus_ids_in_variation_cluster_above_threshold)/input_locus_ids_counter:.1%}) locus IDs. "
-			  f"Examples: ", ", ".join(examples))
-		print(f"Wrote {output_variation_clusters_counter:,d} out of {input_variation_clusters_counter:,d} "
+		if almost_no_change_to_boundaries:
+			print(f"Found {almost_no_change_to_boundaries:,d} out of {input_variation_clusters_counter:,d} "
+				  f"({almost_no_change_to_boundaries/input_variation_clusters_counter:.1%}) "
+				  f"variation clusters that did not change the original locus boundaries "
+				  f"by {MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD} bases or more")
+			print(f"These contained {input_locus_ids_counter - locus_ids_in_variation_cluster_above_threshold:,d} out of {input_locus_ids_counter:,d} "
+				  f"({(input_locus_ids_counter - locus_ids_in_variation_cluster_above_threshold)/input_locus_ids_counter:.1%}) locus IDs. "
+				  f"Examples: ", ", ".join(examples))
+		print(f"Found {output_variation_clusters_counter:,d} out of {input_variation_clusters_counter:,d} "
 			  f"({output_variation_clusters_counter/input_variation_clusters_counter:.1%}) variation clusters "
-			  f"to {args.output_variation_clusters_bed_path}")
+			  f"differed from simple TRs by at least {MINIMUM_CHANGE_TO_BOUNDARIES_THRESHOLD}bp")
 
 	print(f"Annotating {args.catalog_json_path} with variation cluster annotations")
 	fopen = gzip.open if args.catalog_json_path.endswith("gz") else open
@@ -157,13 +155,11 @@ def main():
 				f2.write(json.dumps(record, f2, use_decimal=True, indent=4))
 			f2.write("]")
 
-	if args.verbose:
+	if args.generate_plot:
 		print(f"{locus_without_variation_cluster_counter:,d} out of {input_locus_counter:,d} "
 			  f"({locus_without_variation_cluster_counter/input_locus_counter:.1%}) loci from {args.catalog_json_path} are not in variation clusters")
 		print(f"Wrote {output_locus_counter:,d} out of {input_locus_counter:,d} ({output_locus_counter/input_locus_counter:.1%}) records "
 			  f"to {args.output_catalog_json_path}")
-
-		#print(size_diff_histogram)
 
 		# plot using seaborn
 		print(f"Generating VC size diff histograms")
@@ -174,7 +170,7 @@ def main():
 		plt.xlabel("Size difference")
 		plt.ylabel("Count")
 		plt.title("Size difference between variation clusters and original loci")
-		output_prefix = args.output_variation_clusters_bed_path.replace(".bed.gz", "") + ".size_diff_histogram"
+		output_prefix = args.output_catalog_json_path.replace(".json", "").replace(".gz", "") + ".size_diff_histogram"
 		plt.savefig(f"{output_prefix}.png")
 		# also create a plot with log y-scale
 		plt.yscale("log")
