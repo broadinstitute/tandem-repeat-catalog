@@ -9,7 +9,7 @@ This project is being developed as part of a collaboration between Ben Weisburd,
 
 [Release v1.0](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v1.0) is now available in draft form. 
 
-File names that start with `repeat_catalog_v1.hg38` specify narrow locus boundaries around TRs and are designed for repeat copy number analysis. They contain 4,863,041 TRs. Files with the following formats are provided:
+File names that start with `repeat_catalog_v1.hg38` specify narrow locus boundaries around TRs and are designed for repeat copy number analysis. They contain 4,863,041 TRs. The following formats are provided:
 
 <br />
 <table>
