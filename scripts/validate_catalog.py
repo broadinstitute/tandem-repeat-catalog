@@ -17,9 +17,8 @@ EXPECTED_KEYS_IN_ANNOTATED_CATALOG = {
 	#"GencodeGeneName": str,    <== these are optional,
 	#"GencodeGeneId": str,
 	#"GencodeTranscriptId": str,
-	"InterruptionBaseCount": int,
-	"FractionPureBases": float,
-	"FractionPureRepeats": float,
+	"NumRepeatsInReference": int,
+	"ReferenceRepeatPurity": float,
 	"LeftFlankMappability": float,
 	"FlanksAndLocusMappability": float,
 	"RightFlankMappability": float,
@@ -88,12 +87,25 @@ def main():
 					print(f"ERROR: Expected {key} to be of type {value_type} but got {type(record[key])}")
 					error_counter += 1
 
-			for prefix in ["Gencode", "Refseq"]:
+			for prefix in "Gencode", "Refseq":
 				if record[f"{prefix}GeneRegion"] != "intergenic":
 					for key in [f"{prefix}GeneId", f"{prefix}TranscriptId"]:  # f"{prefix}GeneName",
 						if key not in record or record[key] is None:
 							print(f"ERROR: Missing {key} in record {i}: {record}")
 							error_counter += 1
+
+			#for allele_frequency_key, found_in_key in [
+			#	("AlleleFrequenciesFromIllumina174k", "FoundInIllumina174kPolymorphicTRs"),
+			#	("AlleleFrequenciesFromT2TAssemblies", "FoundInPolymorphicTRsInT2TAssemblies"),
+			#]:
+			#	if allele_frequency_key in record or record.get(found_in_key) == "Yes":
+			#		if not record.get(allele_frequency_key):
+			#			print(f"ERROR: {allele_frequency_key} is missing in record {i}: {record}")
+			#			error_counter += 1
+			#		if not record.get(found_in_key):
+			#			print(f"ERROR: {found_in_key} is missing in record {i}: {record}")
+			#			error_counter += 1
+
 
 	# check that all known disease loci are in the simple repeat catalog
 	if args.check_for_presence_of_all_known_loci:
@@ -108,7 +120,6 @@ def main():
 			else:
 				if args.verbose:
 					print(f"SUCCESS: {locus_id} found in the simple repeat catalog")
-
 
 	if error_counter > 0:
 		raise ValueError(f"Found {error_counter} errors in {args.simple_repeat_catalog_path}")
