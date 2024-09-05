@@ -30,7 +30,7 @@ Variation clusters extend the boundaries of TRs to encompass any adjacent polymo
 <table>
    <tr><td><b>File name</b></td><td align="center"><b>Size</b></td><td><b>Description</b></td></tr>
    <tr><td>variation_clusters_v1.hg38.TRGT.bed.gz</td><td align="right">273,112</td><td>variation clusters for use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
-   <tr><td>variation_clusters_and_isolated_repeats_v1.hg38.TRGT.bed.gz</td><td align="right">4,542,828</td><td>variation clusters + all isolated repeats for use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
+   <tr><td>variation_clusters_and_isolated_repeats_v1.hg38.TRGT.bed.gz</td><td align="right">4,542,828</td><td>variation clusters + isolated repeats (ie. all tandem repeat catalog TRs that are not inside variation clusters) for use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
 </table>
 
 
