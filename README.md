@@ -1,13 +1,13 @@
 
 
-### Simple Repeat Catalog
+### Repeat Catalog
 
 This repo provides a general purpose genome-wide TR catalog for genotyping TRs in short read or long read sequencing data. 
 It is being developed as part of a collaboration between Ben Weisburd, Egor Dolzhenko, and others. 
 
 [Release v1.0](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v1.0) is now available in draft form. 
 
-It includes filenames that start with `simple_repeat_catalog_v1.hg38` and have the following suffixes:
+It includes filenames that start with `repeat_catalog_v1.hg38` and have the following suffixes:
 
 <br />
 <table>
@@ -22,7 +22,7 @@ It includes filenames that start with `simple_repeat_catalog_v1.hg38` and have t
 </table>
 <br />
 
-Additionally, `variation_clusters_v1.hg38.TRGT.bed.gz` contains variation clusters in a format that can be passed to TRGT to genotype wider regions around the simple repeats defined in the catalog above. 
+Additionally, `variation_clusters_v1.hg38.TRGT.bed.gz` contains variation clusters in a format that can be passed to TRGT to genotype wider regions around the TRs defined in the catalog above. 
 
 ### Goals
 
@@ -50,8 +50,8 @@ A genome-wide catalog would contain such entries for all repeat regions of inter
 The following catalog stats for v1.0 were computed using [str_analysis/compute_catalog_stats.py](https://github.com/broadinstitute/str-analysis/blob/main/str_analysis/compute_catalog_stats.py):
 
 ```
-Stats for simple_repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz:
-    4,863,043 total loci
+Stats for repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz:
+    4,863,041 total loci
    65,678,129 base pairs spanned by all loci (2.127% of the genome)
             0 out of  4,863,043 (  0.0%) loci define adjacent repeats
     4,863,043 total repeat intervals
