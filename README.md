@@ -29,8 +29,8 @@ Additionally, variation clusters are available in these files:
 <br />
 <table>
    <tr><td><b>File name</b></td><td align="center"><b>Size</b></td><td><b>Description</b></td></tr>
-   <tr><td>variation_clusters_v1.hg38.TRGT.bed.gz</td><td align="right">273,112</td><td>variation clusters in TRGT format</td></tr>
-   <tr><td>variation_clusters_and_isolated_repeats_v1.hg38.TRGT.bed.gz</td><td align="right">4,542,828</td><td>variation clusters + all isolated repeats in TRGT format</td></tr>
+   <tr><td>variation_clusters_v1.hg38.TRGT.bed.gz</td><td align="right">273,112</td><td>variation clusters for use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
+   <tr><td>variation_clusters_and_isolated_repeats_v1.hg38.TRGT.bed.gz</td><td align="right">4,542,828</td><td>variation clusters + all isolated repeats for use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
 </table>
 
 
