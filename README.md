@@ -20,7 +20,7 @@ File names that start with `repeat_catalog_v1.hg38` specify narrow locus boundar
 <tr><td>.LongTR.bed.gz</td><td>For use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
 <tr><td>.GangSTR.bed.gz</td><td>For use with <a href="https://github.com/gymreklab/GangSTR">GangSTR</a></td></tr>
 <tr><td>.HipSTR.bed.gz</td><td>For use with <a href="https://github.com/HipSTR-Tool/HipSTR">HipSTR</a></td></tr>
-<tr><td>.bed.gz</td><td>Sorted and indexed BED file for IGV</td></tr>
+<tr><td>.bed.gz</td><td>Sorted and indexed BED file for <a href="https://igv.org/">IGV</a></td></tr>
 </table>
 <br />
 
