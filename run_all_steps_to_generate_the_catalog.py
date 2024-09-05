@@ -16,19 +16,6 @@ fi
 """)
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--hg38-reference-fasta", default="hg38.fa", help="Path of hg38 reference genome FASTA file")
-parser.add_argument("--gencode-gtf", default="gencode.v46.basic.annotation.gtf.gz", help="Gene annotations GTF file")
-parser.add_argument("--output-prefix", default="simple_repeat_catalog_v1.hg38")
-parser.add_argument("--skip-variation-cluster-annotations", action="store_true", help="Skip adding variation cluster annotations to the catalog")
-parser.add_argument("--start-with-step", type=int, help="Start with a specific step number")
-parser.add_argument("--variation-clusters-bed", default="vcs_v1.0.bed.gz", help="Variation clusters file shared by Egor Dolzhenko")
-parser.add_argument("--variation-clusters-output-prefix", default="variation_clusters_v1.hg38")
-parser.add_argument("--timestamp", default=datetime.datetime.now().strftime('%Y-%m-%d'), help="Timestamp to use in the output directory name")
-parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
-
-args = parser.parse_args()
-
 def run(command, step_number=None):
 	command = re.sub("[ \\t]{2,}", "  ", command)  # remove extra spaces
 	if step_number is not None:
@@ -36,12 +23,36 @@ def run(command, step_number=None):
 	else:
 		print(command)
 	if not args.dry_run or command.startswith("mkdir"):
-		if not args.start_with_step or step_number is None or step_number >= args.start_with_step:
+		if step_number is None or (
+		   	not (args.only_step is not None and step_number != args.only_step) and
+			not (args.start_with_step is not None and step_number < args.start_with_step) and
+			not (args.end_with_step is not None and step_number > args.end_with_step)
+		):
 			subprocess.run(command, shell=True, check=True)
 
 def chdir(d):
 	print(f"cd {d}")
 	os.chdir(d)
+
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--hg38-reference-fasta", default="hg38.fa", help="Path of hg38 reference genome FASTA file")
+parser.add_argument("--gencode-gtf", default="gencode.v46.basic.annotation.gtf.gz", help="Gene annotations GTF file")
+parser.add_argument("--output-prefix", default="simple_repeat_catalog_v1.hg38")
+parser.add_argument("--skip-variation-cluster-annotations", action="store_true", help="Skip adding variation cluster annotations to the catalog")
+parser.add_argument("--only-step", type=int, help="Only run this one step")
+parser.add_argument("--start-with-step", type=int, help="Start with a specific step number")
+parser.add_argument("--end-with-step", type=int, help="End with a specific step number")
+parser.add_argument("--variation-clusters-bed", default="vcs_v1.0.bed.gz", help="Variation clusters file shared by Egor Dolzhenko")
+parser.add_argument("--variation-clusters-output-prefix", default="variation_clusters_v1.hg38")
+parser.add_argument("--timestamp", default=datetime.datetime.now().strftime('%Y-%m-%d'), help="Timestamp to use in the output directory name")
+parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
+
+args = parser.parse_args()
+
+print("TIMESTAMP:", args.timestamp)
+
 
 for key in "hg38_reference_fasta", "gencode_gtf", "variation_clusters_bed":
 	path = getattr(args, key)
@@ -187,6 +198,7 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 	catalog_paths = " ".join([
 		f"{catalog_name}:{filtered_source_catalog_paths[catalog_name]}" for catalog_name, _ in source_catalogs_in_order
 	])
+
 	run(f"""python3 -u -m str_analysis.merge_loci --verbose \
 		--add-source-field \
 		--add-found-in-fields \
@@ -251,12 +263,11 @@ EOF
 			--verbose \
 			--output-catalog-json-path {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz \
 			--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} \
-			--output-variation-clusters-bed-path {variation_clusters_release_filename} \
 			{args.variation_clusters_bed} \
 			{annotated_catalog_path}""", step_number=8)
 
 		run(f"mv {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz {annotated_catalog_path}", step_number=8)
-
+		run(f"cp {args.variation_clusters_bed} {variation_clusters_release_filename}", step_number=8)
 
 		run(f"""python3 {base_dir}/scripts/add_isolated_loci_to_variation_cluster_catalog.py \
 			--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} \
@@ -309,7 +320,7 @@ core_columns = [
 	'LeftFlankMappability', 'FlanksAndLocusMappability', 'RightFlankMappability', 
 	'FoundInKnownDiseaseAssociatedLoci', 'FoundInIllumina174kPolymorphicTRs', 
 	'FoundInPerfectRepeatsInReference', 'FoundInPolymorphicTRsInT2TAssemblies', 
-	'InterruptionBaseCount',  'FractionPureBases', 'FractionPureRepeats',
+	'NumRepeatsInReference', 'ReferenceRepeatPurity', 
 	'AlleleFrequenciesFromIllumina174k', 'VariationStdevFromIllumina174k',
 	'AlleleFrequenciesFromT2TAssemblies', 'VariationStdevFromT2TAssemblies',
 	'VariationCluster', 'VariationClusterSizeDiff',
