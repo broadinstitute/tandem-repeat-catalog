@@ -1,6 +1,6 @@
 
 
-### Tandem Repeat Catalog
+### Tandem Repeat Catalog & Variation Clusters
 
 This repo provides a general purpose genome-wide TR catalog for genotyping TRs in short read or long read sequencing data. 
 It is being developed as part of a collaboration between Ben Weisburd, Egor Dolzhenko, and others. 
