@@ -1,6 +1,6 @@
 
 
-### Tandem repeat catalog & variation clusters
+### Tandem Repeat Catalog & Variation Clusters
 
 This repo provides a general purpose genome-wide TR catalog for genotyping TR copy numbers in short read or long read sequencing data. 
 It also flags TRs that reside within variation clusters, and provides locus defitions that make it easier to perform sequence level analysis of these more complex regions.
