@@ -556,7 +556,7 @@ Stats for merged_expansion_hunter_catalog.78_samples.filtered.json.gz:
     1,937,160 out of  1,937,160 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
     1,400,310 out of  1,937,160 ( 72.3%) repeat intervals are homopolymers
        20,352 out of  1,937,160 (  1.1%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chr1:37770010-37770020, chr9:112176501-112176553, chr7:145019693-145019721, chr8:38556676-38556823, chr10:7628681-7628753, chr22:31018540-31018580, chrX:33377410-33377494, chr4:67319778-67319826, chr20:23560956-23561092, chr7:155073871-155073889
+Examples of overlapping repeats: chr7:50205875-50205891, chr2:64375792-64375822, chr4:167109408-167109418, chr17:3372837-3372852, chr18:32772094-32772118, chr1:235924966-235924976, chr5:126989304-126989358, chr2:103340518-103340538, chr6:162443075-162443095, chr11:126657240-126657280
 
 Ranges:
    Motif size range: 1-833bp
@@ -739,7 +739,7 @@ Found 273,112 out of 273,112 (100.0%) variation clusters differed from simple TR
 Annotating /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz with variation cluster annotations
 STEP #8: mv /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.with_variation_clusters.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 STEP #8: cp /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.bed.gz variation_clusters_v1.hg38.TRGT.bed.gz
-STEP #8: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/add_isolated_loci_to_variation_cluster_catalog.py  --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/variant_catalog_without_offtargets.GRCh38.split.json.gz  -o variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed  /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.bed.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+STEP #8: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/add_isolated_loci_to_variation_cluster_catalog.py  --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/variant_catalog_without_offtargets.GRCh38.split.json.gz  -o variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz  /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.bed.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Parsed 273,112 variation clusters from /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.bed.gz
 Parsed 4,863,041 TRs from /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 593,325 out of 4,863,041 (12.20%) TRs were in variation clusters
@@ -877,3 +877,469 @@ Wrote out /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1
 STEP #17: trgt validate --genome /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --repeats /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.TRGT.bed
 STEP #18: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/validate_catalog.py --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/variant_catalog_without_offtargets.GRCh38.split.json.gz --check-for-presence-of-annotations --check-for-presence-of-all-known-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Done. Catalog passed validation.
+STEP #19: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+All 4,863,041 rows PASSED validation
+STEP #19: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.json.gz
+All 4,863,041 rows PASSED validation
+STEP #19: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/release_draft_2024-09-05
+STEP #19: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.bed.gz.tbi /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/release_draft_2024-09-05
+STEP #19: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/release_draft_2024-09-05
+STEP #19: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/release_draft_2024-09-05
+STEP #19: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.TRGT.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/release_draft_2024-09-05
+STEP #19: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.LongTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/release_draft_2024-09-05
+STEP #19: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.HipSTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/release_draft_2024-09-05
+STEP #19: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.GangSTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/release_draft_2024-09-05
+STEP #19: cp variation_clusters_v1.hg38.TRGT.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/release_draft_2024-09-05
+STEP #19: cp variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/release_draft_2024-09-05
+STEP #20: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+
+Stats for repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz:
+    4,863,041 total loci
+   65,678,112 base pairs spanned by all loci (2.127% of the genome)
+            0 out of  4,863,041 (  0.0%) loci define adjacent repeats
+    4,863,041 total repeat intervals
+    3,210,115 out of  4,863,041 ( 66.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+    1,567,337 out of  4,863,041 ( 32.2%) repeat intervals are homopolymers
+       18,340 out of  4,863,041 (  0.4%) repeat intervals overlap each other by at least two motif lengths
+           11 out of  4,863,041 (  0.0%) repeat intervals have non-ACGT motifs
+Examples of overlapping repeats: chr21:40175809-40175824, chr8:113156934-113156956, chr9:126736717-126736741, chr4:114162511-114162535, chr16:467570-467658, chr1:72199142-72199186, chr13:112210052-112210205, chr20:14802777-14802803, chr3:32720835-32720863, chr1:205485162-205485193
+
+Ranges:
+   Motif size range: 1-833bp
+   Locus size range: 1-2523bp
+   Num repeats range: 1-300x repeats
+
+   Max locus size =   2,523bp           @ chrX:71520430-71522953 (CCAGCACTTTGGGAGGCCGAGGCAGGCTGATCACTAGGTCAGGAGTTCAAGACCAGCCTGGCCAACATGGTGAAACCCCCGTCTCTACTAAAAATACAAAAATTACCTGGGTGTGGGGGTGGGCACCTGTAATCCCAGCTACTCGGGAGGCTGGGGAGGCAGGAGAATTGCCTGAACCTGAGAGGCAGAGGCTGCAGTGAGCTGAGATTGTGCCACTGCACTCCAGCCTGGGCGACAGAGTGAGACTCAGTCTCAAAACAAAAAAAAAAAAAGATTTTAGTAACTTTTATCCTGTTTTAATAATACTGACTCAGAAACTATAATGTGTACTTTATAATTTACTTCCTAGATGACACTTGATTTTCTTCAAGAGCAAGATAGCTGCCCTGTGCAGTTGGTCTCCTTGAAAACTATTTTAGTTCTATCATAATTTCCTGTGATAAATATTTTGACCTTCTAAAATTTCAGAATATTGCACCAAGTAGAAAGAAAATAGGTTTTTTCTCTTTTCTTCTTCTTCCTTTTTTTTTTCTGAGAAAGAGGGAATGAGAACTTTAGTGTTCTTTCAATAGCGTTCTTATTTGTAGAAATGCATAATAGTGTCCTAGTAAGGCTTGACAATAACTCTGGTCTTCATCATATTTTGTGATAAAACTTTTGATTTAAAAAAACCTCTGATCTATTTATCATGGCAAATGGATAGAGCTTTCCTGCCTGTTTTCTTTCTTTTCTTTTTTCTTTCTTTCCTTTTTTTTCCTTTGAGCTTAGATTTTTAGAAGCACATATTTAAAAATCAGGTATAAGACTGGATGCAGTGGCTCACGCCTGTAATC)
+   Min reference repeat purity   =  0.43    @ chr3:112804380-112804514 (TCT)
+   Min overall mappability   =  0.00    @ chrY:56887882-56887891 (TGA)
+   Base-level   purity   median: 1.000,  mean: 0.999
+
+          chrX:    244,191 out of  4,863,041 (  5.0%) repeat intervals
+          chrY:     39,257 out of  4,863,041 (  0.8%) repeat intervals
+          chrM:         14 out of  4,863,041 (  0.0%) repeat intervals
+   alt contigs:          0 out of  4,863,041 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:  1,567,337 out of  4,863,041 ( 32.2%) repeat intervals
+          2bp:    978,972 out of  4,863,041 ( 20.1%) repeat intervals
+          3bp:  1,432,117 out of  4,863,041 ( 29.4%) repeat intervals
+          4bp:    590,787 out of  4,863,041 ( 12.1%) repeat intervals
+          5bp:    177,422 out of  4,863,041 (  3.6%) repeat intervals
+          6bp:     56,731 out of  4,863,041 (  1.2%) repeat intervals
+       7-24bp:     43,996 out of  4,863,041 (  0.9%) repeat intervals
+        25+bp:     15,679 out of  4,863,041 (  0.3%) repeat intervals
+
+Num repeats in reference:
+           1x:     10,443 out of  4,863,041 (  0.2%) repeat intervals
+           2x:     38,922 out of  4,863,041 (  0.8%) repeat intervals
+           3x:  1,799,189 out of  4,863,041 ( 37.0%) repeat intervals
+           4x:    650,397 out of  4,863,041 ( 13.4%) repeat intervals
+           5x:    356,525 out of  4,863,041 (  7.3%) repeat intervals
+           6x:    151,893 out of  4,863,041 (  3.1%) repeat intervals
+           7x:     85,760 out of  4,863,041 (  1.8%) repeat intervals
+           8x:    257,475 out of  4,863,041 (  5.3%) repeat intervals
+           9x:    352,993 out of  4,863,041 (  7.3%) repeat intervals
+       10-15x:    759,188 out of  4,863,041 ( 15.6%) repeat intervals
+       16-25x:    348,837 out of  4,863,041 (  7.2%) repeat intervals
+       26-35x:     45,478 out of  4,863,041 (  0.9%) repeat intervals
+       36-50x:      5,610 out of  4,863,041 (  0.1%) repeat intervals
+         51+x:        331 out of  4,863,041 (  0.0%) repeat intervals
+
+Reference repeat purity distribution:
+          0.0:          0 out of  4,863,041 (  0.0%) repeat intervals
+          0.1:          0 out of  4,863,041 (  0.0%) repeat intervals
+          0.2:          0 out of  4,863,041 (  0.0%) repeat intervals
+          0.3:          0 out of  4,863,041 (  0.0%) repeat intervals
+          0.4:          3 out of  4,863,041 (  0.0%) repeat intervals
+          0.5:         14 out of  4,863,041 (  0.0%) repeat intervals
+          0.6:         44 out of  4,863,041 (  0.0%) repeat intervals
+          0.7:      1,570 out of  4,863,041 (  0.0%) repeat intervals
+          0.8:     12,336 out of  4,863,041 (  0.3%) repeat intervals
+          0.9:     21,126 out of  4,863,041 (  0.4%) repeat intervals
+          1.0:  4,827,948 out of  4,863,041 ( 99.3%) repeat intervals
+
+Mappability distribution:
+          0.0:    154,279 out of  4,863,041 (  3.2%) loci
+          0.1:    214,471 out of  4,863,041 (  4.4%) loci
+          0.2:    246,877 out of  4,863,041 (  5.1%) loci
+          0.3:    236,856 out of  4,863,041 (  4.9%) loci
+          0.4:    391,388 out of  4,863,041 (  8.0%) loci
+          0.5:    561,639 out of  4,863,041 ( 11.5%) loci
+          0.6:    352,273 out of  4,863,041 (  7.2%) loci
+          0.7:    306,208 out of  4,863,041 (  6.3%) loci
+          0.8:    337,715 out of  4,863,041 (  6.9%) loci
+          0.9:    626,047 out of  4,863,041 ( 12.9%) loci
+          1.0:  1,435,288 out of  4,863,041 ( 29.5%) loci
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:      1 bp to      90 bp  (median:   11 bp) based on  1,567,337 loci. Mean base purity: 1.00.  Mean mappability: 0.66
+     2bp motifs: locus size range:      2 bp to     600 bp  (median:   10 bp) based on    978,972 loci. Mean base purity: 1.00.  Mean mappability: 0.76
+     3bp motifs: locus size range:      3 bp to     632 bp  (median:    9 bp) based on  1,432,117 loci. Mean base purity: 1.00.  Mean mappability: 0.75
+     4bp motifs: locus size range:      4 bp to     533 bp  (median:   14 bp) based on    590,787 loci. Mean base purity: 1.00.  Mean mappability: 0.68
+     5bp motifs: locus size range:      5 bp to     400 bp  (median:   18 bp) based on    177,422 loci. Mean base purity: 1.00.  Mean mappability: 0.61
+     6bp motifs: locus size range:      6 bp to   1,103 bp  (median:   20 bp) based on     56,731 loci. Mean base purity: 1.00.  Mean mappability: 0.62
+     7bp motifs: locus size range:      7 bp to     151 bp  (median:   22 bp) based on     15,083 loci. Mean base purity: 1.00.  Mean mappability: 0.58
+     8bp motifs: locus size range:      8 bp to     312 bp  (median:   25 bp) based on      7,107 loci. Mean base purity: 1.00.  Mean mappability: 0.57
+     9bp motifs: locus size range:      9 bp to     153 bp  (median:   28 bp) based on      3,231 loci. Mean base purity: 1.00.  Mean mappability: 0.51
+    10bp motifs: locus size range:     10 bp to     150 bp  (median:   31 bp) based on      2,713 loci. Mean base purity: 1.00.  Mean mappability: 0.50
+Wrote 1 rows to repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.catalog_stats.tsv
+Done generating /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs catalog. Took 0h, 8m, 50s
+STEP #21: python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.bed.gz -o /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.json.gz
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.bed.gz
+Writing records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.json.gz
+Stats: {'total input loci': 1340266, 'trimmed locus': 1340266}
+Wrote 1,340,266 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.json.gz
+STEP #22: python3 -m str_analysis.annotate_and_filter_str_catalog  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --min-motif-size 1  --max-motif-size 1000  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz  --verbose  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.json.gz
+Args:
+   reference_fasta =              /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa
+   output_path =                  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
+   variant_catalog_json_or_bed =  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.json.gz
+   min_motif_size =               1
+   max_motif_size =               1000
+   output_tsv =                   False
+   output_bed =                   False
+   output_stats =                 False
+   show_progress_bar =            False
+   add_gene_region_to_locus_id =  False
+   add_canonical_motif_to_locus_id =  False
+   only_known_disease_associated_loci =  False
+   exclude_known_disease_associated_loci =  False
+   only_known_disease_associated_motifs =  False
+   discard_overlapping_intervals_with_similar_motifs =  False
+   discard_loci_with_non_ACGT_bases_in_motif =  False
+   discard_loci_with_non_ACGTN_bases_in_motif =  False
+   discard_loci_with_non_ACGT_bases_in_reference =  False
+   discard_loci_with_non_ACGTN_bases_in_reference =  False
+   dont_simplify_motifs =         False
+   trim_loci =                    False
+   verbose =                      True
+   skip_gene_annotations =        True
+   skip_disease_loci_annotations =  True
+   skip_mappability_annotations =  True
+   mappability_track_bigwig =     gs://tgg-viewer/ref/GRCh38/mappability/GRCh38_no_alt_analysis_set_GCA_000001405.15-k36_m2.bw
+   known_disease_associated_loci =  ~/code/str-analysis/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.json.gz
+Wrote 1,340,266 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
+
+Filter stats:
+ 1,340,266 total input rows
+ 1,340,266 out of 1,340,266 (100%)  passed all filters
+STEP #23: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
+
+Stats for hg38_ver17.filtered.json.gz:
+    1,340,266 total loci
+   22,952,364 base pairs spanned by all loci (0.743% of the genome)
+            0 out of  1,340,266 (  0.0%) loci define adjacent repeats
+    1,340,266 total repeat intervals
+    1,340,266 out of  1,340,266 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+      488,668 out of  1,340,266 ( 36.5%) repeat intervals are homopolymers
+           16 out of  1,340,266 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+Examples of overlapping repeats: chr5:123775555-123775599, chr5:146878727-146878757, chr5:123775552-123775596, chr15:96831014-96831039, chr2:1489650-1489682, chr20:2652732-2652756, chr2:1489652-1489684, chr7:84160225-84160277, chr11:2171085-2171113, chr9:27573523-27573541
+
+Ranges:
+   Motif size range: 1-20bp
+   Locus size range: 10-612bp
+   Num repeats range: 3-248x repeats
+
+   Max locus size =     612bp           @ chr4:10134483-10135095 (ATCCCAATTGATGGAGA)
+   Min reference repeat purity   =  0.95    @ chr6:170561907-170562021 (CAG)
+   Base-level   purity   median: 1.000,  mean: 1.000
+
+          chrX:     65,719 out of  1,340,266 (  4.9%) repeat intervals
+          chrY:      8,979 out of  1,340,266 (  0.7%) repeat intervals
+          chrM:          0 out of  1,340,266 (  0.0%) repeat intervals
+   alt contigs:          0 out of  1,340,266 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:    488,668 out of  1,340,266 ( 36.5%) repeat intervals
+          2bp:    179,518 out of  1,340,266 ( 13.4%) repeat intervals
+          3bp:    150,463 out of  1,340,266 ( 11.2%) repeat intervals
+          4bp:    377,644 out of  1,340,266 ( 28.2%) repeat intervals
+          5bp:    106,135 out of  1,340,266 (  7.9%) repeat intervals
+          6bp:     27,654 out of  1,340,266 (  2.1%) repeat intervals
+       7-24bp:     10,184 out of  1,340,266 (  0.8%) repeat intervals
+        25+bp:          0 out of  1,340,266 (  0.0%) repeat intervals
+
+Num repeats in reference:
+           1x:          0 out of  1,340,266 (  0.0%) repeat intervals
+           2x:          0 out of  1,340,266 (  0.0%) repeat intervals
+           3x:    365,043 out of  1,340,266 ( 27.2%) repeat intervals
+           4x:    178,164 out of  1,340,266 ( 13.3%) repeat intervals
+           5x:     62,042 out of  1,340,266 (  4.6%) repeat intervals
+           6x:     81,945 out of  1,340,266 (  6.1%) repeat intervals
+           7x:     41,195 out of  1,340,266 (  3.1%) repeat intervals
+           8x:     22,799 out of  1,340,266 (  1.7%) repeat intervals
+           9x:     15,022 out of  1,340,266 (  1.1%) repeat intervals
+       10-15x:    270,718 out of  1,340,266 ( 20.2%) repeat intervals
+       16-25x:    260,685 out of  1,340,266 ( 19.5%) repeat intervals
+       26-35x:     37,641 out of  1,340,266 (  2.8%) repeat intervals
+       36-50x:      4,785 out of  1,340,266 (  0.4%) repeat intervals
+         51+x:        227 out of  1,340,266 (  0.0%) repeat intervals
+
+Reference repeat purity distribution:
+          0.0:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.1:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.2:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.3:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.4:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.5:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.6:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.7:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.8:          0 out of  1,340,266 (  0.0%) repeat intervals
+          0.9:          4 out of  1,340,266 (  0.0%) repeat intervals
+          1.0:  1,340,262 out of  1,340,266 (100.0%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:     12 bp to      90 bp  (median:   16 bp) based on    488,668 loci. Mean base purity: 1.00.  
+     2bp motifs: locus size range:     10 bp to     496 bp  (median:   16 bp) based on    179,518 loci. Mean base purity: 1.00.  
+     3bp motifs: locus size range:     12 bp to     180 bp  (median:   12 bp) based on    150,463 loci. Mean base purity: 1.00.  
+     4bp motifs: locus size range:     12 bp to     332 bp  (median:   12 bp) based on    377,644 loci. Mean base purity: 1.00.  
+     5bp motifs: locus size range:     15 bp to     305 bp  (median:   15 bp) based on    106,135 loci. Mean base purity: 1.00.  
+     6bp motifs: locus size range:     18 bp to     372 bp  (median:   18 bp) based on     27,654 loci. Mean base purity: 1.00.  
+     7bp motifs: locus size range:     21 bp to     119 bp  (median:   21 bp) based on      5,708 loci. Mean base purity: 1.00.  
+     8bp motifs: locus size range:     24 bp to     144 bp  (median:   24 bp) based on      1,707 loci. Mean base purity: 1.00.  
+     9bp motifs: locus size range:     27 bp to     108 bp  (median:   27 bp) based on        760 loci. Mean base purity: 1.00.  
+    10bp motifs: locus size range:     30 bp to     110 bp  (median:   30 bp) based on        344 loci. Mean base purity: 1.00.  
+Wrote 1 rows to hg38_ver17.filtered.catalog_stats.tsv
+STEP #24: python3 -u -m str_analysis.merge_loci  --output-prefix GangSTR_v17  --add-source-field  --output-format JSON  --overlapping-loci-action keep-first  --verbose  --write-merge-stats-tsv  --write-bed-files-with-new-loci  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+Added 4,863,041 out of 4,863,041 (100.0%) records from repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz to the output catalog
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
+Added 0 out of 1,340,266 (  0.0%) records from hg38_ver17.filtered.json.gz to the output catalog
+    Discarded 1,340,266 out of 1,340,266 (100.0%) records since they overlapped an existing locus by at least 66.0% and had the same canonical motif
+Wrote 0 unique loci from hg38_ver17.filtered.json.gz to hg38_ver17.filtered.unique_loci.bed.gz
+Writing combined catalog to GangSTR_v17.json.gz
+Done writing 4,863,041 output records to GangSTR_v17.json.gz
+Source of loci in output catalog:
+   4,863,041 out of 4,863,041 (100.0%) repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+Motif sizes:
+   1,567,337 out of 4,863,041 (32.2%) 1bp
+   1,432,117 out of 4,863,041 (29.4%) 3bp
+     978,972 out of 4,863,041 (20.1%) 2bp
+     590,787 out of 4,863,041 (12.1%) 4bp
+     177,422 out of 4,863,041 ( 3.6%) 5bp
+      59,675 out of 4,863,041 ( 1.2%) 7+bp
+      56,731 out of 4,863,041 ( 1.2%) 6bp
+Chromsomes:
+   4,579,579 out of 4,863,041 (94.2%) are on autosomes
+     244,191 out of 4,863,041 ( 5.0%) are on X
+      39,257 out of 4,863,041 ( 0.8%) are on Y
+          14 out of 4,863,041 ( 0.0%) are on M
+Wrote 2 rows to GangSTR_v17.merge_stats.tsv
+STEP #22: python3 -m str_analysis.annotate_and_filter_str_catalog  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --min-motif-size 1  --max-motif-size 1000  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/vamos_catalog.v2.1.filtered.json.gz  --verbose  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/vamos_catalog.v2.1.bed.gz
+Args:
+   reference_fasta =              /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa
+   variant_catalog_json_or_bed =  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/vamos_catalog.v2.1.bed.gz
+   output_path =                  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/vamos_catalog.v2.1.filtered.json.gz
+   min_motif_size =               1
+   max_motif_size =               1000
+   output_tsv =                   False
+   output_bed =                   False
+   output_stats =                 False
+   show_progress_bar =            False
+   add_gene_region_to_locus_id =  False
+   add_canonical_motif_to_locus_id =  False
+   only_known_disease_associated_loci =  False
+   exclude_known_disease_associated_loci =  False
+   only_known_disease_associated_motifs =  False
+   discard_overlapping_intervals_with_similar_motifs =  False
+   discard_loci_with_non_ACGT_bases_in_motif =  False
+   discard_loci_with_non_ACGTN_bases_in_motif =  False
+   discard_loci_with_non_ACGT_bases_in_reference =  False
+   discard_loci_with_non_ACGTN_bases_in_reference =  False
+   dont_simplify_motifs =         False
+   trim_loci =                    False
+   verbose =                      True
+   skip_gene_annotations =        True
+   skip_disease_loci_annotations =  True
+   skip_mappability_annotations =  True
+   mappability_track_bigwig =     gs://tgg-viewer/ref/GRCh38/mappability/GRCh38_no_alt_analysis_set_GCA_000001405.15-k36_m2.bw
+   known_disease_associated_loci =  ~/code/str-analysis/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/vamos_catalog.v2.1.bed.gz
+Wrote 1,243,954 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/vamos_catalog.v2.1.filtered.json.gz
+
+Filter stats:
+ 1,243,954 total input rows
+ 1,243,954 out of 1,243,954 (100%)  passed all filters
+
+Modification stats:
+    12,221 out of 1,243,954 ( 1%)  replaced 4bp motif with a simplified 2bp motif
+     3,535 out of 1,243,954 ( 0%)  replaced 6bp motif with a simplified 2bp motif
+     3,149 out of 1,243,954 ( 0%)  replaced 6bp motif with a simplified 3bp motif
+     3,046 out of 1,243,954 ( 0%)  replaced 4bp motif with a simplified 1bp motif
+     2,153 out of 1,243,954 ( 0%)  replaced 3bp motif with a simplified 1bp motif
+     2,057 out of 1,243,954 ( 0%)  replaced 5bp motif with a simplified 1bp motif
+     1,899 out of 1,243,954 ( 0%)  replaced 2bp motif with a simplified 1bp motif
+     1,214 out of 1,243,954 ( 0%)  replaced 6bp motif with a simplified 1bp motif
+       901 out of 1,243,954 ( 0%)  replaced 10bp motif with a simplified 1bp motif
+       794 out of 1,243,954 ( 0%)  replaced 8bp motif with a simplified 4bp motif
+       736 out of 1,243,954 ( 0%)  replaced 12bp motif with a simplified 4bp motif
+       725 out of 1,243,954 ( 0%)  replaced 11bp motif with a simplified 1bp motif
+       647 out of 1,243,954 ( 0%)  replaced 7bp motif with a simplified 1bp motif
+       596 out of 1,243,954 ( 0%)  replaced 10bp motif with a simplified 5bp motif
+       567 out of 1,243,954 ( 0%)  replaced 12bp motif with a simplified 1bp motif
+       482 out of 1,243,954 ( 0%)  replaced 12bp motif with a simplified 6bp motif
+       482 out of 1,243,954 ( 0%)  replaced 9bp motif with a simplified 1bp motif
+       434 out of 1,243,954 ( 0%)  replaced 13bp motif with a simplified 1bp motif
+       356 out of 1,243,954 ( 0%)  replaced 8bp motif with a simplified 1bp motif
+       197 out of 1,243,954 ( 0%)  replaced 8bp motif with a simplified 2bp motif
+       177 out of 1,243,954 ( 0%)  replaced 14bp motif with a simplified 1bp motif
+       170 out of 1,243,954 ( 0%)  replaced 14bp motif with a simplified 7bp motif
+       105 out of 1,243,954 ( 0%)  replaced 10bp motif with a simplified 2bp motif
+        95 out of 1,243,954 ( 0%)  replaced 16bp motif with a simplified 8bp motif
+        91 out of 1,243,954 ( 0%)  replaced 15bp motif with a simplified 1bp motif
+        73 out of 1,243,954 ( 0%)  replaced 12bp motif with a simplified 2bp motif
+        58 out of 1,243,954 ( 0%)  replaced 15bp motif with a simplified 5bp motif
+        56 out of 1,243,954 ( 0%)  replaced 16bp motif with a simplified 4bp motif
+        53 out of 1,243,954 ( 0%)  replaced 16bp motif with a simplified 1bp motif
+        51 out of 1,243,954 ( 0%)  replaced 9bp motif with a simplified 3bp motif
+        47 out of 1,243,954 ( 0%)  replaced 14bp motif with a simplified 2bp motif
+        25 out of 1,243,954 ( 0%)  replaced 12bp motif with a simplified 3bp motif
+        24 out of 1,243,954 ( 0%)  replaced 17bp motif with a simplified 1bp motif
+        23 out of 1,243,954 ( 0%)  replaced 16bp motif with a simplified 2bp motif
+        23 out of 1,243,954 ( 0%)  replaced 18bp motif with a simplified 9bp motif
+        19 out of 1,243,954 ( 0%)  replaced 18bp motif with a simplified 1bp motif
+        13 out of 1,243,954 ( 0%)  replaced 18bp motif with a simplified 2bp motif
+        11 out of 1,243,954 ( 0%)  replaced 20bp motif with a simplified 4bp motif
+         7 out of 1,243,954 ( 0%)  replaced 19bp motif with a simplified 1bp motif
+         7 out of 1,243,954 ( 0%)  replaced 15bp motif with a simplified 3bp motif
+         7 out of 1,243,954 ( 0%)  replaced 18bp motif with a simplified 6bp motif
+         6 out of 1,243,954 ( 0%)  replaced 20bp motif with a simplified 5bp motif
+         5 out of 1,243,954 ( 0%)  replaced 20bp motif with a simplified 1bp motif
+         4 out of 1,243,954 ( 0%)  replaced 20bp motif with a simplified 10bp motif
+         3 out of 1,243,954 ( 0%)  replaced 21bp motif with a simplified 1bp motif
+         3 out of 1,243,954 ( 0%)  replaced 20bp motif with a simplified 2bp motif
+         2 out of 1,243,954 ( 0%)  replaced 30bp motif with a simplified 2bp motif
+         2 out of 1,243,954 ( 0%)  replaced 22bp motif with a simplified 2bp motif
+         2 out of 1,243,954 ( 0%)  replaced 22bp motif with a simplified 11bp motif
+         2 out of 1,243,954 ( 0%)  replaced 24bp motif with a simplified 2bp motif
+         2 out of 1,243,954 ( 0%)  replaced 28bp motif with a simplified 4bp motif
+         2 out of 1,243,954 ( 0%)  replaced 21bp motif with a simplified 7bp motif
+         1 out of 1,243,954 ( 0%)  replaced 52bp motif with a simplified 26bp motif
+         1 out of 1,243,954 ( 0%)  replaced 58bp motif with a simplified 29bp motif
+         1 out of 1,243,954 ( 0%)  replaced 24bp motif with a simplified 4bp motif
+         1 out of 1,243,954 ( 0%)  replaced 36bp motif with a simplified 18bp motif
+         1 out of 1,243,954 ( 0%)  replaced 48bp motif with a simplified 24bp motif
+         1 out of 1,243,954 ( 0%)  replaced 42bp motif with a simplified 21bp motif
+         1 out of 1,243,954 ( 0%)  replaced 30bp motif with a simplified 6bp motif
+         1 out of 1,243,954 ( 0%)  replaced 129bp motif with a simplified 43bp motif
+         1 out of 1,243,954 ( 0%)  replaced 21bp motif with a simplified 3bp motif
+         1 out of 1,243,954 ( 0%)  replaced 26bp motif with a simplified 1bp motif
+         1 out of 1,243,954 ( 0%)  replaced 22bp motif with a simplified 1bp motif
+         1 out of 1,243,954 ( 0%)  replaced 24bp motif with a simplified 1bp motif
+         1 out of 1,243,954 ( 0%)  replaced 23bp motif with a simplified 1bp motif
+         1 out of 1,243,954 ( 0%)  replaced 56bp motif with a simplified 28bp motif
+         1 out of 1,243,954 ( 0%)  replaced 64bp motif with a simplified 32bp motif
+STEP #23: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/vamos_catalog.v2.1.filtered.json.gz
+--------------------------------------------------
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/vamos_catalog.v2.1.filtered.json.gz
+
+Stats for vamos_catalog.v2.1.filtered.json.gz:
+    1,243,954 total loci
+   94,952,055 base pairs spanned by all loci (3.075% of the genome)
+            0 out of  1,243,954 (  0.0%) loci define adjacent repeats
+    1,243,954 total repeat intervals
+      452,937 out of  1,243,954 ( 36.4%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
+      200,283 out of  1,243,954 ( 16.1%) repeat intervals are homopolymers
+            0 out of  1,243,954 (  0.0%) repeat intervals overlap each other by at least two motif lengths
+
+Ranges:
+   Motif size range: 1-667bp
+   Locus size range: 1-9977bp
+   Num repeats range: 0-7186x repeats
+
+   Max locus size =   9,977bp           @ chr10:18563565-18573542 (ATTCC)
+   Min reference repeat purity   =  0.00    @ chrY:57215630-57215892 (CGGCGCGCCTCTCTGCGCCTGCGCCGGCG)
+   Base-level   purity   median: 0.650,  mean: 0.639
+
+          chrX:     56,535 out of  1,243,954 (  4.5%) repeat intervals
+          chrY:     10,282 out of  1,243,954 (  0.8%) repeat intervals
+          chrM:          0 out of  1,243,954 (  0.0%) repeat intervals
+   alt contigs:          0 out of  1,243,954 (  0.0%) repeat intervals
+
+Motif size distribution:
+          1bp:    200,283 out of  1,243,954 ( 16.1%) repeat intervals
+          2bp:    219,819 out of  1,243,954 ( 17.7%) repeat intervals
+          3bp:     82,179 out of  1,243,954 (  6.6%) repeat intervals
+          4bp:    172,790 out of  1,243,954 ( 13.9%) repeat intervals
+          5bp:     95,968 out of  1,243,954 (  7.7%) repeat intervals
+          6bp:     87,357 out of  1,243,954 (  7.0%) repeat intervals
+       7-24bp:    275,758 out of  1,243,954 ( 22.2%) repeat intervals
+        25+bp:    109,800 out of  1,243,954 (  8.8%) repeat intervals
+
+Num repeats in reference:
+           1x:     58,497 out of  1,243,954 (  4.7%) repeat intervals
+           2x:    188,504 out of  1,243,954 ( 15.2%) repeat intervals
+           3x:     44,261 out of  1,243,954 (  3.6%) repeat intervals
+           4x:     30,702 out of  1,243,954 (  2.5%) repeat intervals
+           5x:     73,330 out of  1,243,954 (  5.9%) repeat intervals
+           6x:     78,951 out of  1,243,954 (  6.3%) repeat intervals
+           7x:     62,776 out of  1,243,954 (  5.0%) repeat intervals
+           8x:     52,995 out of  1,243,954 (  4.3%) repeat intervals
+           9x:     44,258 out of  1,243,954 (  3.6%) repeat intervals
+       10-15x:    169,652 out of  1,243,954 ( 13.6%) repeat intervals
+       16-25x:    214,728 out of  1,243,954 ( 17.3%) repeat intervals
+       26-35x:    110,428 out of  1,243,954 (  8.9%) repeat intervals
+       36-50x:     58,004 out of  1,243,954 (  4.7%) repeat intervals
+         51+x:     55,568 out of  1,243,954 (  4.5%) repeat intervals
+
+Reference repeat purity distribution:
+          0.0:     59,697 out of  1,243,954 (  4.8%) repeat intervals
+          0.1:     32,876 out of  1,243,954 (  2.6%) repeat intervals
+          0.2:     97,016 out of  1,243,954 (  7.8%) repeat intervals
+          0.3:    115,916 out of  1,243,954 (  9.3%) repeat intervals
+          0.4:    114,720 out of  1,243,954 (  9.2%) repeat intervals
+          0.5:    136,981 out of  1,243,954 ( 11.0%) repeat intervals
+          0.6:    124,080 out of  1,243,954 ( 10.0%) repeat intervals
+          0.7:     95,090 out of  1,243,954 (  7.6%) repeat intervals
+          0.8:    120,909 out of  1,243,954 (  9.7%) repeat intervals
+          0.9:    139,395 out of  1,243,954 ( 11.2%) repeat intervals
+          1.0:    207,274 out of  1,243,954 ( 16.7%) repeat intervals
+
+Locus sizes at each motif size:
+     1bp motifs: locus size range:      1 bp to   7,186 bp  (median:   26 bp) based on    200,283 loci. Mean base purity: 0.93.  
+     2bp motifs: locus size range:      1 bp to   8,605 bp  (median:   44 bp) based on    219,819 loci. Mean base purity: 0.56.  
+     3bp motifs: locus size range:      1 bp to   8,233 bp  (median:   34 bp) based on     82,179 loci. Mean base purity: 0.59.  
+     4bp motifs: locus size range:      1 bp to   7,719 bp  (median:   39 bp) based on    172,790 loci. Mean base purity: 0.59.  
+     5bp motifs: locus size range:      1 bp to   9,977 bp  (median:   38 bp) based on     95,968 loci. Mean base purity: 0.60.  
+     6bp motifs: locus size range:      1 bp to   6,553 bp  (median:   42 bp) based on     87,357 loci. Mean base purity: 0.53.  
+     7bp motifs: locus size range:      1 bp to   4,089 bp  (median:   44 bp) based on     48,866 loci. Mean base purity: 0.51.  
+     8bp motifs: locus size range:      1 bp to   3,180 bp  (median:   44 bp) based on     15,618 loci. Mean base purity: 0.51.  
+     9bp motifs: locus size range:      1 bp to   4,179 bp  (median:   41 bp) based on      7,668 loci. Mean base purity: 0.56.  
+    10bp motifs: locus size range:      1 bp to   5,217 bp  (median:   37 bp) based on      8,471 loci. Mean base purity: 0.58.  
+Wrote 1 rows to vamos_catalog.v2.1.filtered.catalog_stats.tsv
+STEP #24: python3 -u -m str_analysis.merge_loci  --output-prefix vamos_catalog_v2.1  --add-source-field  --output-format JSON  --overlapping-loci-action keep-first  --verbose  --write-merge-stats-tsv  --write-bed-files-with-new-loci  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/vamos_catalog.v2.1.filtered.json.gz
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+Added 4,863,041 out of 4,863,041 (100.0%) records from repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz to the output catalog
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-09-05/1_to_1000bp_motifs/vamos_catalog.v2.1.filtered.json.gz
+Added 603,703 out of 1,243,954 ( 48.5%) records from vamos_catalog.v2.1.filtered.json.gz to the output catalog
+    Discarded 640,251 out of 1,243,954 ( 51.5%) records since they overlapped an existing locus by at least 66.0% and had the same canonical motif
+Wrote 603,703 unique loci from vamos_catalog.v2.1.filtered.json.gz to vamos_catalog.v2.1.filtered.unique_loci.bed.gz
+Writing combined catalog to vamos_catalog_v2.1.json.gz
+Done writing 5,466,744 output records to vamos_catalog_v2.1.json.gz
+Source of loci in output catalog:
+   4,863,041 out of 5,466,744 (89.0%) repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+     603,703 out of 5,466,744 (11.0%) vamos_catalog.v2.1.filtered.json.gz
+Motif sizes:
+   1,583,168 out of 5,466,744 (29.0%) 1bp
+   1,443,800 out of 5,466,744 (26.4%) 3bp
+   1,001,422 out of 5,466,744 (18.3%) 2bp
+     643,379 out of 5,466,744 (11.8%) 4bp
+     430,599 out of 5,466,744 ( 7.9%) 7+bp
+     234,659 out of 5,466,744 ( 4.3%) 5bp
+     129,717 out of 5,466,744 ( 2.4%) 6bp
+Chromsomes:
+   5,151,845 out of 5,466,744 (94.2%) are on autosomes
+     270,379 out of 5,466,744 ( 4.9%) are on X
+      44,506 out of 5,466,744 ( 0.8%) are on Y
+          14 out of 5,466,744 ( 0.0%) are on M
+Wrote 2 rows to vamos_catalog_v2.1.merge_stats.tsv
+Done with comparisons. 
