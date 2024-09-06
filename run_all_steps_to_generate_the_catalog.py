@@ -351,21 +351,25 @@ EOF
 		f"{annotated_catalog_path}", step_number=18)
 
 	# copy files to the release_draft folder and compute catalog stats
-	if release_tar_gz_path is None:
-		for path in release_files:
-			if path.endswith(".bed"):
+	updated_release_files = []
+	for path in release_files:
+		if path.endswith(".bed"):
+			if not os.path.isfile(f"{path}.gz"):
 				if path.endswith(".TRGT.bed"):
 					run(f"gzip -f {path}", step_number=19)  # TRGT v1.1.1 and lower only works with gzip, not bgzip
 				else:
 					run(f"bgzip -f {path}", step_number=19)
-				run(f"cp {path}.gz {release_draft_folder}", step_number=19)
-			else:
-				if path.endswith(".json") or path.endswith(".json.gz") and ".EH." in path:
-					run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=19)
-				run(f"cp {path} {release_draft_folder}", step_number=19)
+			updated_release_files.append(f"{path}.gz")
+		else:
+			if path.endswith(".json") or path.endswith(".json.gz") and ".EH." in path:
+				run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=19)
+			updated_release_files.append(path)
 
+	if release_tar_gz_path is None:
+		for path in updated_release_files:
+			run(f"cp {path} {release_draft_folder}", step_number=19)
 	else:
-		run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in release_files]), step_number=19)
+		run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in updated_release_files]), step_number=19)
 		run(f"cp {release_tar_gz_path} {release_draft_folder}", step_number=19)
 
 	run(f"python3 -m str_analysis.compute_catalog_stats --verbose {annotated_catalog_path}", step_number=20)
