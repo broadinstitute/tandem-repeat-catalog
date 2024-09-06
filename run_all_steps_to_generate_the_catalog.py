@@ -18,16 +18,16 @@ fi
 
 def run(command, step_number=None):
 	command = re.sub("[ \\t]{2,}", "  ", command)  # remove extra spaces
-	if step_number is not None:
-		print(f"STEP #{step_number}: {command}")
-	else:
-		print(command)
 	if not args.dry_run or command.startswith("mkdir"):
 		if step_number is None or (
 		   	not (args.only_step is not None and step_number != args.only_step) and
 			not (args.start_with_step is not None and step_number < args.start_with_step) and
 			not (args.end_with_step is not None and step_number > args.end_with_step)
 		):
+			if step_number is not None:
+				print(f"STEP #{step_number}: {command}")
+			else:
+				print(command)
 			subprocess.run(command, shell=True, check=True)
 
 def chdir(d):
@@ -39,7 +39,7 @@ def chdir(d):
 parser = argparse.ArgumentParser()
 parser.add_argument("--hg38-reference-fasta", default="hg38.fa", help="Path of hg38 reference genome FASTA file")
 parser.add_argument("--gencode-gtf", default="gencode.v46.basic.annotation.gtf.gz", help="Gene annotations GTF file")
-parser.add_argument("--output-prefix", default="simple_repeat_catalog_v1.hg38")
+parser.add_argument("--output-prefix", default="repeat_catalog_v1.hg38")
 parser.add_argument("--skip-variation-cluster-annotations", action="store_true", help="Skip adding variation cluster annotations to the catalog")
 parser.add_argument("--only-step", type=int, help="Only run this one step")
 parser.add_argument("--start-with-step", type=int, help="Start with a specific step number")
@@ -255,7 +255,7 @@ EOF
 	if args.variation_clusters_bed:
 		variation_clusters_release_filename = f"{args.variation_clusters_output_prefix}.TRGT.bed.gz"
 		variation_clusters_and_isolated_TRs_release_filename = args.variation_clusters_output_prefix.replace(
-			"variation_clusters", "variation_clusters_and_isolated_TRs")
+			"variation_clusters", "variation_clusters_and_isolated_TRs") + ".TRGT.bed.gz"
 
 		assert variation_clusters_and_isolated_TRs_release_filename != variation_clusters_release_filename
 
@@ -271,7 +271,7 @@ EOF
 
 		run(f"""python3 {base_dir}/scripts/add_isolated_loci_to_variation_cluster_catalog.py \
 			--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} \
-			-o {variation_clusters_and_isolated_TRs_release_filename}.TRGT.bed \
+			-o {variation_clusters_and_isolated_TRs_release_filename} \
 			{args.variation_clusters_bed} \
 			{annotated_catalog_path}""", step_number=8)
 
@@ -354,7 +354,10 @@ EOF
 	if release_tar_gz_path is None:
 		for path in release_files:
 			if path.endswith(".bed"):
-				run(f"bgzip -f {path}", step_number=19)
+				if path.endswith(".TRGT.bed"):
+					run(f"gzip -f {path}", step_number=19)  # TRGT v1.1.1 and lower only works with gzip, not bgzip
+				else:
+					run(f"bgzip -f {path}", step_number=19)
 				run(f"cp {path}.gz {release_draft_folder}", step_number=19)
 			else:
 				if path.endswith(".json") or path.endswith(".json.gz") and ".EH." in path:
