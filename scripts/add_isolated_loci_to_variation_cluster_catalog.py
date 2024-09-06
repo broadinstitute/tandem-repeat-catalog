@@ -38,6 +38,8 @@ def main():
 	if not args.output_bed_path:
 		args.output_bed_path = re.sub(".bed(.b?gz)?$", "", args.input_variation_clusters_bed_path)
 		args.output_bed_path += ".and_isolated_TRs.bed"
+	elif args.output_bed_path.endswith(".bed.gz"):
+		args.output_bed_path = args.output_bed_path[:-3]
 	elif not args.output_bed_path.endswith(".bed"):
 		parser.error("--output-bed-path must have a '.bed' suffix")
 
