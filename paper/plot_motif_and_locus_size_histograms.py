@@ -8,7 +8,7 @@ import seaborn as sns
 
 def main():
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--stats-table-path", default="compare_catalogs/combined_catalog_stats.all_13_catalogs.tsv")
+    parser.add_argument("--stats-table-path", default="combined_catalog_stats.all_12_catalogs.tsv")
     parser.add_argument("--grid-width", type=int, default=3, help="Number of columns in the trellis grid")
     parser.add_argument("--grid-height", type=int, default=4, help="Number of rows in the trellis grid")
     g1 = parser.add_mutually_exclusive_group()
@@ -29,13 +29,19 @@ def main():
     df = pd.read_table(catalog_stats_table_path)
     df = df[df["catalog"] != "known_disease_associated_loci"]
     df["catalog"] = df["catalog"].replace({
-            "primary_known_disease_associated_loci": "Known disease-associated loci",
-            "mukamel_VNTR_catalog": " VNTR catalog from Mukamel et al. 2021",
-            "comprehensive_catalog_from_Chiu_et_al": "Comprehensive catalog from Chiu et al. 2024",
-            "perfect_repeats_in_hg38": "All perfect repeats (≥ 3x and ≥ 9bp) in hg38",
-            "illumina_catalog": "Illumina catalog of polymorphic loci in 1kGP",
-            "polymorphic_loci_in_HPRC_assemblies": "Polymorphic loci in 51 HPRC assemblies",
-        })
+        "KnownDiseaseAssociatedLoci": "Known disease-associated loci",
+        "Illumina174kPolymorphicTRs": "Illumina 174k TRs polymorphic in 1kGP",
+        "UCSC_SimpleRepeatTrack": "UCSC simple repeat track",
+        "VamosCatalog_v2.1": "vamos catalog v2.1",
+        "GangSTR_v17": "GangSTR catalog v17",
+        "HipSTR_Catalog": "HipSTR catalog",
+        "PolymorphicTRsInT2TAssemblies": "Polymorphic TRs in 78 HPRC assemblies",
+        "Adotto_v1.2": "Adotto v1.2",
+        "PerfectRepeatsInReference": "All perfect repeats (≥ 3x and ≥ 9bp) in hg38",
+        "PopSTR_Catalog": "PopSTR catalog",
+        "PlatinumTRs_v1.0": "Platinum TRs v1.0",
+        "Chiu_et_al": "Comprehensive catalog from Chiu et al. 2024",
+    })
 
     print(f"Parsed {len(df)} catalogs from {catalog_stats_table_path}")
 
