@@ -1,21 +1,23 @@
-"""This script takes a TRGT catalog BED file and outputs a new BED file in LongTR format."""
+"""This script takes a TRGT catalog BED file and outputs a new BED file in LongTR format.
+It expects the TRGT locus ID to have the format "chr1-123456-123467-CAG" for isolated repeats, and
+"chr1-123456-123467-CAG,chr1-123467-123489-CTG" for compound definitions that contain multiple adjacent TRs.
+"""
 
 import argparse
 import collections
 import gzip
-import ijson
 import os
 import simplejson as json
 import re
 import sys
 import tqdm
 
-from str_analysis.utils.misc_utils import parse_interval
-from str_analysis.utils.eh_catalog_utils import get_variant_catalog_iterator
-from str_analysis.convert_expansion_hunter_catalog_to_trgt_catalog import convert_expansion_hunter_record_to_trgt_row
 
 def compute_dominant_repeat_unit_length(info_fields_dict, known_pathogenic_reference_regions_lookup):
-    """Compute the dominant repeat unit length for a TR locus.
+    """Compute the dominant repeat unit length for a TR locus. For compound definitions (those that span multiple
+    adjacent TRs), the repeat unit length is computed as either the maximum repeat unit length across constituent TRs
+    (for known disease-associated loci) or the repeat unit length of the constituent TR that spans the largest interval
+    (for all other loci).
 
     Args:
         info_fields_dict (dict): A dictionary of info fields for a TR locus
@@ -32,7 +34,6 @@ def compute_dominant_repeat_unit_length(info_fields_dict, known_pathogenic_refer
             _, repeat_unit_length = max((len(ru), len(ru)) for ru in info_fields_dict["MOTIFS"].split(","))
             repeat_unit_lengths.append((10**9, repeat_unit_length))
         elif locus_id.count("-") == 3:
-
             chrom, start_0based, end, repeat_unit = locus_id.split("-")
             repeat_unit_lengths.append((int(end) - int(start_0based), len(repeat_unit)))
         else:
