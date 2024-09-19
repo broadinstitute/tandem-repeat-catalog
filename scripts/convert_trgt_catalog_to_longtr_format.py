@@ -48,8 +48,7 @@ def main():
     parser.add_argument("--known-pathogenic-loci-json-path", required=True, help="Path of ExpansionHunter catalog "
                         "containing known pathogenic loci. This is used to retrieve the original locus boundaries for "
                         "these loci since their IDs don't contain these coordinates the way that IDs of other loci do.")
-    parser.add_argument("-o", "--output-bed-path",
-                        help="Path of output BED file.")
+    parser.add_argument("-o", "--output-bed-path", help="Path of output BED file.")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--show-progress-bar", action="store_true", help="Show a progress bar")
     parser.add_argument("input_trgt_catalog_bed_path", help="Path of the input TRGT catalog BED file")
@@ -78,7 +77,6 @@ def main():
             else:
                 known_pathogenic_reference_regions_lookup[locus["LocusId"]] = locus["ReferenceRegion"]
 
-    # get locus ids of TRs in variation clusters
     counter = collections.Counter()
     output_bed_file = open(args.output_bed_path, "wt")
     fopen = gzip.open if args.input_trgt_catalog_bed_path.endswith("gz") else open
