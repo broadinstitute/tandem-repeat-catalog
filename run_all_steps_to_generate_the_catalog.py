@@ -278,6 +278,12 @@ EOF
 		release_files.append(variation_clusters_release_filename)
 		release_files.append(variation_clusters_and_isolated_TRs_release_filename)
 
+		run(f"""python3 {base_dir}/scripts/convert_trgt_catalog_to_longtr_format.py {variation_clusters_release_filename}""")
+		run(f"""python3 {base_dir}/scripts/convert_trgt_catalog_to_longtr_format.py {variation_clusters_and_isolated_TRs_release_filename}""")
+
+		release_files.append(variation_clusters_release_filename.replace(".TRGT.bed.gz", ".LongTR.bed.gz"))
+		release_files.append(variation_clusters_and_isolated_TRs_release_filename.replace(".TRGT.bed.gz", ".LongTR.bed.gz"))
+
 	# add allele frequencies to the catalog
 	run(f"""python3 -u {base_dir}/scripts/add_allele_frequency_annotations.py \
 			-o {annotated_catalog_path}.with_allele_frequencies.json.gz  {annotated_catalog_path}""", step_number=9)
