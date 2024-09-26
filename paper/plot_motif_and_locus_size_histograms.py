@@ -1,9 +1,13 @@
 import argparse
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import os
 import pandas as pd
 from pprint import pprint
 import seaborn as sns
+
+mpl.rcParams["pdf.fonttype"] = 42
+plt.rcParams["svg.fonttype"] = "none"
 
 
 def main():
