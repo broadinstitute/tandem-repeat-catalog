@@ -278,21 +278,25 @@ EOF
 		release_files.append(variation_clusters_release_filename)
 		release_files.append(variation_clusters_and_isolated_TRs_release_filename)
 
-		run(f"""python3 {base_dir}/scripts/convert_trgt_catalog_to_longtr_format.py {variation_clusters_release_filename}""")
-		run(f"""python3 {base_dir}/scripts/convert_trgt_catalog_to_longtr_format.py {variation_clusters_and_isolated_TRs_release_filename}""")
+		run(f"python3 {base_dir}/scripts/convert_trgt_catalog_to_longtr_format.py "
+			f"--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} "
+			f"{variation_clusters_release_filename}", step_number=9)
+		run(f"python3 {base_dir}/scripts/convert_trgt_catalog_to_longtr_format.py "
+			f"--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} "
+			f"{variation_clusters_and_isolated_TRs_release_filename}", step_number=9)
 
 		release_files.append(variation_clusters_release_filename.replace(".TRGT.bed.gz", ".LongTR.bed.gz"))
 		release_files.append(variation_clusters_and_isolated_TRs_release_filename.replace(".TRGT.bed.gz", ".LongTR.bed.gz"))
 
 	# add allele frequencies to the catalog
-	run(f"""python3 -u {base_dir}/scripts/add_allele_frequency_annotations.py \
-			-o {annotated_catalog_path}.with_allele_frequencies.json.gz  {annotated_catalog_path}""", step_number=9)
+	run(f"""python3 -u {base_dir}/scripts/add_allele_frequency_annotations.py --add-t2t-assembly-frequencies-to-overlapping-loci \
+			-o {annotated_catalog_path}.with_allele_frequencies.json.gz  {annotated_catalog_path}""", step_number=10)
 
-	run(f"mv {annotated_catalog_path}.with_allele_frequencies.json.gz {annotated_catalog_path}", step_number=9)
+	run(f"mv {annotated_catalog_path}.with_allele_frequencies.json.gz {annotated_catalog_path}", step_number=10)
 
 	# convert to BED
 	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_bed --split-adjacent-repeats "
-		f"{annotated_catalog_path}  --output-file {output_prefix}.bed.gz", step_number=10)
+		f"{annotated_catalog_path}  --output-file {output_prefix}.bed.gz", step_number=11)
 
 	# annotate with "TRsInRegion" based on adjacent loci
 	if motif_size_label == "1_to_1000bp_motifs":
@@ -304,9 +308,9 @@ EOF
 		f"--add-extra-field TRsInRegion "
 		f"--only-add-extra-fields "
 		f"-o {annotated_catalog_path}.with_adjacent_loci_annotation.json.gz "
-		f"{annotated_catalog_path}", step_number=11)
+		f"{annotated_catalog_path}", step_number=12)
 
-	run(f"mv {annotated_catalog_path}.with_adjacent_loci_annotation.json.gz {annotated_catalog_path}", step_number=11)
+	run(f"mv {annotated_catalog_path}.with_adjacent_loci_annotation.json.gz {annotated_catalog_path}", step_number=12)
 
 	# convert to TSV
 	run(f"""python3 << EOF
@@ -339,22 +343,22 @@ output_tsv_path = "{annotated_catalog_path.replace('.json.gz', '') + '.tsv.gz'}"
 df.to_csv(output_tsv_path, sep="\\t", index=False)
 print(f"Wrote {{len(df):,d}} rows to {{output_tsv_path}} with columns: {{pformat(list(df.columns))}}")
 EOF
-""", step_number=12)
+""", step_number=13)
 
 	# convert the catalog from ExpansionHunter catalog format to TRGT, LongTR, HipSTR, and GangSTR formats
-	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_trgt_catalog --split-adjacent-repeats {annotated_catalog_path}  --output-file {output_prefix}.TRGT.bed", step_number=13)
-	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_longtr_format  {annotated_catalog_path}  --output-file {output_prefix}.LongTR.bed", step_number=14)
-	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_hipstr_format  {annotated_catalog_path}  --output-file {output_prefix}.HipSTR.bed", step_number=15)
-	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_gangstr_spec   {annotated_catalog_path}  --output-file {output_prefix}.GangSTR.bed", step_number=16)
+	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_trgt_catalog --split-adjacent-repeats {annotated_catalog_path}  --output-file {output_prefix}.TRGT.bed", step_number=14)
+	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_longtr_format  {annotated_catalog_path}  --output-file {output_prefix}.LongTR.bed", step_number=15)
+	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_hipstr_format  {annotated_catalog_path}  --output-file {output_prefix}.HipSTR.bed", step_number=16)
+	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_gangstr_spec   {annotated_catalog_path}  --output-file {output_prefix}.GangSTR.bed", step_number=17)
 
 	# Confirm that the TRGT catalog passes 'trgt validate'
-	run(f"trgt validate --genome {args.hg38_reference_fasta}  --repeats {output_prefix}.TRGT.bed", step_number=17)
+	run(f"trgt validate --genome {args.hg38_reference_fasta}  --repeats {output_prefix}.TRGT.bed", step_number=18)
 
 	# Perform basic internal consistency checks on the JSON catalog
 	run(f"python3 {base_dir}/scripts/validate_catalog.py " +
 		f"--known-pathogenic-loci-json-path {source_catalog_paths['KnownDiseaseAssociatedLoci']} " +
 		("--check-for-presence-of-annotations --check-for-presence-of-all-known-loci " if motif_size_label == "1_to_1000bp_motifs" else "") +
-		f"{annotated_catalog_path}", step_number=18)
+		f"{annotated_catalog_path}", step_number=19)
 
 	# copy files to the release_draft folder and compute catalog stats
 	updated_release_files = []
@@ -362,23 +366,23 @@ EOF
 		if path.endswith(".bed"):
 			if not os.path.isfile(f"{path}.gz"):
 				if path.endswith(".TRGT.bed"):
-					run(f"gzip -f {path}", step_number=19)  # TRGT v1.1.1 and lower only works with gzip, not bgzip
+					run(f"gzip -f {path}", step_number=20)  # TRGT v1.1.1 and lower only works with gzip, not bgzip
 				else:
-					run(f"bgzip -f {path}", step_number=19)
+					run(f"bgzip -f {path}", step_number=20)
 			updated_release_files.append(f"{path}.gz")
 		else:
 			if path.endswith(".json") or path.endswith(".json.gz") and ".EH." in path:
-				run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=19)
+				run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=20)
 			updated_release_files.append(path)
 
 	if release_tar_gz_path is None:
 		for path in updated_release_files:
-			run(f"cp {path} {release_draft_folder}", step_number=19)
+			run(f"cp {path} {release_draft_folder}", step_number=20)
 	else:
-		run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in updated_release_files]), step_number=19)
-		run(f"cp {release_tar_gz_path} {release_draft_folder}", step_number=19)
+		run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in updated_release_files]), step_number=20)
+		run(f"cp {release_tar_gz_path} {release_draft_folder}", step_number=20)
 
-	run(f"python3 -m str_analysis.compute_catalog_stats --verbose {annotated_catalog_path}", step_number=20)
+	run(f"python3 -m str_analysis.compute_catalog_stats --verbose {annotated_catalog_path}", step_number=21)
 
 	# report hours, minutes, seconds relative to start_time
 	diff = time.time() - start_time
