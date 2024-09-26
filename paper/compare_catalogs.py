@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import gzip
 import json
 import os
 import pandas as pd
@@ -63,8 +64,8 @@ catalogs_in_order = [
 	("PlatinumTRs_v1.0", "https://zenodo.org/records/13178746/files/human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.bed.gz"),
 	("Chiu_et_al", "https://zenodo.org/records/11522276/files/hg38.v1.bed.gz"),
 	("PerfectRepeatsInReference", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz"),
-	("PolymorphicTRsInT2TAssemblies", "https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/combined.78_samples.positive_loci.json"),
-	("MukamelVNTRs", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/mukamel_VNTR_catalog.bed.gz"),
+	("PolymorphicTRsInT2TAssemblies", "https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/merged_expansion_hunter_catalog.78_samples.json.gz"),
+	#("MukamelVNTRs", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/mukamel_VNTR_catalog.bed.gz"),
 ]
 
 
@@ -118,7 +119,8 @@ if "PolymorphicTRsInT2TAssemblies" in catalog_paths and (
 			f"--max-motif-size 6 "
 			f"--output-path {output_path} "
 			f"{catalog_paths['PolymorphicTRsInT2TAssemblies']}")
-	catalog_paths["PolymorphicTRsInT2TAssemblies"] = output_path
+	catalog_paths["Polymorphic3to6bpMotifTRsInT2TAssemblies"] = output_path
+	catalogs_in_order += [("Polymorphic3to6bpMotifTRsInT2TAssemblies", output_path)]
 else:
 	print("WARNING: PolymorphicTRsInT2TAssemblies catalog not included in list of catalogs")
 
@@ -137,7 +139,7 @@ if "GangSTR_v17" in catalog_paths and (
 	not args.keyword or args.keyword.lower() in "GangSTR_v17".lower() or args.keyword.lower() in catalog_paths["GangSTR_v17"].lower()):
 	path_after_conversion = catalog_paths["GangSTR_v17"].replace(".bed.gz", ".catalog.json.gz")
 	if not os.path.isfile(path_after_conversion):
-		run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_variant_catalog --verbose {catalog_paths['GangSTR_v17']} -o {path_after_conversion}")
+		run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose {catalog_paths['GangSTR_v17']} -o {path_after_conversion}")
 	catalog_paths["GangSTR_v17"] = path_after_conversion
 else:
 	print("WARNING: GangSTR catalog not included in list of catalogs")
@@ -169,6 +171,32 @@ if "Chiu_et_al" in catalog_paths and (
 		run(f"gunzip -c {catalog_paths['Chiu_et_al']} | tail -n +3 | cut -f 1-4 | awk 'BEGIN {{OFS=\"\\t\"}} {{ print( $1, $2 - 1, $3, $4 ) }}' | gzip -c - > {output_path}")
 	catalog_paths["Chiu_et_al"] = output_path
 
+# get the number of loci in catalog_paths['Polymorphic3to6bpMotifTRsInT2TAssemblies']
+for comparison_catalog_name in "Polymorphic3to6bpMotifTRsInT2TAssemblies", "PolymorphicTRsInT2TAssemblies":
+	print("=="*50)
+	with gzip.open(catalog_paths[comparison_catalog_name]) as f:
+		number_of_loci_in_t2t_assembly_test_set = len(json.load(f))
+
+	print(f"Number of loci in {comparison_catalog_name}: {number_of_loci_in_t2t_assembly_test_set:,d}")
+
+	comparison_bed_file = re.sub("(.json|.json.gz)$", "", catalog_paths[comparison_catalog_name]) + ".bed.gz"
+	for catalog_name, path in catalog_paths.items():
+		if not os.path.isfile(path):
+			raise FileNotFoundError(f"Catalog file not found: {path}")
+		if path.endswith("json") or path.endswith("json.gz"):
+			bed_path = re.sub("(.json|.json.gz)$", "", path) + ".bed.gz"
+			if not os.path.isfile(bed_path):
+				print(f"Converting {path} to BED format")
+				run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_bed -o {bed_path} {path}")
+		else:
+			bed_path = path
+
+		diff_bed_path = re.sub("(.bed|.bed.gz)$", "", path) + ".missing_loci.bed.gz"
+		run(f"bedtools subtract -A -a {comparison_bed_file} -b {bed_path} | bgzip > {diff_bed_path}")
+		with gzip.open(diff_bed_path) as f:
+			unique_locus_count = sum(1 for _ in f)
+		print(f"Unique loci in {catalog_name}: {unique_locus_count} out of {number_of_loci_in_t2t_assembly_test_set} ({int(unique_locus_count)/number_of_loci_in_t2t_assembly_test_set:.0%})")
+
 all_stats_tsv_paths = {}
 catalog_paths_for_outer_join = []
 for catalog_name, _ in catalogs_in_order:
@@ -180,16 +208,16 @@ for catalog_name, _ in catalogs_in_order:
 	annotated_catalog_path = re.sub("(.json|.bed)(.gz)?$", "", path) + ".annotated.json.gz"
 	if not os.path.isfile(annotated_catalog_path) or args.force_annotate:
 		run(f"""python3 -m str_analysis.annotate_and_filter_str_catalog \
-			--verbose \
-			--trim-loci \
-			--reference-fasta {args.hg38_reference_fasta} \
-			--skip-gene-annotations \
-			--skip-disease-loci-annotations \
-			--output-path {annotated_catalog_path} \
-			{path}""")
+								--verbose \
+								--trim-loci \
+								--reference-fasta {args.hg38_reference_fasta} \
+								--skip-gene-annotations \
+								--skip-disease-loci-annotations \
+								--output-path {annotated_catalog_path} \
+								{path}""")
 
 	if args.outer_join and catalog_name not in {"PerfectRepeatsInReference", "MukamelVNTRs"}:
-		catalog_paths_for_outer_join.append(f"{catalog_name.title().replace(' ', '_')}:{annotated_catalog_path}")
+		catalog_paths_for_outer_join.append(f"{catalog_name.replace(' ', '_')}:{annotated_catalog_path}")
 
 	# just compute stats
 	stats_tsv_path = re.sub("(.json|.bed)(.gz)?$", "", annotated_catalog_path) + ".catalog_stats.tsv"
@@ -199,19 +227,18 @@ for catalog_name, _ in catalogs_in_order:
 
 	all_stats_tsv_paths[catalog_name] = stats_tsv_path
 
-if args.outer_join:
-	run(f"""python3 -u -m str_analysis.merge_loci \
-		--add-source-field \
-		--add-found-in-fields \
-		--output-format JSON \
-		--overlapping-loci-action keep-first \
-		--write-merge-stats-tsv \
-		--write-outer-join-overlap-table \
-		--write-bed-files-with-new-loci \
-		--outer-join-overlap-table-min-sources 2 \
-		--output-prefix merged.all_{len(all_stats_tsv_paths)}_catalogs \
-		{' '.join(catalog_paths_for_outer_join)}""")
+run(f"""python3 -u -m str_analysis.merge_loci \
+						--add-source-field \
+						--add-found-in-fields \
+						--output-format JSON \
+						--overlapping-loci-action keep-first \
+						--write-merge-stats-tsv \
+						--write-outer-join-table \
+						--output-prefix merged.all_{len(all_stats_tsv_paths)}_catalogs \
+						{' '.join(catalog_paths_for_outer_join)}""")
 
+# --write-bed-files-with-unique-loci \
+# --outer-join-overlap-table-min-sources 1 \
 print(f"Combining stats from all {len(all_stats_tsv_paths)} catalogs")
 dfs = []
 for catalog_name, stats_tsv_path in all_stats_tsv_paths.items():
