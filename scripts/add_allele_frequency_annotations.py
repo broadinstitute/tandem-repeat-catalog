@@ -156,7 +156,7 @@ with fopen(os.path.expanduser(args.output_path), "wt") as out:
                     (interval.begin > start_0based and interval.end > end) or (interval.begin < start_0based and interval.end < end)
                 ):
                     # Adjust the genotype repeat count by the difference in locus boundaries since changes in locus
-                    # bondaries affect the overall repeat count in each allele.
+                    # boundaries affect the overall repeat count in each allele.
                     locus_boundary_diff = ((matching_interval.end - matching_interval.begin) - (end - start_0based))//len(record["CanonicalMotif"])
                     histogram_dict_adjusted = {
                         max(0, repeat_number - locus_boundary_diff): count for repeat_number, count in histogram_dict.items()
