@@ -3,13 +3,13 @@
 ### Tandem Repeat Catalog & Variation Clusters
 
 This repo provides a general purpose genome-wide TR catalog for genotyping TR copy numbers in short read or long read sequencing data. 
-It also flags TRs that reside within variation clusters, and provides locus defitions that make it easier to perform sequence level analysis of these more complex regions.
+It also flags TRs that reside within variation clusters, and provides locus definitions that support more accurate sequence-level analysis of these more complex regions.
 Locus definitions are provided in the formats expected by many existing TR genotyping tools. 
 This project is being developed as part of a collaboration between Ben Weisburd, Egor Dolzhenko, and others. 
 
 [Release v1.0](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v1.0) is now available in draft form. 
 
-File names that start with `repeat_catalog_v1.hg38` specify narrow locus boundaries around TRs and are designed for repeat copy number analysis. They contain `4,863,041` TRs. The following formats are provided:
+File names that start with `repeat_catalog_v1.hg38` contain `4,863,041` TRs and are designed for repeat copy number analysis. The following formats are provided:
 
 <br />
 <table>
@@ -30,15 +30,16 @@ Variation clusters extend the boundaries of TRs to encompass any adjacent polymo
 <table>
    <tr><td><b>File name</b></td><td align="center"><b>Size</b></td><td><b>Description</b></td></tr>
    <tr><td>variation_clusters_v1.hg38.TRGT.bed.gz</td><td align="right">273,112</td><td>variation clusters for use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
+   <tr><td>variation_clusters_v1.hg38.LongTR.bed.gz</td><td align="right">273,112</td><td>variation clusters for use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
    <tr><td>variation_clusters_and_isolated_repeats_v1.hg38.TRGT.bed.gz</td><td align="right">4,542,828</td><td>variation clusters + isolated repeats (ie. all tandem repeat catalog TRs that are not inside variation clusters) for use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
+   <tr><td>variation_clusters_and_isolated_repeats_v1.hg38.LongTR.bed.gz</td><td align="right">4,542,828</td><td>variation clusters + isolated repeats (ie. all tandem repeat catalog TRs that are not inside variation clusters) for use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
 </table>
 
 
 ### Goals
 
-- Create a catalog that is as sensitive (includes all polymorphic TR loci in the human genome) and specific (excludes non-polymorphic loci) as possible
-- Share the catalog in formats that can be used directly with most TR genotyping tools for both short read and long read data. 
-- Provide rich annotations
+- Provide the catalog in the formats expected by existing TR genotyping tools for both short-read and long-read data
+- Include rich annotations
 
 Although our initial focus is on the human genome, we'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
 
