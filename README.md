@@ -38,9 +38,8 @@ Variation clusters extend the boundaries of TRs to encompass any adjacent polymo
 
 ### Goals
 
-- Create a catalog that is as sensitive (includes all polymorphic TR loci in the human genome) and specific (excludes non-polymorphic loci) as possible
-- Share the catalog in formats that can be used directly with most TR genotyping tools for both short read and long read data. 
-- Provide rich annotations
+- Provide the catalog in the formats expected by existing TR genotyping tools for both short-read and long-read data
+- Include rich annotations
 
 Although our initial focus is on the human genome, we'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
 
