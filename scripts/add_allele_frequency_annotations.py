@@ -128,21 +128,24 @@ with fopen(os.path.expanduser(args.output_path), "wt") as out:
         if key in histograms_from_illumina_174k:
             counters["found_illumina174_histogram"] += 1
             record["AlleleFrequenciesFromIllumina174k"] = histograms_from_illumina_174k[key]
-            record["VariationStdevFromIllumina174k"] = stdev_from_illumina_174k[key]
+            record["StdevFromIllumina174k"] = stdev_from_illumina_174k[key]
 
         if key in histograms_from_t2t_assemblies:
             counters["found_t2t_assemblies_histogram"] += 1
             record["AlleleFrequenciesFromT2TAssemblies"] = histograms_from_t2t_assemblies[key]
-            record["VariationStdevFromT2TAssemblies"] = stdev_from_t2t_assemblies[key]
+            record["StdevFromT2TAssemblies"] = stdev_from_t2t_assemblies[key]
         else:
             # check for overlap with nearby interval
+            if not record.get("CanonicalMotif"):
+                record["CanonicalMotif"] = compute_canonical_motif(record["LocusStructure"].strip("()*+").upper())
+            motif_size = len(record["CanonicalMotif"])
+
             matching_interval = None
             for interval in interval_trees_for_t2t_assemblies[chrom].overlap(start_0based, end):
-                if not record.get("CanonicalMotif"):
-                    record["CanonicalMotif"] = compute_canonical_motif(record["LocusStructure"].strip("()*+").upper())
                 if interval.data["CanonicalMotif"] != record["CanonicalMotif"]:
                     continue
-                if interval.overlap_size(start_0based, end) < 2*len(record["CanonicalMotif"]):
+                if interval.length() >= 2*motif_size and (end-start_0based) >= 2*motif_size and interval.overlap_size(start_0based, end) < 2 * motif_size:
+                    # if the two intervals overlap by less than 2x motif length, skip it
                     continue
 
                 matching_interval = interval
@@ -151,17 +154,27 @@ with fopen(os.path.expanduser(args.output_path), "wt") as out:
             if matching_interval:
                 counters["found_t2t_assemblies_histogram_via_overlap"] += 1
                 histogram_dict = matching_interval.data["HistogramDict"]
-                record["VariationStdevFromT2TAssemblies"] = get_stdev_of_allele_histogram_dict(histogram_dict)
-                if args.add_t2t_assembly_frequencies_to_overlapping_loci and not (
+                record["StdevFromT2TAssemblies"] = get_stdev_of_allele_histogram_dict(histogram_dict)
+
+                # allow equal-sized intervals thata are shifted relative to each other
+                intervals_are_the_same_size = matching_interval.length()//motif_size == (end - start_0based)//motif_size
+                # allow one interval to contain the other
+                one_interval_contains_the_other = not (
                     (interval.begin > start_0based and interval.end > end) or (interval.begin < start_0based and interval.end < end)
+                )
+                if args.add_t2t_assembly_frequencies_to_overlapping_loci and (
+                    intervals_are_the_same_size or
+                    one_interval_contains_the_other
                 ):
                     # Adjust the genotype repeat count by the difference in locus boundaries since changes in locus
                     # boundaries affect the overall repeat count in each allele.
                     locus_boundary_diff = ((matching_interval.end - matching_interval.begin) - (end - start_0based))//len(record["CanonicalMotif"])
                     histogram_dict_adjusted = {
-                        max(0, repeat_number - locus_boundary_diff): count for repeat_number, count in histogram_dict.items()
+                        repeat_number - locus_boundary_diff: count for repeat_number, count in histogram_dict.items()
                     }
-                    record["AlleleFrequenciesFromT2TAssemblies"] = convert_allele_histogram_dict_to_string(histogram_dict_adjusted)
+                    if all(repeat_number >= 0 for repeat_number in histogram_dict_adjusted.keys()):
+                        # only use the histogram if all repeat numbers are non-negative. Othewise, something went wrong with the size adjustment
+                        record["AlleleFrequenciesFromT2TAssemblies"] = convert_allele_histogram_dict_to_string(histogram_dict_adjusted)
 
         if i > 0:
             out.write(", ")
