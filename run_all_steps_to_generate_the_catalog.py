@@ -56,7 +56,7 @@ args = parser.parse_args()
 print("TIMESTAMP:", args.timestamp)
 
 
-for key in "hg38_reference_fasta", "gencode_gtf", "variation_clusters_bed":
+for key in "hg38_reference_fasta", "gencode_gtf", "variation_clusters_bed", "lps_annotations":
 	path = getattr(args, key)
 	if not os.path.isfile(path):
 		if key == "variation_clusters_bed" and args.skip_variation_cluster_annotations:
