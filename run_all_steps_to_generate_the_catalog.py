@@ -209,7 +209,6 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 	])
 
 	run(f"""python3 -u -m str_analysis.merge_loci --verbose \
-		--add-source-field \
 		--add-found-in-fields \
 		--output-format JSON \
 		--discard-extra-fields-from-input-catalogs \
@@ -468,7 +467,6 @@ EOF
 
 		run(f"""python3 -u -m str_analysis.merge_loci \
 			--output-prefix {catalog_name} \
-			--add-source-field \
 			--output-format JSON \
 			--overlapping-loci-action keep-first \
 			--verbose \
