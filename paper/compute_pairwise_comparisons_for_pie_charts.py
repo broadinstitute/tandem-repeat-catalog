@@ -12,7 +12,7 @@ import re
 
 from step_pipeline import pipeline, Backend, Localize, Delocalize
 
-DOCKER_IMAGE = "weisburd/tandem-repeat-catalogs@sha256:ea80d250947bb751ade616558fbb62dd387df9e58ba812caab0722170a2ff93d"
+DOCKER_IMAGE = "weisburd/tandem-repeat-catalogs@sha256:69b85343d3e90f1455f4de777fcaa7209468e8c8dbbde36f22ab314986368334"
 
 REFERENCE_FASTA = "gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.fasta"
 
@@ -155,6 +155,7 @@ def process_pair(bp, catalog1, path1, catalog2, path2, machine_size=1):
 		catalog2_local_path = s.input(path2)
 
 	s.command(f"""python3 -u -m str_analysis.merge_loci \
+		--discard-extra-fields-from-input-catalogs \
 		--overlap-fraction 0.05 \
 		--write-outer-join-table \
 		--output-prefix merged___{catalog1}___vs___{catalog2} \
@@ -182,11 +183,12 @@ def main():
 	local_catalog_stats_tables = {}
 	for i, (catalog_label, catalog_url) in enumerate(CATALOGS):
 		step1, step1_output_paths[catalog_label] = trim_catalog(
-			bp, catalog_label, catalog_url, machine_size=8 if i >= 5 else 1)
+			bp, catalog_label, catalog_url, machine_size=8 if i >= 5 else 4 if i >= 2 else 1)
 		step1_map[catalog_label] = step1
 
 		step2, _ = compute_catalog_stats(
-			bp, catalog_label, step1_output_paths[catalog_label], machine_size=2 if i >= 5 else 1)
+			bp, catalog_label, step1_output_paths[catalog_label], machine_size=2 if i >= 2 else 1)
+		step2.depends_on(step1)
 
 		local_output_paths = step2.get_output_paths_to_download_when_done()
 		assert len(local_output_paths) == 1
