@@ -14,10 +14,13 @@ EXPECTED_KEYS_IN_ANNOTATED_CATALOG = {
 	"Source": str,
 	"CanonicalMotif": str,
 	"GencodeGeneRegion": str,
+	"RefseqGeneRegion": str,
+	"ManeGeneRegion": str,
 	#"GencodeGeneName": str,    <== these are optional,
 	#"GencodeGeneId": str,
 	#"GencodeTranscriptId": str,
 	"NumRepeatsInReference": int,
+	"NsInFlanks": int,
 	"ReferenceRepeatPurity": float,
 	"LeftFlankMappability": float,
 	"FlanksAndLocusMappability": float,
@@ -87,7 +90,7 @@ def main():
 					print(f"ERROR: Expected {key} to be of type {value_type} but got {type(record[key])}")
 					error_counter += 1
 
-			for prefix in "Gencode", "Refseq":
+			for prefix in "Gencode", "Refseq", "Mane":
 				if record[f"{prefix}GeneRegion"] != "intergenic":
 					for key in [f"{prefix}GeneId", f"{prefix}TranscriptId"]:  # f"{prefix}GeneName",
 						if key not in record or record[key] is None:
@@ -113,13 +116,6 @@ def main():
 			if reference_region not in reference_regions:
 				print(f"ERROR: {locus_id} ReferenceRegion {reference_region} not found in the simple repeat catalog")
 				error_counter += 1
-
-			if locus_id not in locus_ids:
-				print(f"ERROR: {locus_id} not found in the simple repeat catalog")
-				error_counter += 1
-			else:
-				if args.verbose:
-					print(f"SUCCESS: {locus_id} found in the simple repeat catalog")
 
 	if error_counter > 0:
 		raise ValueError(f"Found {error_counter} errors in {args.simple_repeat_catalog_path}")
