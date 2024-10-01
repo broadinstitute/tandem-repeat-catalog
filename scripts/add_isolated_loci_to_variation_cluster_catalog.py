@@ -24,8 +24,7 @@ def main():
 	parser.add_argument("--known-pathogenic-loci-json-path", required=True, help="Path of ExpansionHunter catalog "
 						"containing known pathogenic loci. This is used to retrieve the original locus boundaries for "
 						"these loci since their IDs don't contain these coordinates the way that IDs of other loci do.")
-	parser.add_argument("-o", "--output-bed-path",
-						help="Path of output BED file.")
+	parser.add_argument("-o", "--output-bed-path", help="Path of output BED file.")
 	parser.add_argument("--verbose", action="store_true")
 	parser.add_argument("--show-progress-bar", action="store_true", help="Show a progress bar")
 	parser.add_argument("input_variation_clusters_bed_path", help="Path of the input variation clusters BED file")
