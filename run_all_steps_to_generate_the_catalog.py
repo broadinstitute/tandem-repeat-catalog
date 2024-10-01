@@ -434,7 +434,7 @@ EOF
 	# compare to the GangSTR_v17 catalog to make sure it's included
 	comparison_catalogs_in_order = [
 		("GangSTR_v17", "https://s3.amazonaws.com/gangstr/hg38/genomewide/hg38_ver17.bed.gz"),
-		("vamos_catalog_v2.1", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/vamos_catalog.v2.1.bed.gz"),
+		#("vamos_catalog_v2.1", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/vamos_catalog.v2.1.bed.gz"),
 	]
 
 	comparison_catalog_paths = {}
@@ -447,7 +447,7 @@ EOF
 	run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose {comparison_catalog_paths['GangSTR_v17']} -o {path_after_conversion}", step_number=30)
 	comparison_catalog_paths["GangSTR_v17"] = path_after_conversion
 
-	# STEP #5:  compare catalog to other catalogs
+	# compare catalog to other catalogs
 	start_time = time.time()
 
 	for catalog_name, path in comparison_catalog_paths.items():
@@ -473,7 +473,6 @@ EOF
 			--overlapping-loci-action keep-first \
 			--verbose \
 			--write-merge-stats-tsv \
-			--write-bed-files-with-unique-loci \
 			{annotated_catalog_path} \
 			{filtered_comparison_catalog_path}""", step_number=33)
 
