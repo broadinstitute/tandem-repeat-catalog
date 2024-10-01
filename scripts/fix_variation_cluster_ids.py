@@ -107,8 +107,17 @@ def main():
 				counter += 1
 				out_f.write("\t".join(fields) + "\n")
 			print(f"Wrote {counter:,d} lines to {output_path}")
-	else:
-		output_path = args.input_path.replace(".txt", ".fixed_variation_cluster_ids.txt")
+	elif (
+		args.input_path.endswith(".txt") or args.input_path.endswith(".txt.gz")
+		or args.input_path.endswith(".tsv") or args.input_path.endswith(".tsv.gz")
+	):
+		if args.input_path.endswith(".txt") or args.input_path.endswith(".txt.gz"):
+			output_path = args.input_path.replace(".txt", ".fixed_variation_cluster_ids.txt")
+		elif args.input_path.endswith(".tsv") or args.input_path.endswith(".tsv.gz"):
+			output_path = args.input_path.replace(".tsv", ".fixed_variation_cluster_ids.tsv")
+		else:
+			assert False, f"Unexpected file format: {args.input_path}"
+			
 		assert output_path != args.input_path, f"Unexpected input path: {args.input_path}"
 		print(f"Parsing table: {args.input_path}")
 		df = pd.read_table(args.input_path)
@@ -116,6 +125,8 @@ def main():
 					trid, known_pathogenic_reference_regions_lookup))
 		df.to_csv(output_path, sep="\t", index=False)
 		print(f"Wrote {len(df):,d} rows to {output_path}")
+	else:
+		parser.error(f"Unsupported file format: {args.input_path}")
 
 	if stats:
 		print(f"Updated {stats['variation_cluster_id_updated']:,d} out of {stats['total']:,d} "
