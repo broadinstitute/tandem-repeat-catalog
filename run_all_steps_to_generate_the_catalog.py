@@ -333,19 +333,20 @@ EOF
 	if motif_size_label == "1_to_1000bp_motifs":
 		adjacent_repeats_source_bed = f"{output_prefix}.bed.gz"
 
+	# convert to BED
+	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_bed --split-adjacent-repeats "
+		f"{annotated_catalog_path}  --output-file {output_prefix}.bed.gz", step_number=13)
+
 	run(f"python3 -m str_analysis.add_adjacent_loci_to_expansion_hunter_catalog "
 		f"--ref-fasta {args.hg38_reference_fasta} "
 		f"--source-of-adjacent-loci {adjacent_repeats_source_bed} "
 		f"--add-extra-field TRsInRegion "
 		f"--only-add-extra-fields "
 		f"-o {annotated_catalog_path}.with_adjacent_loci_annotation.json.gz "
-		f"{annotated_catalog_path}", step_number=13)
+		f"{annotated_catalog_path}", step_number=14)
 
 	run(f"mv {annotated_catalog_path}.with_adjacent_loci_annotation.json.gz {annotated_catalog_path}", step_number=14)
 
-	# convert to BED
-	run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_bed --split-adjacent-repeats "
-		f"{annotated_catalog_path}  --output-file {output_prefix}.bed.gz", step_number=15)
 
 	# convert to TSV
 	run(f"""python3 << EOF
