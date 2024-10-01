@@ -23,6 +23,7 @@ def fix_variation_cluster_id(variation_cluster_id, known_pathogenic_reference_re
 		if locus_id in known_pathogenic_reference_regions_lookup:
 			reference_region, motif = known_pathogenic_reference_regions_lookup[locus_id]
 			chrom, start_0based, end_1based = parse_interval(reference_region)
+			chrom = chrom.replace("chr", "")
 			new_ids.append(f"{chrom}-{start_0based}-{end_1based}-{motif}")
 			updated = True
 		else:
@@ -32,6 +33,7 @@ def fix_variation_cluster_id(variation_cluster_id, known_pathogenic_reference_re
 			simplified_motif, num_repeats, _ = find_repeat_unit_without_allowing_interruptions(
 				motif, allow_partial_repeats=False)
 
+			chrom = chrom.replace("chr", "")
 			new_ids.append(f"{chrom}-{start_0based}-{end_1based}-{simplified_motif}")
 			if simplified_motif != motif:
 				#print(f"Updating {locus_id} to {new_ids[-1]}")
