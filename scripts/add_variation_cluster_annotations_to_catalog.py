@@ -28,12 +28,15 @@ def main():
 	parser.add_argument("catalog_json_path", help="Path of the JSON catalog to annotate")
 	args = parser.parse_args()
 
+	for path in args.variation_clusters_bed_path, args.catalog_json_path, args.known_pathogenic_loci_json_path:
+		if not os.path.isfile(path):
+			parser.error(f"File not found: {path}")
+
 	if not args.output_catalog_json_path:
 		args.output_catalog_json_path = args.catalog_json_path.replace(".json", ".with_variation_clusters.json")
-	if not os.path.isfile(args.known_pathogenic_loci_json_path):
-		parser.error(f"File not found: {args.known_pathogenic_loci_json_path}")
 
-	fopen = gzip.open if args.catalog_json_path.endswith("gz") else open
+	print(f"Parsing {args.known_pathogenic_loci_json_path}")
+	fopen = gzip.open if args.known_pathogenic_loci_json_path.endswith("gz") else open
 	with fopen(args.known_pathogenic_loci_json_path, "rt") as f:
 		known_pathogenic_loci = json.load(f)
 		known_pathogenic_reference_regions_lookup = {}
