@@ -181,6 +181,7 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 
 		run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog \
 			--verbose \
+			--known-disease-associated-loci {primary_disease_associated_loci_path} \
 			--reference-fasta {args.hg38_reference_fasta} \
 			--min-motif-size {min_motif_size} \
 			--max-motif-size {max_motif_size} \
@@ -211,6 +212,7 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 		--add-source-field \
 		--add-found-in-fields \
 		--output-format JSON \
+		--discard-extra-fields-from-input-catalogs \
 		--overlapping-loci-action keep-first \
 		--write-merge-stats-tsv \
 		--write-outer-join-table \
