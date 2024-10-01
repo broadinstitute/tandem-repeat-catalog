@@ -41,6 +41,7 @@ def fix_variation_cluster_id(variation_cluster_id, known_pathogenic_reference_re
 
 		if updated:
 			stats["locus_id_updated"] += 1
+
 	if updated:
 		stats["variation_cluster_id_updated"] += 1
 
