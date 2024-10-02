@@ -226,6 +226,7 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 		--gene-models-source gencode \
 		--gene-models-source refseq \
 		--gene-models-source mane \
+		--known-disease-associated-loci {primary_disease_associated_loci_path} \
 		--min-motif-size {min_motif_size} \
 		--max-motif-size {max_motif_size} \
 		--min-interval-size-bp 1 \
