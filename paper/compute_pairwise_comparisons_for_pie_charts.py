@@ -12,7 +12,7 @@ import re
 
 from step_pipeline import pipeline, Backend, Localize, Delocalize
 
-DOCKER_IMAGE = "weisburd/tandem-repeat-catalogs@sha256:69b85343d3e90f1455f4de777fcaa7209468e8c8dbbde36f22ab314986368334"
+DOCKER_IMAGE = "weisburd/tandem-repeat-catalogs@sha256:97703ddfdaf6c61f73def482f9afd6ef5b56ec2c8618cadf4f42ca788ecb95d5"
 
 REFERENCE_FASTA = "gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.fasta"
 
