@@ -75,7 +75,7 @@ def main():
 	before = len(df)
 	df = df[~df["longestPureSegmentMotif"].isna() & ~df["Stdev"].isna() & ~df["N_motif"].isna()]
 	print(f"Filtered out {before - len(df):,d} out of {before:,d} ({(before - len(df)) / before:.1%}) records with missing values")
-	
+
 	# sum the N_motif column across all rows with the same TRID
 	TRID_to_N_motif_sum_lookup = dict(df.groupby("TRID")["N_motif"].sum())
 
@@ -86,10 +86,9 @@ def main():
 		
 	for _, row in row_iterator:
 		TRID = row["TRID"]
-		motif_fraction_string = f"{row['longestPureSegmentMotif']}: {row['N_motif']}/{TRID_to_N_motif_sum_lookup[TRID]}"
 		# convert stdev in bp to stdev in repeat units
-		stdev_string = "%0.3f" % float(row["Stdev"] / len(row['longestPureSegmentMotif']))
-
+		lps_stdev = round(row["Stdev"] / len(row['longestPureSegmentMotif']), 3)
+		motif_fraction_string = f"{row['longestPureSegmentMotif']}: {row['N_motif']}/{TRID_to_N_motif_sum_lookup[TRID]}"
 		for locus_id in TRID.split(","):
 			if locus_id in known_pathogenic_reference_regions_lookup:
 				reference_region, motif = known_pathogenic_reference_regions_lookup[locus_id]
@@ -102,7 +101,7 @@ def main():
 				continue
 				
 			annotation_lookup[locus_id] = {
-				"LPSLengthStdevFromHPRC100": stdev_string,
+				"LPSLengthStdevFromHPRC100": lps_stdev,
 				"LPSMotifFractionFromHPRC100": motif_fraction_string,
 			}
 
