@@ -7,6 +7,7 @@ import re
 import subprocess
 import time
 
+from str_analysis.utils.file_utils import file_exists
 
 # install str-analysis python package
 os.system("""
@@ -41,14 +42,20 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--hg38-reference-fasta", default="hg38.fa", help="Path of hg38 reference genome FASTA file")
 parser.add_argument("--gencode-gtf", default="gencode.v46.basic.annotation.gtf.gz", help="Gene annotations GTF file")
 parser.add_argument("--output-prefix", default="repeat_catalog_v1.hg38")
-parser.add_argument("--skip-variation-cluster-annotations", action="store_true", help="Skip adding variation cluster annotations to the catalog")
 parser.add_argument("--only-step", type=int, help="Only run this one step")
 parser.add_argument("--start-with-step", type=int, help="Start with a specific step number")
 parser.add_argument("--end-with-step", type=int, help="End with a specific step number")
-parser.add_argument("--lps-annotations", default="HPRC_100_LongestPureSegmentQuantiles.fixed_variation_cluster_ids.txt.gz", help="Path of the LPS annotations table")
-parser.add_argument("--variation-clusters-bed", default="vcs_v1.0.fixed_variation_cluster_ids.bed.gz", help="Variation clusters file shared by Egor Dolzhenko")
+parser.add_argument("--lps-annotations", default="gs://tandem-repeat-catalog/v1.0/HPRC_100_LongestPureSegmentQuantiles.txt.gz",
+					help="Path of the LPS annotations table shared by Matt Danzi")
+parser.add_argument("--skip-lps-annotations", action="store_true",
+					help="Skip adding variation cluster annotations to the catalog")
+parser.add_argument("--variation-clusters-bed", default="gs://tandem-repeat-catalog/v1.0/vcs_v1.0.bed.gz",
+					help="Variation clusters file shared by Egor Dolzhenko")
+parser.add_argument("--skip-variation-cluster-annotations", action="store_true",
+					help="Skip adding variation cluster annotations to the catalog")
 parser.add_argument("--variation-clusters-output-prefix", default="variation_clusters_v1.hg38")
-parser.add_argument("--timestamp", default=datetime.datetime.now().strftime('%Y-%m-%d'), help="Timestamp to use in the output directory name")
+parser.add_argument("--timestamp", default=datetime.datetime.now().strftime('%Y-%m-%d'),
+					help="Timestamp to use in the output directory name")
 parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
 
 args = parser.parse_args()
@@ -57,12 +64,21 @@ print("TIMESTAMP:", args.timestamp)
 
 
 for key in "hg38_reference_fasta", "gencode_gtf", "variation_clusters_bed", "lps_annotations":
+	if (
+		key == "lps_annotations" and args.skip_lps_annotations
+	) or (
+		key == "variation_clusters_bed" and args.skip_variation_cluster_annotations
+	):
+		setattr(args, key, None)
+		continue
 	path = getattr(args, key)
-	if not os.path.isfile(path):
-		if key == "variation_clusters_bed" and args.skip_variation_cluster_annotations:
-			setattr(args, key, None)
-		else:
-			parser.error(f"{key} file not found {path}")
+	if not file_exists(path):
+		parser.error(f"{key} file not found {path}")
+
+	if path.startswith("gs://"):
+		run(f"gsutil -m cp {path} .")
+		path = os.path.basename(path)
+
 	setattr(args, key, os.path.abspath(path))
 
 base_dir = os.path.abspath(".")
