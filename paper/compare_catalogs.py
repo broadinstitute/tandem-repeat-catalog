@@ -178,7 +178,12 @@ for comparison_catalog_name in "Polymorphic3to6bpMotifTRsInT2TAssemblies", "Poly
 
 	print(f"Number of loci in {comparison_catalog_name}: {number_of_loci_in_t2t_assembly_test_set:,d}")
 
-	comparison_bed_file = re.sub("(.json|.json.gz)$", "", catalog_paths[comparison_catalog_name]) + ".bed.gz"
+	comparison_json_file = catalog_paths[comparison_catalog_name]
+	comparison_bed_file = re.sub("(.json|.json.gz)$", "", comparison_json_file) + ".bed.gz"
+	if not os.path.isfile(comparison_bed_file):
+		print(f"Converting {comparison_json_file} to BED format")
+		run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_bed -o {comparison_bed_file} {comparison_json_file}")
+
 	for catalog_name, path in catalog_paths.items():
 		if not os.path.isfile(path):
 			raise FileNotFoundError(f"Catalog file not found: {path}")
