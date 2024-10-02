@@ -12,7 +12,6 @@ import time
 parser = argparse.ArgumentParser()
 parser.add_argument("--hg38-reference-fasta", default="hg38.fa", help="Path of hg38 reference genome FASTA file")
 parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
-parser.add_argument("--outer-join", action="store_true", help="Perform an outer join on the catalogs")
 parser.add_argument("--force-annotate", action="store_true", help="Run annotation step even if the output files already exist")
 parser.add_argument("--force-stats", action="store_true", help="Run annotation step even if the output files already exist")
 parser.add_argument("-k", "--keyword", help="Only process catalogs that contain this keyword")
@@ -198,7 +197,6 @@ for comparison_catalog_name in "Polymorphic3to6bpMotifTRsInT2TAssemblies", "Poly
 		print(f"Unique loci in {catalog_name}: {unique_locus_count} out of {number_of_loci_in_t2t_assembly_test_set} ({int(unique_locus_count)/number_of_loci_in_t2t_assembly_test_set:.0%})")
 
 all_stats_tsv_paths = {}
-catalog_paths_for_outer_join = []
 for catalog_name, _ in catalogs_in_order:
 	path = catalog_paths[catalog_name]
 
@@ -216,9 +214,6 @@ for catalog_name, _ in catalogs_in_order:
 								--output-path {annotated_catalog_path} \
 								{path}""")
 
-	if args.outer_join and catalog_name not in {"PerfectRepeatsInReference", "MukamelVNTRs"}:
-		catalog_paths_for_outer_join.append(f"{catalog_name.replace(' ', '_')}:{annotated_catalog_path}")
-
 	# just compute stats
 	stats_tsv_path = re.sub("(.json|.bed)(.gz)?$", "", annotated_catalog_path) + ".catalog_stats.tsv"
 	if not os.path.isfile(stats_tsv_path) or args.force_annotate or args.force_stats:
@@ -227,8 +222,6 @@ for catalog_name, _ in catalogs_in_order:
 
 	all_stats_tsv_paths[catalog_name] = stats_tsv_path
 
-# --write-bed-files-with-unique-loci \
-# --outer-join-overlap-table-min-sources 1 \
 print(f"Combining stats from all {len(all_stats_tsv_paths)} catalogs")
 dfs = []
 for catalog_name, stats_tsv_path in all_stats_tsv_paths.items():
