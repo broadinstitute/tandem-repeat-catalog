@@ -199,7 +199,7 @@ def main():
 	for i in range(len(CATALOGS)):
 		catalog1, _ = CATALOGS[i]
 		for j in range(len(CATALOGS)):
-			if i >= j:
+			if i == j:
 				continue
 			catalog2, _ = CATALOGS[j]
 

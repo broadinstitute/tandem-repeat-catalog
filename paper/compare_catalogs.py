@@ -227,16 +227,6 @@ for catalog_name, _ in catalogs_in_order:
 
 	all_stats_tsv_paths[catalog_name] = stats_tsv_path
 
-run(f"""python3 -u -m str_analysis.merge_loci \
-						--add-source-field \
-						--add-found-in-fields \
-						--output-format JSON \
-						--overlapping-loci-action keep-first \
-						--write-merge-stats-tsv \
-						--write-outer-join-table \
-						--output-prefix merged.all_{len(all_stats_tsv_paths)}_catalogs \
-						{' '.join(catalog_paths_for_outer_join)}""")
-
 # --write-bed-files-with-unique-loci \
 # --outer-join-overlap-table-min-sources 1 \
 print(f"Combining stats from all {len(all_stats_tsv_paths)} catalogs")
