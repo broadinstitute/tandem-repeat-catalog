@@ -82,8 +82,9 @@ def main():
 		
 	for _, row in row_iterator:
 		TRID = row["TRID"]
-		stdev_string = "%0.3f" % float(row["Stdev"])
 		motif_fraction_string = f"{row['longestPureSegmentMotif']}:  {row['N_motif']}/{TRID_to_N_motif_sum_lookup[TRID]}"
+		# convert stdev in bp to stdev in repeat units
+		stdev_string = "%0.3f" % float(row["Stdev"] / len(row['longestPureSegmentMotif']))
 		
 		for locus_id in TRID.split(","):
 			if locus_id in known_pathogenic_reference_regions_lookup:
