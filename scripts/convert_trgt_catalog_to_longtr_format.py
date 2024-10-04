@@ -13,11 +13,10 @@ import sys
 import tqdm
 
 
-def compute_dominant_repeat_unit_length(info_fields_dict, known_pathogenic_reference_regions_lookup):
-    """Compute the dominant repeat unit length for a TR locus. For compound definitions (those that span multiple
-    adjacent TRs), the repeat unit length is computed as either the maximum repeat unit length across constituent TRs
-    (for known disease-associated loci) or the repeat unit length of the constituent TR that spans the largest interval
-    (for all other loci).
+def compute_dominant_motif(info_fields_dict, known_pathogenic_reference_regions_lookup):
+    """Compute the dominant motif for a TR locus. For compound definitions (those that span multiple
+    adjacent TRs), this is either the longest motif among constituent TR (for known disease-associated loci) or
+    the motif length of the constituent TR that spans the largest interval (for all other loci).
 
     Args:
         info_fields_dict (dict): A dictionary of info fields for a TR locus
@@ -25,22 +24,22 @@ def compute_dominant_repeat_unit_length(info_fields_dict, known_pathogenic_refer
             known disease-associated loci
 
     Return:
-        int: The dominant repeat unit length for the TR locus.
+        str: The dominant motif for the TR locus.
     """
-    repeat_unit_lengths = []
+    motifs = []
     for locus_id in info_fields_dict["ID"].split(","):
         if locus_id in known_pathogenic_reference_regions_lookup:
-            # get the repeat unit length
-            _, repeat_unit_length = max((len(ru), len(ru)) for ru in info_fields_dict["MOTIFS"].split(","))
-            repeat_unit_lengths.append((10**9, repeat_unit_length))
+            # get the motif length
+            _, dominant_motif = max((len(motif), motif) for motif in info_fields_dict["MOTIFS"].split(","))
+            motifs.append((10**6 + len(dominant_motif), dominant_motif))
         elif locus_id.count("-") == 3:
-            chrom, start_0based, end, repeat_unit = locus_id.split("-")
-            repeat_unit_lengths.append((int(end) - int(start_0based), len(repeat_unit)))
+            chrom, start_0based, end, motif = locus_id.split("-")
+            motifs.append((int(end) - int(start_0based), motif))
         else:
             raise ValueError(f"Unexpected locus_id '{locus_id}'")
 
-    _, repeat_unit_length = max(repeat_unit_lengths)
-    return repeat_unit_length
+    _, dominant_motif = max(motifs)
+    return dominant_motif
 
 
 def main():
@@ -92,6 +91,13 @@ def main():
             end_1based = int(fields[2])
             info_fields = fields[3]
 
+            if start_0based + 1 >= end_1based:
+                # avoid "Region has a STOP <= START" error
+                counter["skipped"] += 1
+                if args.verbose:
+                    print(f"WARNING: Skipping record #{counter['skipped']} because the interval has width {end_1based - start_0based}bp")
+                continue
+
             info_fields_dict = {}
             for key_value in info_fields.split(";"):
                 key_value = key_value.split("=")
@@ -101,21 +107,23 @@ def main():
                 key, value = key_value
                 info_fields_dict[key] = value
 
-            repeat_unit_length = compute_dominant_repeat_unit_length(
+            dominant_motif = compute_dominant_motif(
                 info_fields_dict, known_pathogenic_reference_regions_lookup)
 
+            counter["output"] += 1
             output_bed_file.write("\t".join(map(str, [
                 chrom,
                 start_0based + 1,  # LongTR BED files use 1-based coords.
                 end_1based,
-                repeat_unit_length,
-                int((end_1based - start_0based)/repeat_unit_length),
+                len(dominant_motif),
+                round((end_1based - start_0based)/len(dominant_motif), 3),
                 info_fields_dict["ID"],
+                dominant_motif,
             ])) + "\n")
 
     os.system(f"bgzip -f {args.output_bed_path}")
 
-    print(f"Wrote {counter['total']:,d} rows to {args.output_bed_path}.gz")
+    print(f"Wrote {counter['output']:,d} out of {counter['total']:,d} rows to {args.output_bed_path}.gz")
 
 
 if __name__ == "__main__":
