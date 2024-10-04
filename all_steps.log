@@ -1,6 +1,34 @@
+TIMESTAMP: 2024-10-01
+/usr/local/lib/python3.9/site-packages/hailtop/aiocloud/aiogoogle/user_config.py:28: UserWarning: You have specified the GCS requester pays configuration in both your spark-defaults.conf (/usr/local/lib/python3.9/site-packages/pyspark/conf/spark-defaults.conf) and either an explicit argument or through `hailctl config`. For GCS requester pays configuration, Hail first checks explicit arguments, then `hailctl config`, then spark-defaults.conf.
+  warnings.warn(
+gsutil -m cp gs://tandem-repeat-catalog/v1.0/vcs_v1.0.bed.gz .
+Unlike pure gsutil, this shim won't run composite uploads and sliced downloads in parallel by default. Use the -m flag to enable parallelism (i.e. "gsutil -m cp ...").
+Copying gs://tandem-repeat-catalog/v1.0/vcs_v1.0.bed.gz to file://./vcs_v1.0.bed.gz
+  
+.............
+
+Average throughput: 31.1MiB/s
+gsutil -m cp gs://tandem-repeat-catalog/v1.0/HPRC_100_LongestPureSegmentQuantiles.txt.gz .
+Unlike pure gsutil, this shim won't run composite uploads and sliced downloads in parallel by default. Use the -m flag to enable parallelism (i.e. "gsutil -m cp ...").
+Copying gs://tandem-repeat-catalog/v1.0/HPRC_100_LongestPureSegmentQuantiles.txt.gz to file://./HPRC_100_LongestPureSegmentQuantiles.txt.gz
+  
+...........................
+
+Average throughput: 29.4MiB/s
+mkdir -p /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01
+cd /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01
+mkdir -p /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
+wget -O variant_catalog_without_offtargets.GRCh38.json.tmp -qnc https://raw.githubusercontent.com/broadinstitute/str-analysis/main/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json && mv variant_catalog_without_offtargets.GRCh38.json.tmp variant_catalog_without_offtargets.GRCh38.json
+wget -O illumina_variant_catalog.sorted.bed.gz.tmp -qnc https://storage.googleapis.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz && mv illumina_variant_catalog.sorted.bed.gz.tmp illumina_variant_catalog.sorted.bed.gz
+wget -O hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz.tmp -qnc https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz && mv hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz.tmp hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz
+wget -O merged_expansion_hunter_catalog.78_samples.json.gz.tmp -qnc https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/merged_expansion_hunter_catalog.78_samples.json.gz && mv merged_expansion_hunter_catalog.78_samples.json.gz.tmp merged_expansion_hunter_catalog.78_samples.json.gz
+STEP #0: python3 -u -m str_analysis.split_adjacent_loci_in_expansion_hunter_catalog /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.json
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.json
 Split 9 loci into 19 output records
 Wrote 83 total records to variant_catalog_without_offtargets.GRCh38.split.json
+STEP #0: sed -i 's/AARRG/AAAAG/g' /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json
+STEP #0: gzip -f /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json
+STEP #1: python3 -u -m str_analysis.annotate_and_filter_str_catalog  --verbose  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --min-interval-size-bp 1  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --discard-loci-with-non-ACGT-bases-in-reference  --discard-loci-with-non-ACGTN-bases-in-motif  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz
 Args:
    reference_fasta =              /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa
    output_path =                  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz
@@ -34,6 +62,7 @@ Wrote 63 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10
 Filter stats:
         63 total input rows
         63 out of 63 (100%)  passed all filters
+STEP #2: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz
 --------------------------------------------------
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz
 
@@ -110,6 +139,11 @@ Locus sizes at each motif size:
     20bp motifs: locus size range:     80 bp to      80 bp  (median:   80 bp) based on          1 loci. Mean base purity: 1.00.  
     24bp motifs: locus size range:     96 bp to      96 bp  (median:   96 bp) based on          1 loci. Mean base purity: 0.96.  
 Wrote 1 rows to variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.catalog_stats.tsv
+========================================================================================================================================================================================================
+cd /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01
+mkdir -p 1_to_1000bp_motifs
+cd 1_to_1000bp_motifs
+STEP #3: python3 -u -m str_analysis.annotate_and_filter_str_catalog  --verbose  --known-disease-associated-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --min-motif-size 1  --max-motif-size 1000  --min-interval-size-bp 1  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --set-locus-id  --discard-loci-with-non-ACGT-bases-in-reference  --discard-loci-with-non-ACGTN-bases-in-motif  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/variant_catalog_without_offtargets.GRCh38.split.filtered.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz
 Args:
    reference_fasta =              /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa
    output_path =                  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/variant_catalog_without_offtargets.GRCh38.split.filtered.json.gz
@@ -146,6 +180,8 @@ Wrote 83 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10
 Filter stats:
         83 total input rows
         83 out of 83 (100%)  passed all filters
+Stats for /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz
+STEP #3: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/variant_catalog_without_offtargets.GRCh38.split.filtered.json.gz
 --------------------------------------------------
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/variant_catalog_without_offtargets.GRCh38.split.filtered.json.gz
 
@@ -224,6 +260,7 @@ Locus sizes at each motif size:
     20bp motifs: locus size range:     80 bp to      80 bp  (median:   80 bp) based on          1 loci. Mean base purity: 1.00.  
     24bp motifs: locus size range:     96 bp to      96 bp  (median:   96 bp) based on          1 loci. Mean base purity: 0.96.  
 Wrote 1 rows to variant_catalog_without_offtargets.GRCh38.split.filtered.catalog_stats.tsv
+STEP #3: python3 -u -m str_analysis.annotate_and_filter_str_catalog  --verbose  --known-disease-associated-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --min-motif-size 1  --max-motif-size 1000  --min-interval-size-bp 1  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --set-locus-id  --discard-loci-with-non-ACGT-bases-in-reference  --discard-loci-with-non-ACGTN-bases-in-motif  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/illumina_variant_catalog.sorted.filtered.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/illumina_variant_catalog.sorted.bed.gz
 Args:
    reference_fasta =              /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa
    output_path =                  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/illumina_variant_catalog.sorted.filtered.json.gz
@@ -281,6 +318,8 @@ Modification stats:
          6 out of 174,286 ( 0%)  replaced 4bp motif with a simplified 1bp motif
          4 out of 174,286 ( 0%)  replaced 4bp motif with a simplified 2bp motif
          2 out of 174,286 ( 0%)  replaced 5bp motif with a simplified 1bp motif
+Stats for /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/illumina_variant_catalog.sorted.bed.gz
+STEP #3: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/illumina_variant_catalog.sorted.filtered.json.gz
 --------------------------------------------------
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/illumina_variant_catalog.sorted.filtered.json.gz
 
@@ -359,6 +398,7 @@ Locus sizes at each motif size:
      9bp motifs: locus size range:     18 bp to      90 bp  (median:   27 bp) based on         34 loci. Mean base purity: 1.00.  
     10bp motifs: locus size range:     20 bp to      60 bp  (median:   30 bp) based on         15 loci. Mean base purity: 1.00.  
 Wrote 1 rows to illumina_variant_catalog.sorted.filtered.catalog_stats.tsv
+STEP #3: python3 -u -m str_analysis.annotate_and_filter_str_catalog  --verbose  --known-disease-associated-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --min-motif-size 1  --max-motif-size 1000  --min-interval-size-bp 1  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --set-locus-id  --discard-loci-with-non-ACGT-bases-in-reference  --discard-loci-with-non-ACGTN-bases-in-motif  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz
 Args:
    reference_fasta =              /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa
    output_path =                  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.json.gz
@@ -395,6 +435,8 @@ Wrote 4,558,281 records to /Users/weisburd/code/tandem-repeat-catalogs/results__
 Filter stats:
  4,558,281 total input rows
  4,558,281 out of 4,558,281 (100%)  passed all filters
+Stats for /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz
+STEP #3: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.json.gz
 --------------------------------------------------
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.json.gz
 
@@ -472,6 +514,7 @@ Locus sizes at each motif size:
      9bp motifs: locus size range:     27 bp to     116 bp  (median:   29 bp) based on      2,284 loci. Mean base purity: 1.00.  
     10bp motifs: locus size range:     30 bp to     111 bp  (median:   34 bp) based on      1,693 loci. Mean base purity: 1.00.  
 Wrote 1 rows to hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.catalog_stats.tsv
+STEP #3: python3 -u -m str_analysis.annotate_and_filter_str_catalog  --verbose  --known-disease-associated-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --min-motif-size 1  --max-motif-size 1000  --min-interval-size-bp 1  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --set-locus-id  --discard-loci-with-non-ACGT-bases-in-reference  --discard-loci-with-non-ACGTN-bases-in-motif  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/merged_expansion_hunter_catalog.78_samples.filtered.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/merged_expansion_hunter_catalog.78_samples.json.gz
 Args:
    reference_fasta =              /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa
    output_path =                  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/merged_expansion_hunter_catalog.78_samples.filtered.json.gz
@@ -520,6 +563,8 @@ Modification stats:
          2 out of 1,937,805 ( 0%)  replaced 12bp motif with a simplified 4bp motif
          2 out of 1,937,805 ( 0%)  replaced 10bp motif with a simplified 5bp motif
          1 out of 1,937,805 ( 0%)  replaced 15bp motif with a simplified 5bp motif
+Stats for /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/merged_expansion_hunter_catalog.78_samples.json.gz
+STEP #3: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/merged_expansion_hunter_catalog.78_samples.filtered.json.gz
 --------------------------------------------------
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/merged_expansion_hunter_catalog.78_samples.filtered.json.gz
 
@@ -531,7 +576,7 @@ Stats for merged_expansion_hunter_catalog.78_samples.filtered.json.gz:
     1,937,160 out of  1,937,160 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
     1,400,310 out of  1,937,160 ( 72.3%) repeat intervals are homopolymers
        20,352 out of  1,937,160 (  1.1%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chr6:128883801-128883835, chr17:65230432-65230452, chr20:54766739-54766787, chr22:25919674-25919710, chr8:56327626-56327666, chr3:86009205-86009217, chr5:169704789-169704813, chr19:41371311-41371367, chr7:122288530-122288554, chr8:84702537-84702569
+Examples of overlapping repeats: chr2:50551002-50551074, chr9:115136253-115136275, chr1:8243248-8243324, chr14:54228655-54228699, chrX:67452380-67452404, chr7:132561814-132561832, chr15:92296062-92296098, chr12:132463497-132463650, chr2:44429273-44429309, chr18:67642068-67642086
 
 Ranges:
    Motif size range: 1-833bp
@@ -598,35 +643,7 @@ Locus sizes at each motif size:
      9bp motifs: locus size range:      9 bp to     243 bp  (median:   27 bp) based on      1,880 loci. Mean base purity: 0.99.  
     10bp motifs: locus size range:     10 bp to     260 bp  (median:   30 bp) based on      1,886 loci. Mean base purity: 0.99.  
 Wrote 1 rows to merged_expansion_hunter_catalog.78_samples.filtered.catalog_stats.tsv
-TIMESTAMP: 2024-10-01
-mkdir -p /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01
-cd /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01
-mkdir -p /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
-wget -O variant_catalog_without_offtargets.GRCh38.json.tmp -qnc https://raw.githubusercontent.com/broadinstitute/str-analysis/main/str_analysis/variant_catalogs/variant_catalog_without_offtargets.GRCh38.json && mv variant_catalog_without_offtargets.GRCh38.json.tmp variant_catalog_without_offtargets.GRCh38.json
-wget -O illumina_variant_catalog.sorted.bed.gz.tmp -qnc https://storage.googleapis.com/str-truth-set/hg38/ref/other/illumina_variant_catalog.sorted.bed.gz && mv illumina_variant_catalog.sorted.bed.gz.tmp illumina_variant_catalog.sorted.bed.gz
-wget -O hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz.tmp -qnc https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz && mv hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz.tmp hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz
-wget -O merged_expansion_hunter_catalog.78_samples.json.gz.tmp -qnc https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/merged_expansion_hunter_catalog.78_samples.json.gz && mv merged_expansion_hunter_catalog.78_samples.json.gz.tmp merged_expansion_hunter_catalog.78_samples.json.gz
-STEP #0: python3 -u -m str_analysis.split_adjacent_loci_in_expansion_hunter_catalog /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.json
-STEP #0: sed -i 's/AARRG/AAAAG/g' /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json
-STEP #0: gzip -f /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json
-STEP #1: python3 -u -m str_analysis.annotate_and_filter_str_catalog  --verbose  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --min-interval-size-bp 1  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --discard-loci-with-non-ACGT-bases-in-reference  --discard-loci-with-non-ACGTN-bases-in-motif  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz
-STEP #2: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz
-========================================================================================================================================================================================================
-cd /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01
-mkdir -p 1_to_1000bp_motifs
-cd 1_to_1000bp_motifs
-STEP #3: python3 -u -m str_analysis.annotate_and_filter_str_catalog  --verbose  --known-disease-associated-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --min-motif-size 1  --max-motif-size 1000  --min-interval-size-bp 1  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --set-locus-id  --discard-loci-with-non-ACGT-bases-in-reference  --discard-loci-with-non-ACGTN-bases-in-motif  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/variant_catalog_without_offtargets.GRCh38.split.filtered.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz
-Stats for /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz
-STEP #3: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/variant_catalog_without_offtargets.GRCh38.split.filtered.json.gz
-STEP #3: python3 -u -m str_analysis.annotate_and_filter_str_catalog  --verbose  --known-disease-associated-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --min-motif-size 1  --max-motif-size 1000  --min-interval-size-bp 1  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --set-locus-id  --discard-loci-with-non-ACGT-bases-in-reference  --discard-loci-with-non-ACGTN-bases-in-motif  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/illumina_variant_catalog.sorted.filtered.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/illumina_variant_catalog.sorted.bed.gz
-Stats for /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/illumina_variant_catalog.sorted.bed.gz
-STEP #3: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/illumina_variant_catalog.sorted.filtered.json.gz
-STEP #3: python3 -u -m str_analysis.annotate_and_filter_str_catalog  --verbose  --known-disease-associated-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --min-motif-size 1  --max-motif-size 1000  --min-interval-size-bp 1  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --set-locus-id  --discard-loci-with-non-ACGT-bases-in-reference  --discard-loci-with-non-ACGTN-bases-in-motif  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz
-Stats for /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz
-STEP #3: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.json.gz
-STEP #3: python3 -u -m str_analysis.annotate_and_filter_str_catalog  --verbose  --known-disease-associated-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --min-motif-size 1  --max-motif-size 1000  --min-interval-size-bp 1  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --set-locus-id  --discard-loci-with-non-ACGT-bases-in-reference  --discard-loci-with-non-ACGTN-bases-in-motif  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/merged_expansion_hunter_catalog.78_samples.filtered.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/merged_expansion_hunter_catalog.78_samples.json.gz
-Stats for /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/merged_expansion_hunter_catalog.78_samples.json.gz
-STEP #3: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/merged_expansion_hunter_catalog.78_samples.filtered.json.gz
+STEP #5: python3 -u -m str_analysis.merge_loci --verbose  --add-found-in-fields  --output-format JSON  --discard-extra-fields-from-input-catalogs  --overlapping-loci-action keep-first  --write-merge-stats-tsv  --write-outer-join-table  --write-bed-files-with-unique-loci  --outer-join-overlap-table-min-sources 1  --output-prefix /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.merged  KnownDiseaseAssociatedLoci:/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/variant_catalog_without_offtargets.GRCh38.split.filtered.json.gz Illumina174kPolymorphicTRs:/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/illumina_variant_catalog.sorted.filtered.json.gz PerfectRepeatsInReference:/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.json.gz PolymorphicTRsInT2TAssemblies:/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/merged_expansion_hunter_catalog.78_samples.filtered.json.gz
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/variant_catalog_without_offtargets.GRCh38.split.filtered.json.gz
 Kept 83 out of 83 (100.0%) records from variant_catalog_without_offtargets.GRCh38.split.filtered.json.gz
@@ -667,10 +684,12 @@ Chromsomes:
           14 out of 4,863,041 ( 0.0%) are on M
 Wrote 5,192,974 rows to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.merged.outer_join_overlap_table.tsv.gz
 Wrote 4 rows to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.merged.merge_stats.tsv
+STEP #6: python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose --show-progress-bar  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --gene-models-source gencode  --gene-models-source refseq  --gene-models-source mane  --known-disease-associated-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz  --min-motif-size 1  --max-motif-size 1000  --min-interval-size-bp 1  --discard-overlapping-intervals-with-similar-motifs  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.merged.json.gz
 Args:
    reference_fasta =              /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa
    output_path =                  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
    variant_catalog_json_or_bed =  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.merged.json.gz
+   known_disease_associated_loci =  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.primary_disease_associated_loci.json.gz
    min_motif_size =               1
    min_interval_size_bp =         1
    max_motif_size =               1000
@@ -701,67 +720,19 @@ Args:
        mane
    mappability_track_bigwig =     gs://tgg-viewer/ref/GRCh38/mappability/GRCh38_no_alt_analysis_set_GCA_000001405.15-k36_m2.bw
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.merged.json.gz
-   485,309 total
-   204,311 exon
-   193,889 CDS
-    48,405 UTR
-    19,352 transcript
-    19,352 promoter
+Parsing gs://str-truth-set/hg38/ref/other/gencode.v46.basic.annotation.gtf.gz...
+ 1,949,574 total
+   865,643 exon
+   664,522 CDS
+   182,159 UTR
+   118,625 transcript
+   118,625 promoter
+Parsing gs://str-truth-set/hg38/ref/other/hg38.ncbiRefSeq.gtf.gz...
 Wrote 4,863,041 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 
 Filter stats:
  4,863,041 total input rows
  4,863,041 out of 4,863,041 (100%)  passed all filters
-Skipping chrM locus: M-207-220-TTAA
-Skipping chrM locus: M-231-241-ATA
-Skipping chrM locus: M-513-524-CA
-Skipping chrM locus: M-5150-5159-CTA
-Skipping chrM locus: M-5735-5744-CCG
-Skipping chrM locus: M-6572-6582-GGA
-Skipping chrM locus: M-9914-9923-GCC
-Skipping chrM locus: M-10340-10349-ATC
-Skipping chrM locus: M-10893-10903-CAA
-Skipping chrM locus: M-12980-12989-CCT
-Skipping chrM locus: M-12989-13000-AGC
-Skipping chrM locus: M-14106-14115-TTC
-Skipping chrM locus: M-14209-14219-ACT
-Skipping chrM locus: M-14332-14341-ACC
-Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.json.gz
-Wrote 4,859,281 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.without_loci_with_Ns_in_flanks.json.gz
-Wrote 3,746 loci to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.loci_with_Ns_in_flanks.txt
-Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz
-Parsing /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.fixed_variation_cluster_ids.bed.gz
-Parsed 273,112 variation clusters that contained 593,325 simple TR ids
-Found 273,112 out of 273,112 (100.0%) variation clusters differed from simple TRs by at least 6bp
-Annotating /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz with variation cluster annotations
-Parsed 273,112 variation clusters from /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.fixed_variation_cluster_ids.bed.gz
-Parsed 4,863,041 TRs from /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
-593,325 out of 4,863,041 (12.20%) TRs were in variation clusters
-Added 4,269,716 isolated TRs to variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz
-Wrote 4,542,828 rows to variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz
-Wrote 273,112 rows to variation_clusters_v1.hg38.LongTR.bed.gz
-Wrote 4,542,828 rows to variation_clusters_and_isolated_TRs_v1.hg38.LongTR.bed.gz
-Loading allele frequencies for the Illumina 174k catalog from https://github.com/Illumina/RepeatCatalogs/raw/master/hg38/genotype/1000genomes/1kg.gt.hist.tsv.gz
-Parsed 174,262 rows
-Computing histograms for Illumina 174k
-Processed allele frequency histograms for 174,262 rows and computed 174,262 records
-Loading allele frequencies for the catalog of polymorphic loci in T2T assemblies from gs://str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/joined.78_samples.variants.tsv.gz
-Parsed 2,038,349 rows
-Computing histograms for T2T assemblies
-Processed allele frequency histograms from 2,038,349 rows and computed 2,033,191 records
-Parsing and annotating /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
-Annotated 173,885 out of 4,863,041 loci in the Illumina 174k allele frequency catalog
-Annotated 1,722,623 out of 4,863,041 loci in the T2T assemblies allele frequency catalog
-Annotated 221,053 out of 4,863,041 loci in the T2T assemblies allele frequency catalog based on overlap
-Wrote 4,863,041 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz.with_allele_frequencies.json.gz
-Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz
-Parsed 83 known pathogenic loci
-Parsing /Users/weisburd/code/tandem-repeat-catalogs/HPRC_100_LongestPureSegmentQuantiles.fixed_variation_cluster_ids.txt.gz
-Adding LPS annotations to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
-Annotated 4,653,441 out of 4,863,041 loci
-Wrote annotated catalog to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.with_LPS_annotations.json.gz
-STEP #5: python3 -u -m str_analysis.merge_loci --verbose  --add-found-in-fields  --output-format JSON  --discard-extra-fields-from-input-catalogs  --overlapping-loci-action keep-first  --write-merge-stats-tsv  --write-outer-join-table  --write-bed-files-with-unique-loci  --outer-join-overlap-table-min-sources 1  --output-prefix /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.merged  KnownDiseaseAssociatedLoci:/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/variant_catalog_without_offtargets.GRCh38.split.filtered.json.gz Illumina174kPolymorphicTRs:/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/illumina_variant_catalog.sorted.filtered.json.gz PerfectRepeatsInReference:/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.filtered.json.gz PolymorphicTRsInT2TAssemblies:/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/merged_expansion_hunter_catalog.78_samples.filtered.json.gz
-STEP #6: python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose --show-progress-bar  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --gene-models-source gencode  --gene-models-source refseq  --gene-models-source mane  --min-motif-size 1  --max-motif-size 1000  --min-interval-size-bp 1  --discard-overlapping-intervals-with-similar-motifs  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.merged.json.gz
 STEP #7: python3 << EOF
 import gzip, ijson, json
 
@@ -782,21 +753,72 @@ for record in ijson.items(f, "item", use_float=True):
 out.write("]")
 EOF
 
+Skipping chrM locus: M-207-220-TTAA
+Skipping chrM locus: M-231-241-ATA
+Skipping chrM locus: M-513-524-CA
+Skipping chrM locus: M-5150-5159-CTA
+Skipping chrM locus: M-5735-5744-CCG
+Skipping chrM locus: M-6572-6582-GGA
+Skipping chrM locus: M-9914-9923-GCC
+Skipping chrM locus: M-10340-10349-ATC
+Skipping chrM locus: M-10893-10903-CAA
+Skipping chrM locus: M-12980-12989-CCT
+Skipping chrM locus: M-12989-13000-AGC
+Skipping chrM locus: M-14106-14115-TTC
+Skipping chrM locus: M-14209-14219-ACT
+Skipping chrM locus: M-14332-14341-ACC
 STEP #8: python3 -m str_analysis.filter_out_loci_with_Ns_in_flanks -R /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa -o /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.without_loci_with_Ns_in_flanks.json.gz --output-list-of-filtered-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.loci_with_Ns_in_flanks.txt /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.json.gz
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.json.gz
+Wrote 4,859,281 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.without_loci_with_Ns_in_flanks.json.gz
+Wrote 3,746 loci to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.loci_with_Ns_in_flanks.txt
 STEP #8: mv /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.without_loci_with_Ns_in_flanks.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.json.gz
-STEP #9: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/add_variation_cluster_annotations_to_catalog.py  --verbose  --output-catalog-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.with_variation_clusters.json.gz  --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.fixed_variation_cluster_ids.bed.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+STEP #9: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/add_variation_cluster_annotations_to_catalog.py  --verbose  --output-catalog-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.with_variation_clusters.json.gz  --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.bed.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.bed.gz
+Parsed 273,112 variation clusters that contained 593,325 simple TR ids
+Found 273,112 out of 273,112 (100.0%) variation clusters differed from simple TRs by at least 6bp
+Annotating /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz with variation cluster annotations
 STEP #9: mv /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.with_variation_clusters.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
-STEP #9: cp /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.fixed_variation_cluster_ids.bed.gz variation_clusters_v1.hg38.TRGT.bed.gz
-STEP #9: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/add_isolated_loci_to_variation_cluster_catalog.py  --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz  -o variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz  /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.fixed_variation_cluster_ids.bed.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+STEP #9: cp /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.bed.gz variation_clusters_v1.hg38.TRGT.bed.gz
+STEP #9: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/add_isolated_loci_to_variation_cluster_catalog.py  --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz  -o variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz  /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.bed.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+Parsed 273,112 variation clusters from /Users/weisburd/code/tandem-repeat-catalogs/vcs_v1.0.bed.gz
+Parsed 4,863,041 TRs from /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+593,325 out of 4,863,041 (12.20%) TRs were in variation clusters
+Added 4,269,716 isolated TRs to variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz
+Wrote 4,542,828 rows to variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz
 STEP #10: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/convert_trgt_catalog_to_longtr_format.py --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz variation_clusters_v1.hg38.TRGT.bed.gz
+Wrote 273,112 rows to variation_clusters_v1.hg38.LongTR.bed.gz
 STEP #10: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/convert_trgt_catalog_to_longtr_format.py --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz
+Wrote 4,542,828 rows to variation_clusters_and_isolated_TRs_v1.hg38.LongTR.bed.gz
 STEP #11: python3 -u /Users/weisburd/code/tandem-repeat-catalogs/scripts/add_allele_frequency_annotations.py  --add-t2t-assembly-frequencies-to-overlapping-loci  -o /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz.with_allele_frequencies.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+Loading allele frequencies for the Illumina 174k catalog from https://github.com/Illumina/RepeatCatalogs/raw/master/hg38/genotype/1000genomes/1kg.gt.hist.tsv.gz
+Parsed 174,262 rows
+Computing histograms for Illumina 174k
+Processed allele frequency histograms for 174,262 rows and computed 174,262 records
+Loading allele frequencies for the catalog of polymorphic loci in T2T assemblies from gs://str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/joined.78_samples.variants.tsv.gz
+Parsed 2,038,349 rows
+Computing histograms for T2T assemblies
+Processed allele frequency histograms from 2,038,349 rows and computed 2,033,191 records
+Parsing and annotating /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+Annotated 173,885 out of 4,863,041 loci in the Illumina 174k allele frequency catalog
+Annotated 1,722,623 out of 4,863,041 loci in the T2T assemblies allele frequency catalog
+Annotated 221,053 out of 4,863,041 loci in the T2T assemblies allele frequency catalog based on overlap
+Wrote 4,863,041 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz.with_allele_frequencies.json.gz
 STEP #11: mv /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz.with_allele_frequencies.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
-STEP #12: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/add_LPS_stdev_annotations_to_catalog.py  --output-catalog-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.with_LPS_annotations.json.gz  --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/HPRC_100_LongestPureSegmentQuantiles.fixed_variation_cluster_ids.txt.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+STEP #12: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/add_LPS_stdev_annotations_to_catalog.py  --output-catalog-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.with_LPS_annotations.json.gz  --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/HPRC_100_LongestPureSegmentQuantiles.txt.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz
+Parsed 83 known pathogenic loci
+Parsing /Users/weisburd/code/tandem-repeat-catalogs/HPRC_100_LongestPureSegmentQuantiles.txt.gz
+Filtered out 164,764 out of 4,907,968 (3.4%) records with missing values
+Adding LPS annotations to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+Annotated 4,633,521 out of 4,863,041 loci
+Wrote annotated catalog to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.with_LPS_annotations.json.gz
 STEP #12: mv /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.with_LPS_annotations.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+STEP #13: python3 -m str_analysis.convert_expansion_hunter_catalog_to_bed --split-adjacent-repeats /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  --output-file /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.bed.gz
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Wrote 4,863,041 rows to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.bed.gz
 Added /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.bed.gz.tbi index
+STEP #14: python3 -m str_analysis.add_adjacent_loci_to_expansion_hunter_catalog --ref-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa --source-of-adjacent-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.bed.gz --add-extra-field TRsInRegion --only-add-extra-fields -o /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz.with_adjacent_loci_annotation.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Loading input catalog /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Loaded 4,863,041 records from /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Processing 1 input variant catalog: /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
@@ -829,6 +851,42 @@ Processing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_
 The input catalog(s) did not have any adjacent loci specified
 Added adjacent loci to 0 out of 4,863,041 records (0.0%):   
 Wrote 4,863,041 total records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz.with_adjacent_loci_annotation.json.gz
+STEP #14: mv /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz.with_adjacent_loci_annotation.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+STEP #15: python3 << EOF
+import gzip
+import json
+import pandas as pd
+from pprint import pformat
+with gzip.open("/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz", "rt") as f:
+	data = json.load(f)
+print(f"Loaded {len(data):,d} records from /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz")
+print("Writing it to TSV file...")
+df = pd.DataFrame(data)
+core_columns = [
+	'LocusId', 'ReferenceRegion', 'LocusStructure', 'CanonicalMotif', 'TRsInRegion',
+	'Source', 'GencodeGeneRegion', 'GencodeGeneId', 'GencodeGeneName', 'GencodeTranscriptId',
+	'RefseqGeneRegion', 'RefseqGeneId', 'RefseqGeneName', 'RefseqTranscriptId', 
+	'ManeGeneRegion', 'ManeGeneId', 'ManeGeneName', 'ManeTranscriptId',
+	'KnownDiseaseAssociatedMotif',  'KnownDiseaseAssociatedLocus', 'NsInFlanks',
+	'LeftFlankMappability', 'FlanksAndLocusMappability', 'RightFlankMappability', 
+	'FoundInKnownDiseaseAssociatedLoci', 'FoundInIllumina174kPolymorphicTRs', 
+	'FoundInPerfectRepeatsInReference', 'FoundInPolymorphicTRsInT2TAssemblies', 
+	'NumRepeatsInReference', 'ReferenceRepeatPurity', 
+	'AlleleFrequenciesFromIllumina174k', 'StdevFromIllumina174k',
+	'AlleleFrequenciesFromT2TAssemblies', 'StdevFromT2TAssemblies',
+	'VariationCluster', 'VariationClusterSizeDiff',
+	'LPSLengthStdevFromHPRC100', 'LPSMotifFractionFromHPRC100',
+]
+
+drop_columns = ['VariantType', ]
+for c in set(core_columns)  - set(df.columns): df[c] = None
+df = df[core_columns + [c for c in df.columns if c not in (core_columns + drop_columns)]]
+
+output_tsv_path = "/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.tsv.gz"
+df.to_csv(output_tsv_path, sep="\t", index=False)
+print(f"Wrote {len(df):,d} rows to {output_tsv_path} with columns: {pformat(list(df.columns))}")
+EOF
+
 Loaded 4,863,041 records from /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Writing it to TSV file...
 Wrote 4,863,041 rows to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.tsv.gz with columns: ['LocusId',
@@ -869,63 +927,25 @@ Wrote 4,863,041 rows to /Users/weisburd/code/tandem-repeat-catalogs/results__202
  'VariationClusterSizeDiff',
  'LPSLengthStdevFromHPRC100',
  'LPSMotifFractionFromHPRC100']
+STEP #16: python3 -m str_analysis.convert_expansion_hunter_catalog_to_trgt_catalog --split-adjacent-repeats /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  --output-file /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.TRGT.bed
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Wrote 4,863,041 out of 4,863,041 rows to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.TRGT.bed
+STEP #17: python3 -m str_analysis.convert_expansion_hunter_catalog_to_longtr_format  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  --output-file /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.LongTR.bed
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Wrote out /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.LongTR.bed
+STEP #18: python3 -m str_analysis.convert_expansion_hunter_catalog_to_hipstr_format  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  --output-file /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.HipSTR.bed
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Wrote out /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.HipSTR.bed
+STEP #19: python3 -m str_analysis.convert_expansion_hunter_catalog_to_gangstr_spec  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  --output-file /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.GangSTR.bed
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Wrote out /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.GangSTR.bed
-Done. Catalog passed validation.
-All 4,863,041 rows PASSED validation
-All 4,859,281 rows PASSED validation
-STEP #13: python3 -m str_analysis.convert_expansion_hunter_catalog_to_bed --split-adjacent-repeats /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  --output-file /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.bed.gz
-STEP #14: python3 -m str_analysis.add_adjacent_loci_to_expansion_hunter_catalog --ref-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa --source-of-adjacent-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.bed.gz --add-extra-field TRsInRegion --only-add-extra-fields -o /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz.with_adjacent_loci_annotation.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
-STEP #14: mv /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz.with_adjacent_loci_annotation.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
-STEP #15: python3 << EOF
-import gzip
-import json
-import pandas as pd
-from pprint import pformat
-with gzip.open("/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz", "rt") as f:
-	data = json.load(f)
-print(f"Loaded {len(data):,d} records from /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz")
-print("Writing it to TSV file...")
-df = pd.DataFrame(data)
-core_columns = [
-	'LocusId', 'ReferenceRegion', 'LocusStructure', 'CanonicalMotif', 'TRsInRegion',
-	'Source', 'GencodeGeneRegion', 'GencodeGeneId', 'GencodeGeneName', 'GencodeTranscriptId',
-	'RefseqGeneRegion', 'RefseqGeneId', 'RefseqGeneName', 'RefseqTranscriptId', 
-	'ManeGeneRegion', 'ManeGeneId', 'ManeGeneName', 'ManeTranscriptId',
-	'KnownDiseaseAssociatedMotif',  'KnownDiseaseAssociatedLocus', 'NsInFlanks',
-	'LeftFlankMappability', 'FlanksAndLocusMappability', 'RightFlankMappability', 
-	'FoundInKnownDiseaseAssociatedLoci', 'FoundInIllumina174kPolymorphicTRs', 
-	'FoundInPerfectRepeatsInReference', 'FoundInPolymorphicTRsInT2TAssemblies', 
-	'NumRepeatsInReference', 'ReferenceRepeatPurity', 
-	'AlleleFrequenciesFromIllumina174k', 'StdevFromIllumina174k',
-	'AlleleFrequenciesFromT2TAssemblies', 'StdevFromT2TAssemblies',
-	'VariationCluster', 'VariationClusterSizeDiff',
-	'LPSLengthStdevFromHPRC100', 'LPSMotifFractionFromHPRC100',
-]
-
-drop_columns = ['VariantType', ]
-for c in set(core_columns)  - set(df.columns): df[c] = None
-df = df[core_columns + [c for c in df.columns if c not in (core_columns + drop_columns)]]
-
-output_tsv_path = "/Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.tsv.gz"
-df.to_csv(output_tsv_path, sep="\t", index=False)
-print(f"Wrote {len(df):,d} rows to {output_tsv_path} with columns: {pformat(list(df.columns))}")
-EOF
-
-STEP #16: python3 -m str_analysis.convert_expansion_hunter_catalog_to_trgt_catalog --split-adjacent-repeats /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  --output-file /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.TRGT.bed
-STEP #17: python3 -m str_analysis.convert_expansion_hunter_catalog_to_longtr_format  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  --output-file /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.LongTR.bed
-STEP #18: python3 -m str_analysis.convert_expansion_hunter_catalog_to_hipstr_format  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  --output-file /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.HipSTR.bed
-STEP #19: python3 -m str_analysis.convert_expansion_hunter_catalog_to_gangstr_spec  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  --output-file /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.GangSTR.bed
 STEP #20: trgt validate --genome /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --repeats /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.TRGT.bed
 STEP #21: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/validate_catalog.py --known-pathogenic-loci-json-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/variant_catalog_without_offtargets.GRCh38.split.json.gz --check-for-presence-of-annotations --check-for-presence-of-all-known-loci /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+Done. Catalog passed validation.
 STEP #22: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
+All 4,863,041 rows PASSED validation
 STEP #22: python3 /Users/weisburd/code/tandem-repeat-catalogs/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.json.gz
+All 4,859,281 rows PASSED validation
 STEP #22: gzip -f /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.TRGT.bed
 STEP #22: bgzip -f /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.LongTR.bed
 STEP #22: bgzip -f /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.HipSTR.bed
@@ -935,6 +955,14 @@ STEP #22: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_t
 STEP #22: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
 STEP #22: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.json.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
 STEP #22: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.TRGT.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
+STEP #22: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.LongTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
+STEP #22: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.HipSTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
+STEP #22: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.GangSTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
+STEP #22: cp variation_clusters_v1.hg38.TRGT.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
+STEP #22: cp variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
+STEP #22: cp variation_clusters_v1.hg38.LongTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
+STEP #22: cp variation_clusters_and_isolated_TRs_v1.hg38.LongTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
+STEP #23: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 --------------------------------------------------
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 
@@ -947,7 +975,7 @@ Stats for repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz:
     1,567,337 out of  4,863,041 ( 32.2%) repeat intervals are homopolymers
        18,340 out of  4,863,041 (  0.4%) repeat intervals overlap each other by at least two motif lengths
            11 out of  4,863,041 (  0.0%) repeat intervals have non-ACGT motifs
-Examples of overlapping repeats: chr4:180687788-180687838, chr22:33028640-33028691, chr7:123151386-123151406, chr12:8570531-8570555, chr15:52939346-52939367, chr16:87726489-87726680, chr21:38743281-38743292, chr6:39337155-39337167, chr3:63198733-63198753, chr6:157888625-157888648
+Examples of overlapping repeats: chr1:82008141-82008152, chr3:78937990-78938032, chr4:1046750-1046794, chr5:52437153-52437201, chr6:34683425-34683453, chr4:107646310-107646327, chr18:52413438-52413450, chr6:150149299-150149323, chr7:40295582-40295597, chr9:35561915-35561931
 
 Ranges:
    Motif size range: 1-833bp
@@ -1028,10 +1056,14 @@ Locus sizes at each motif size:
      9bp motifs: locus size range:      9 bp to     153 bp  (median:   28 bp) based on      3,231 loci. Mean base purity: 1.00.  Mean mappability: 0.51
     10bp motifs: locus size range:     10 bp to     150 bp  (median:   31 bp) based on      2,713 loci. Mean base purity: 1.00.  Mean mappability: 0.50
 Wrote 1 rows to repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.catalog_stats.tsv
+Done generating /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs catalog. Took 4h, 43m, 28s
+wget -O hg38_ver17.bed.gz.tmp -qnc https://s3.amazonaws.com/gangstr/hg38/genomewide/hg38_ver17.bed.gz && mv hg38_ver17.bed.gz.tmp hg38_ver17.bed.gz
+STEP #30: python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.bed.gz -o /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.json.gz
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.bed.gz
 Writing records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.json.gz
 Stats: {'total input loci': 1340266, 'trimmed locus': 1340266}
 Wrote 1,340,266 records to /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.json.gz
+STEP #31: python3 -m str_analysis.annotate_and_filter_str_catalog  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --min-motif-size 1  --max-motif-size 1000  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz  --verbose  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.json.gz
 Args:
    reference_fasta =              /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa
    output_path =                  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
@@ -1066,6 +1098,7 @@ Wrote 1,340,266 records to /Users/weisburd/code/tandem-repeat-catalogs/results__
 Filter stats:
  1,340,266 total input rows
  1,340,266 out of 1,340,266 (100%)  passed all filters
+STEP #32: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
 --------------------------------------------------
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
 
@@ -1077,7 +1110,7 @@ Stats for hg38_ver17.filtered.json.gz:
     1,340,266 out of  1,340,266 (100.0%) repeat interval size is an integer multiple of the motif size (aka. trimmed)
       488,668 out of  1,340,266 ( 36.5%) repeat intervals are homopolymers
            16 out of  1,340,266 (  0.0%) repeat intervals overlap each other by at least two motif lengths
-Examples of overlapping repeats: chr20:2652733-2652757, chr5:123775555-123775599, chr5:146878727-146878757, chr11:2171085-2171113, chr7:84160225-84160277, chr11:2171087-2171115, chr9:27573523-27573541, chr9:27573528-27573546, chr5:146878728-146878758, chr7:84160224-84160276
+Examples of overlapping repeats: chr11:2171085-2171113, chr15:96831014-96831039, chr11:2171087-2171115, chr20:2652733-2652757, chr2:1489650-1489682, chr9:27573523-27573541, chr20:2652732-2652756, chr15:96831011-96831036, chr5:123775555-123775599, chr5:146878727-146878757
 
 Ranges:
    Motif size range: 1-20bp
@@ -1144,6 +1177,7 @@ Locus sizes at each motif size:
      9bp motifs: locus size range:     27 bp to     108 bp  (median:   27 bp) based on        760 loci. Mean base purity: 1.00.  
     10bp motifs: locus size range:     30 bp to     110 bp  (median:   30 bp) based on        344 loci. Mean base purity: 1.00.  
 Wrote 1 rows to hg38_ver17.filtered.catalog_stats.tsv
+STEP #33: python3 -u -m str_analysis.merge_loci  --output-prefix GangSTR_v17  --output-format JSON  --overlapping-loci-action keep-first  --verbose  --write-merge-stats-tsv  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 Parsing /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
 Kept 4,863,041 out of 4,863,041 (100.0%) records from repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
@@ -1169,18 +1203,4 @@ Chromsomes:
       39,257 out of 4,863,041 ( 0.8%) are on Y
           14 out of 4,863,041 ( 0.0%) are on M
 Wrote 2 rows to GangSTR_v17.merge_stats.tsv
-STEP #22: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.LongTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
-STEP #22: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.HipSTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
-STEP #22: cp /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.GangSTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
-STEP #22: cp variation_clusters_v1.hg38.TRGT.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
-STEP #22: cp variation_clusters_and_isolated_TRs_v1.hg38.TRGT.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
-STEP #22: cp variation_clusters_v1.hg38.LongTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
-STEP #22: cp variation_clusters_and_isolated_TRs_v1.hg38.LongTR.bed.gz /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/release_draft_2024-10-01
-STEP #23: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz
-Done generating /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs catalog. Took 4h, 6m, 40s
-wget -O hg38_ver17.bed.gz.tmp -qnc https://s3.amazonaws.com/gangstr/hg38/genomewide/hg38_ver17.bed.gz && mv hg38_ver17.bed.gz.tmp hg38_ver17.bed.gz
-STEP #30: python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.bed.gz -o /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.json.gz
-STEP #31: python3 -m str_analysis.annotate_and_filter_str_catalog  --reference-fasta /Users/weisburd/code/tandem-repeat-catalogs/hg38.fa  --skip-gene-annotations  --skip-mappability-annotations  --skip-disease-loci-annotations  --min-motif-size 1  --max-motif-size 1000  --output-path /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz  --verbose  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.json.gz
-STEP #32: python3 -m str_analysis.compute_catalog_stats --verbose /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
-STEP #33: python3 -u -m str_analysis.merge_loci  --output-prefix GangSTR_v17  --output-format JSON  --overlapping-loci-action keep-first  --verbose  --write-merge-stats-tsv  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz  /Users/weisburd/code/tandem-repeat-catalogs/results__2024-10-01/1_to_1000bp_motifs/hg38_ver17.filtered.json.gz
-Done with comparisons. Took 0h, 59m, 48s
+Done with comparisons. Took 0h, 55m, 22s
