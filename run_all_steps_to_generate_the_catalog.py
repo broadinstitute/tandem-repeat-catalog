@@ -237,7 +237,7 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
 		{catalog_paths}""", step_number=5)
 
 	annotated_catalog_path = f"{output_prefix}.EH.with_annotations.json.gz"
-	run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose --show-progress-bar \
+	run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose \
 		--reference-fasta {args.hg38_reference_fasta} \
 		--gene-models-source gencode \
 		--gene-models-source refseq \
