@@ -4,10 +4,16 @@
 
 This repo provides a general purpose genome-wide TR catalog for genotyping TR copy numbers in short read or long read sequencing data. 
 It also flags TRs that reside within variation clusters, and provides locus definitions that support more accurate sequence-level analysis of these more complex regions.
-Locus definitions are provided in the formats expected by many existing TR genotyping tools. 
-This project is being developed as part of a collaboration between Ben Weisburd, Egor Dolzhenko, and others. 
 
-[Release v1.0](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v1.0) is now available in draft form. 
+[Release v1.0](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v1.0) is available for download. 
+
+For more details, see:
+
+<b>Defining a tandem repeat catalog and variation clusters for genome-wide analyses and population databases</b><br />
+Ben Weisburd, Egor Dolzhenko, Mark F. Bennett, Matt C. Danzi, Adam English, Laurel Hiatt, Hope Tanudisastro, Nehir Edibe Kurtas, Helyaneh Ziaei Jam, Harrison Brand, Fritz J. Sedlazeck, Melissa Gymrek, Harriet Dashnow, Michael A. Eberle, Heidi L. Rehm
+bioRxiv 2024.10.04.615514; doi: https://doi.org/10.1101/2024.10.04.615514
+
+---
 
 File names that start with `repeat_catalog_v1.hg38` contain `4,863,041` TRs and are designed for repeat copy number analysis. The following formats are provided:
 
