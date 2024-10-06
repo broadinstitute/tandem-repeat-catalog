@@ -70,7 +70,7 @@ Stats for repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.with_annotations.json.gz:
     1,567,337 out of  4,863,041 ( 32.2%) repeat intervals are homopolymers
        18,340 out of  4,863,041 (  0.4%) repeat intervals overlap each other by at least two motif lengths
            11 out of  4,863,041 (  0.0%) repeat intervals have non-ACGT motifs
-Examples of overlapping repeats: chr1:105039890-105039919, chr7:100738987-100739008, chr21:26717780-26717799, chr2:131911788-131911830, chr4:8393611-8393631, chr9:72024653-72024669, chr3:136702115-136702162, chr9:134790489-134790512, chr16:81719454-81719501, chr2:210174989-210175009
+Examples of overlapping repeats: chr1:82008141-82008152, chr3:78937990-78938032, chr4:1046750-1046794, chr5:52437153-52437201, chr6:34683425-34683453, chr4:107646310-107646327, chr18:52413438-52413450, chr6:150149299-150149323, chr7:40295582-40295597, chr9:35561915-35561931
 
 Ranges:
    Motif size range: 1-833bp
