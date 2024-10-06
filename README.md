@@ -2,8 +2,9 @@
 
 ### Tandem Repeat Catalog & Variation Clusters
 
-This repo contains a genome-wide TR catalog with 4.9 million loci. 
-It also stratifies TRs into 2 groups:
+This repo contains a genome-wide TR catalog with 4.9 million loci.  
+
+It stratifies TRs into 2 groups:
 1) isolated TRs suitable for traditional repeat copy number analysis using short-read or long-read data
 2) TRs embedded within wider polymorphic regions (ie. variation clusters) which are best studied through sequence-level analysis
 
