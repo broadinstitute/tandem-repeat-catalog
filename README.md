@@ -15,35 +15,6 @@ Ben Weisburd, Egor Dolzhenko, Mark F. Bennett, Matt C. Danzi, Adam English, Laur
 bioRxiv 2024.10.04.615514; doi: https://doi.org/10.1101/2024.10.04.615514
 
 
-### Available Files
-
-File names that start with `repeat_catalog_v1.hg38` contain `4,863,041` TRs and are designed for repeat copy number analysis. The following formats are provided:
-
-<br />
-<table>
-<tr><td><b>File suffix</b></td><td><b>Description</b></td></tr>
-<tr><td>.EH.with_annotations.json.gz</td><td>For use with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a>. It includes all annotations as extra fields that are ignored by ExpansionHunter.</td></tr>
-<tr><td>.EH.json.gz</td><td>For use with <a href="https://github.com/Illumina/ExpansionHunter">ExpansionHunter</a></td></tr>
-<tr><td>.TRGT.bed.gz</td><td>For use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
-<tr><td>.LongTR.bed.gz</td><td>For use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
-<tr><td>.GangSTR.bed.gz</td><td>For use with <a href="https://github.com/gymreklab/GangSTR">GangSTR</a></td></tr>
-<tr><td>.HipSTR.bed.gz</td><td>For use with <a href="https://github.com/HipSTR-Tool/HipSTR">HipSTR</a></td></tr>
-<tr><td>.bed.gz</td><td>Sorted and indexed BED file for <a href="https://igv.org/">IGV</a></td></tr>
-</table>
-<br />
-
-Variation clusters extend the boundaries of TRs to encompass any adjacent polymorphic regions. The exended boundaries enable more accurate sequence-level analysis, particularly in regions that contain many adjacent or multi-scale repeats with different motifs. The following files contain the extended boundary defintions:
-
-<br />
-<table>
-   <tr><td><b>File name</b></td><td align="center"><b>Size</b></td><td><b>Description</b></td></tr>
-   <tr><td>variation_clusters_v1.hg38.TRGT.bed.gz</td><td align="right">273,112</td><td>variation clusters for use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
-   <tr><td>variation_clusters_v1.hg38.LongTR.bed.gz</td><td align="right">273,112</td><td>variation clusters for use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
-   <tr><td>variation_clusters_and_isolated_repeats_v1.hg38.TRGT.bed.gz</td><td align="right">4,542,828</td><td>variation clusters + isolated repeats (ie. all tandem repeat catalog TRs that are not inside variation clusters) for use with <a href="https://github.com/PacificBiosciences/trgt">TRGT</a></td></tr>
-   <tr><td>variation_clusters_and_isolated_repeats_v1.hg38.LongTR.bed.gz</td><td align="right">4,542,828</td><td>variation clusters + isolated repeats (ie. all tandem repeat catalog TRs that are not inside variation clusters) for use with <a href="https://github.com/gymrek-lab/LongTR">LongTR</a></td></tr>
-</table>
-
-
 ### Background
 
 Tandem repeats (TRs) are regions of the genome that consist of consecutive copies of some motif sequence. For example, `CAGCAGCAG` is a tandem repeat of the `CAG` motif. Many types of genomic studies require annotations of tandem repeats in the reference genome, called repeat catalogs, which specify the genomic start and end coordinates of each tandem repeat region, as well as the one or more motifs that repeat there. 
