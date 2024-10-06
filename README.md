@@ -2,8 +2,10 @@
 
 ### Tandem Repeat Catalog & Variation Clusters
 
-This repo provides a general purpose genome-wide TR catalog for genotyping TR copy numbers in short read or long read sequencing data. 
-It also flags TRs that reside within variation clusters, and provides locus definitions that support more accurate sequence-level analysis of these more complex regions.
+This repo contains a genome-wide TR catalog with 4.9 million loci. 
+It also stratifies TRs into 2 groups:
+1) isolated TRs suitable for traditional repeat copy number analysis using short-read or long-read data
+2) TRs embedded within wider polymorphic regions (ie. variation clusters) which are best studied through sequence-level analysis
 
 [Release v1.0](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v1.0) is available for download, and is described in:
 
