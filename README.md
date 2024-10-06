@@ -14,7 +14,8 @@ It stratifies TRs into 2 groups:
 Ben Weisburd, Egor Dolzhenko, Mark F. Bennett, Matt C. Danzi, Adam English, Laurel Hiatt, Hope Tanudisastro, Nehir Edibe Kurtas, Helyaneh Ziaei Jam, Harrison Brand, Fritz J. Sedlazeck, Melissa Gymrek, Harriet Dashnow, Michael A. Eberle, Heidi L. Rehm
 bioRxiv 2024.10.04.615514; doi: https://doi.org/10.1101/2024.10.04.615514
 
----
+
+### Available Files
 
 File names that start with `repeat_catalog_v1.hg38` contain `4,863,041` TRs and are designed for repeat copy number analysis. The following formats are provided:
 
@@ -43,13 +44,6 @@ Variation clusters extend the boundaries of TRs to encompass any adjacent polymo
 </table>
 
 
-### Goals
-
-- Provide the catalog in the formats expected by existing TR genotyping tools for both short-read and long-read data
-- Include rich annotations
-
-Although our initial focus is on the human genome, we'd also love to extend this work to plants and other species. Please consider creating a GitHub issue or reaching out by email if you are interested in this.
-
 ### Background
 
 Tandem repeats (TRs) are regions of the genome that consist of consecutive copies of some motif sequence. For example, `CAGCAGCAG` is a tandem repeat of the `CAG` motif. Many types of genomic studies require annotations of tandem repeats in the reference genome, called repeat catalogs, which specify the genomic start and end coordinates of each tandem repeat region, as well as the one or more motifs that repeat there. 
@@ -62,6 +56,24 @@ it could be represented in a repeat catalog as two entries:
 indicating that a repeat of the `AT` motif occurs between positions 10 and 19 (inclusive), and of the `CAG` motif between positions 20 and 32.
 A genome-wide catalog would contain such entries for all repeat regions of interest found anywhere in the genome. 
 
+
+### Catalog Construction
+
+The genome-wide TR catalog was created by combining 4 source catalogs in order:
+1) [Known disease-associated loci](https://github.com/broadinstitute/str-analysis/blob/69dd90ecbc1dcbb23d5ca84ab4022850a283114f/str_analysis/variant_catalogs/variant_catalog_with_offtargets.GRCh37.json)
+2) [Illumina catalog of 174k polymorphic repeats](https://github.com/Illumina/RepeatCatalogs?tab=readme-ov-file) 
+3) All perfect repeats in hg38 that span ≥ 9bp and consist of at least 3 repeats of any motif between 1 and 1000 bp in size. These were identified using [ColabRepeatFinder](https://github.com/broadinstitute/colab-repeat-finder).
+4) Catalog of polymorphic loci computed by applying methods described in [[Weisburd et al. 2023](https://www.biorxiv.org/content/10.1101/2023.05.05.539588v1)] to 78 haplotype-resolved T2T assemblies from the HPRC and HGSVC
+
+The numbers (and %) of loci in the combined catalog that were added from each of the source catalogs were as follows:
+
+```
+           83 out of        83 (100.0%) TRs from source 1: known disease-associated loci as well as 20 adjacent or historical candidate loci 
+      174,244 out of   174,286 (100.0%) TRs from source 2: Illumina catalog of 174k polymorphic loci
+    4,391,197 out of 4,558,281 ( 96.3%) TRs from source 3: perfect repeats in hg38
+      297,517 out of 1,937,805 ( 15.4%) TRs from source 4: polymorphic loci in 78 haplotype-resolved T2T assemblies
+```
+The merging procedure involved taking all loci from the 1st catalog, then all non-duplicate loci from the next catalog, then from the third catalog and so on, in the order listed above. A locus was considered a duplicate if it overlapped a previously-added locus by at least 66% and the two loci had the same motif after cyclic shift and/or reverse complement (ie. CAG, AGC, GCA, CTG, TGC, GCT were considered to be the same motif). 
 
 ### Catalog Stats
 
