@@ -6,7 +6,7 @@ This repo contains a genome-wide TR catalog with 4.9 million loci.
 
 It stratifies TRs into 2 groups:
 1) isolated TRs suitable for traditional repeat copy number analysis using short-read or long-read data
-2) TRs embedded within wider polymorphic regions (ie. variation clusters) which are best studied through sequence-level analysis
+2) TRs embedded within wider polymorphic regions (ie. variation clusters) that are best studied through sequence-level analysis
 
 [Release v1.0](https://github.com/broadinstitute/tandem-repeat-catalogs/releases/tag/v1.0) is available for download, and is described in:
 
