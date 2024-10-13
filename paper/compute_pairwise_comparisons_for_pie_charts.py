@@ -9,6 +9,7 @@ import os
 import pandas as pd
 from pprint import pformat
 import re
+import tqdm
 
 from step_pipeline import pipeline, Backend, Localize, Delocalize
 
@@ -29,6 +30,7 @@ CATALOGS = [
 	("PolymorphicTRsInT2TAssemblies", "https://storage.googleapis.com/str-truth-set-v2/filter_vcf/all_repeats_including_homopolymers_keeping_loci_that_have_overlapping_variants/combined/merged_expansion_hunter_catalog.78_samples.json.gz"),
 	("Adotto_v1.2", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/adotto_tr_catalog_v1.2.bed.gz"),
 	("PerfectRepeatsInReference", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/colab-repeat-finder/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp/hg38_repeats.motifs_1_to_1000bp.repeats_3x_and_spans_9bp.bed.gz"),
+	("NewCatalog", "https://github.com/broadinstitute/tandem-repeat-catalog/releases/download/v1.0/repeat_catalog_v1.hg38.1_to_1000bp_motifs.EH.json.gz"),
 	("PopSTR_Catalog", "https://storage.googleapis.com/str-truth-set/hg38/ref/other/popstr_catalog_v2.bed.gz"),
 	("PlatinumTRs_v1.0", "https://zenodo.org/records/13178746/files/human_GRCh38_no_alt_analysis_set.platinumTRs-v1.0.trgt.bed.gz"),
 	("Chiu_et_al", "https://zenodo.org/records/11522276/files/hg38.v1.bed.gz"),
@@ -48,6 +50,7 @@ CATALOG_NAMES = {
 	"Chiu_et_al": "Chiu et al",
 	"PerfectRepeatsInReference": "All perfect repeats in hg38",
 	"PolymorphicTRsInT2TAssemblies": "Polymorphic TRs in 78 T2T assemblies",
+	"NewCatalog": "New catalog",
 }
 
 def trim_catalog(bp, catalog_label, catalog_url, machine_size=1):
@@ -174,8 +177,9 @@ def process_pair(bp, catalog1, path1, catalog2, path2, machine_size=1):
 def main():
 	bp = pipeline("pairwise catalog comparison", backend=Backend.HAIL_BATCH_SERVICE, config_file_path="~/.step_pipeline")
 
-	#parser = bp.get_config_arg_parser()
-    #args = parser.parse_known_args()
+	parser = bp.get_config_arg_parser()
+	parser.add_argument("--by-motif-size", action="store_true", help="Stratify the results by motif size")
+    args = parser.parse_known_args()
 
 	# trim catalogs
 	step1_map = {}
@@ -218,51 +222,102 @@ def main():
 
 	output_table_path = "pairwise_catalog_comparison_results.tsv"
 	with open(output_table_path, "wt") as f:
-		f.write("\t".join(["catalog_size", "category", "catalog1", "catalog2", "count"]) + "\n")
+		f.write("\t".join([
+			"catalog_size",
+			"catalog_size_by_motif_size",
+			"motif_size",
+			"motif_label",
+			"category",
+			"catalog1",
+			"catalog2",
+			"count"]) + "\n")
 
 		catalog_size = {}
+		catalog_size_by_motif_size = {}
 		for i, (catalog_label, local_catalog_stats_table) in enumerate(local_catalog_stats_tables.items()):
-			print(f"Stats for {catalog_label}: {local_catalog_stats_table}")
 			df = pd.read_table(local_catalog_stats_table)
-			#print(f"{df.iloc[0].total} {catalog_label}" )
 			catalog_size[catalog_label] = df.iloc[0].total
 
-			f.write("\t".join(map(str, [
-				catalog_size[catalog_label],
-				"intersection",
-				CATALOG_NAMES[catalog_label],
-				CATALOG_NAMES[catalog_label],
-				catalog_size[catalog_label],
-			])) + "\n")
+			if catalog_label != "KnownDiseaseAssociatedLoci":
+				filename = f"merged___{catalog_label}___vs___KnownDiseaseAssociatedLoci.outer_join_overlap_table.tsv.gz"
+			else:
+				filename = f"merged___{catalog_label}___vs___Illumina174kPolymorphicTRs.outer_join_overlap_table.tsv.gz"
+			path = os.path.join("pairwise_comparisons", filename)
+			local_join_table_paths[(catalog_label, catalog_label)] = path
+			df_full = pd.read_table(path)
+			df_full["motif_size"] = df_full["LocusId"].apply(lambda x: len(x.split("-")[3]))
+			df_full = df_full[df_full[catalog_label] == "Yes"]
 
-		for (catalog1, catalog2), local_outer_join_tsv_path in local_join_table_paths.items():
+			for min_motif_size, max_motif_size in [
+				(1,1), (2,2), (3,3), (4,4), (5,5), (6,6), (7, 24), (25, None),
+			]:
+				filter_condition = (df_full["motif_size"] >= min_motif_size)
+				if max_motif_size is not None:
+					filter_condition &= (df_full["motif_size"] <= max_motif_size)
+				df = df_full[filter_condition]
+				catalog_size_by_motif_size[(catalog_label, min_motif_size)] = len(df)
+
+		for (catalog1, catalog2), local_outer_join_tsv_path in tqdm.tqdm(local_join_table_paths.items(), unit=" comparison"):
 			print(f"Comparison of {catalog1} vs {catalog2}: {local_outer_join_tsv_path}")
 
-			df = pd.read_table(local_outer_join_tsv_path)
-			count = sum(df[catalog1].isin({"Yes", "YesButShifted"}) & df[catalog2].isin({"Yes", "YesButShifted"}))
-			f.write("\t".join(map(str, [
-				catalog_size[catalog1], "intersection", CATALOG_NAMES[catalog1], CATALOG_NAMES[catalog2], count])) + "\n")
+			df_full = pd.read_table(local_outer_join_tsv_path)
+			df_full["motif_size"] = df_full["LocusId"].apply(lambda x: len(x.split("-")[3]))
+			if catalog1 == catalog2:
+				df_full = df_full[df_full[catalog1] == "Yes"]
+				df_full = df_full[["LocusId", catalog1, "motif_size"]]
 
-			count = sum(~df[catalog1].isna() & df[catalog2].isna())
-			f.write("\t".join(map(str, [
-				catalog_size[catalog1], "unique1", CATALOG_NAMES[catalog1], CATALOG_NAMES[catalog2], count])) + "\n")
+			if args.by_motif_size:
+				motif_size_ranges = [
+					(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 24), (25, None),
+				]
+			else:
+				motif_size_ranges = [(None, None)]
 
-			count = sum(df[catalog1].isna() & ~df[catalog2].isna())
-			f.write("\t".join(map(str, [
-				catalog_size[catalog1], "unique2", CATALOG_NAMES[catalog1], CATALOG_NAMES[catalog2], count])) + "\n")
+			for min_motif_size, max_motif_size in motif_size_ranges:
+				if min_motif_size == max_motif_size:
+					motif_size_label = min_motif_size
+				elif max_motif_size is None:
+					motif_size_label = f"{min_motif_size}+"
+				else:
+					motif_size_label = f"{min_motif_size}-{max_motif_size}"
 
-			count = sum((df[catalog1] == "YesButWider") | (df[catalog2] == "YesButNarrower"))
-			f.write("\t".join(map(str, [
-				catalog_size[catalog1], "widerInCatalog1", CATALOG_NAMES[catalog1], CATALOG_NAMES[catalog2], count])) + "\n")
+				filter_condition = None
+				if min_motif_size is not None:
+					filter_condition = (df_full["motif_size"] >= min_motif_size)
+				if max_motif_size is not None:
+					filter_condition &= (df_full["motif_size"] <= max_motif_size)
 
-			count = sum((df[catalog2] == "YesButWider") | (df[catalog1] == "YesButNarrower"))
-			f.write("\t".join(map(str, [
-				catalog_size[catalog1], "widerInCatalog2", CATALOG_NAMES[catalog1], CATALOG_NAMES[catalog2], count])) + "\n")
+				df = df_full[filter_condition] if filter_condition is not None else df_full
 
-			assert all(df[catalog1].isin({"Yes", "YesButShifted", "YesButNarrower", "YesButWider", float("nan")}))
-			assert sum(df[catalog1].isna() & df[catalog2].isna()) == 0
-			assert sum(df[catalog1].isna() & (df[catalog2] != "Yes")) == 0
-			assert sum(df[catalog2].isna() & (df[catalog1] != "Yes")) == 0
+				for count_type in "intersection", "unique1", "unique2", "widerInCatalog1", "widerInCatalog2":
+					if count_type == "intersection":
+						count = sum(df[catalog1].isin({"Yes", "YesButShifted"}) & df[catalog2].isin({"Yes", "YesButShifted"}))
+					elif count_type == "unique1":
+						count = sum(~df[catalog1].isna() & df[catalog2].isna())
+					elif count_type == "unique2":
+						count = sum(df[catalog1].isna() & ~df[catalog2].isna())
+					elif count_type == "widerInCatalog1":
+						count = sum((df[catalog1] == "YesButWider") | (df[catalog2] == "YesButNarrower"))
+					elif count_type == "widerInCatalog2":
+						count = sum((df[catalog2] == "YesButWider") | (df[catalog1] == "YesButNarrower"))
+					else:
+						raise ValueError(f"Unexepcted count_type: {count_type}")
+
+					f.write("\t".join(map(str, [
+						catalog_size[catalog1],
+						catalog_size_by_motif_size[(catalog1, min_motif_size)],
+						min_motif_size,
+						motif_size_label,
+						count_type,
+						CATALOG_NAMES[catalog1],
+						CATALOG_NAMES[catalog2],
+						count,
+					])) + "\n")
+
+				assert all(df[catalog1].isin({"Yes", "YesButShifted", "YesButNarrower", "YesButWider", float("nan")}))
+				assert sum(df[catalog1].isna() & df[catalog2].isna()) == 0
+				assert sum(df[catalog1].isna() & (df[catalog2] != "Yes")) == 0
+				assert sum(df[catalog2].isna() & (df[catalog1] != "Yes")) == 0
 
 	print(f"Wrote results to {output_table_path}")
 
