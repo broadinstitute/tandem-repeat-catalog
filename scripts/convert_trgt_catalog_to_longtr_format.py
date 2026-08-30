@@ -118,7 +118,12 @@ def main():
                 ",".join(get_constituent_locus_ids(info_field_dict)),
             ])) + "\n")
 
-    os.system(f"bgzip -f {args.output_bed_path}")
+    # Close before compressing, otherwise bgzip reads the file while the last buffer of output rows
+    # is still unwritten, and silently produces a truncated .gz
+    output_bed_file.close()
+
+    if os.system(f"bgzip -f {args.output_bed_path}") != 0:
+        raise RuntimeError(f"bgzip failed for {args.output_bed_path}")
 
     print(f"Wrote {counter['output']:,d} out of {counter['total']:,d} rows to {args.output_bed_path}.gz")
 
