@@ -144,11 +144,13 @@ def main():
                     unique_motifs.append(m)
         combined_motifs = ",".join(unique_motifs)
 
-        # STRUC uses VC coordinates (without chr prefix)
-        chrom_for_struc = chrom.replace("chr", "")
-        struc = f"<VC:{chrom_for_struc}-{start}-{end}>"
-
-        output_info = f"ID={combined_ids};MOTIFS={combined_motifs};STRUC={struc}"
+        # A variation cluster gets an ID derived from its own coordinates (without the chr prefix)
+        # rather than from the IDs of the repeats it contains. Previously a VC containing a single
+        # repeat was given that repeat's ID, which made the two indistinguishable in TRGT output
+        # (https://github.com/PacificBiosciences/trgt-lps/issues/5). The list of repeats that the VC
+        # contains moves into STRUC, which TRGT copies through to the VCF unchanged.
+        output_info = (f"ID=VC:{chrom.replace('chr', '')}:{start}-{end};"
+                       f"MOTIFS={combined_motifs};STRUC=<VC:{combined_ids}>")
         output_bed_file.write(f"{chrom}\t{start}\t{end}\t{output_info}\n")
         output_row_counter += 1
 

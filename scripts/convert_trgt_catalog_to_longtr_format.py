@@ -1,6 +1,8 @@
 """This script takes a TRGT catalog BED file and outputs a new BED file in LongTR format.
 It expects the TRGT locus ID to have the format "chr1-123456-123467-CAG" for isolated repeats, and
 "chr1-123456-123467-CAG,chr1-123467-123489-CTG" for compound definitions that contain multiple adjacent TRs.
+Variation cluster rows instead have an ID of the form "VC:1:123456-123489" and list the repeats they
+contain in their STRUC field.
 """
 
 import argparse
@@ -24,6 +26,25 @@ def parse_info_field(info_field):
     return result
 
 
+def get_constituent_locus_ids(info_field_dict):
+    """Get the IDs of the tandem repeats that a TRGT catalog row covers.
+
+    A variation cluster row has an ID of its own and lists the repeats it contains in its STRUC
+    field (see https://github.com/PacificBiosciences/trgt-lps/issues/5). Every other row lists them
+    in its ID field.
+
+    Args:
+        info_field_dict (dict): A dictionary of info fields for a TRGT catalog row.
+
+    Return:
+        list: The IDs of the constituent tandem repeats.
+    """
+    if info_field_dict["ID"].startswith("VC:"):
+        return re.sub(r"^<VC:|>$", "", info_field_dict["STRUC"]).split(",")
+
+    return info_field_dict["ID"].split(",")
+
+
 def compute_dominant_motif(info_field_dict):
     """Compute the dominant motif for a TR locus. For compound definitions (those that span multiple
     adjacent TRs), this is the motif of the constituent TR that spans the largest interval (for all other loci).
@@ -35,7 +56,7 @@ def compute_dominant_motif(info_field_dict):
         str: The dominant motif for the TR locus.
     """
     motifs = []
-    for locus_id in info_field_dict["ID"].split(","):
+    for locus_id in get_constituent_locus_ids(info_field_dict):
         if locus_id.count("-") != 3:
             raise ValueError(f"Unexpected locus_id '{locus_id}'")
 
@@ -94,7 +115,7 @@ def main():
                 start_0based + 1,  # LongTR BED files use 1-based coords
                 end_1based,
                 motif,
-                info_field_dict["ID"],
+                ",".join(get_constituent_locus_ids(info_field_dict)),
             ])) + "\n")
 
     os.system(f"bgzip -f {args.output_bed_path}")
