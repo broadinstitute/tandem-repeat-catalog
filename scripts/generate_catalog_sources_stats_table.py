@@ -8,6 +8,7 @@ VNTRs are defined as having motif length 7+bp.
 
 import argparse
 import gzip
+import re
 import ijson
 import os
 from collections import defaultdict
@@ -71,6 +72,7 @@ def main():
         "TRExplorerV2:Annear2021",
         "TRExplorerV2:Hause2016",
         "TRExplorerV2:VamosV3",
+        "TRExplorerV2.1:ExtendedLocusBoundaries",
     ]
 
     # Use explicit order, then append any sources not in the list
@@ -90,13 +92,12 @@ def main():
 
     prev_version = None
     for source in sorted_sources:
-        # Determine version (V1, V2, or other)
-        if "V1:" in source:
-            curr_version = "V1"
-        elif "V2:" in source:
-            curr_version = "V2"
-        else:
-            curr_version = "other"
+        # Which catalog version introduced this source, taken from the prefix its name carries.
+        # Matching the version rather than testing for "V1:" and "V2:" one at a time keeps a source
+        # added by a later release, TRExplorerV2.1:ExtendedLocusBoundaries for instance, from falling
+        # through to "other" and being grouped with things it has nothing to do with.
+        version_match = re.match(r"TRExplorerV([0-9.]+):", source)
+        curr_version = version_match.group(1) if version_match else "other"
 
         # Print blank line when transitioning between versions
         if prev_version is not None and prev_version != curr_version:
