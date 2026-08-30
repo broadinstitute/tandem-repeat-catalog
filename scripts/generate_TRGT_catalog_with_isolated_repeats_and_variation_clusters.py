@@ -21,8 +21,17 @@ from str_analysis.convert_expansion_hunter_catalog_to_trgt_catalog import conver
 
 
 def run(cmd):
+    """Run a shell command, raising if it fails.
+
+    os.system reports only the exit status of the last command in a pipeline, so `a | b` looks
+    successful whenever b succeeds, however badly a failed. bgzip writes a valid empty file when its
+    input is empty, so a missing bedtools would otherwise produce an empty catalog that the rest of
+    the pipeline happily copies into the release. Running under pipefail makes the pipeline's status
+    that of the first command to fail.
+    """
     print(cmd)
-    os.system(cmd)
+    if os.system(f"set -o pipefail; {cmd}") != 0:
+        raise RuntimeError(f"Command failed: {cmd}")
 
 
 def parse_info_field(info_field):
