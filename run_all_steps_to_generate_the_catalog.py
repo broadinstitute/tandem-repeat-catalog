@@ -19,7 +19,7 @@ fi
 """)
 
 
-VERSION = 2
+VERSION = "2.1"
 
 def run(command, step_number=None):
     command = re.sub("[ \\t]{2,}", "  ", command)  # remove extra spaces
@@ -72,6 +72,10 @@ parser.add_argument("--variation-clusters-tsv", default="gs://tandem-repeat-cata
                     help="Variation clusters TSV file shared by Egor Dolzhenko")
 parser.add_argument("--skip-variation-cluster-annotations", action="store_true",
                     help="Skip adding variation cluster annotations to the catalog")
+parser.add_argument("--extended-loci-catalog", default="extended_loci/TRExplorer.extended_loci_v2.1.hg38.bed.gz",
+                    help="Catalog of wider locus definitions produced by running the gap-purity "
+                         "extension rule over the v2 catalog. Generated once, by hand, by "
+                         "extended_loci/generate_extended_loci_catalog.sh")
 parser.add_argument("--timestamp", default=datetime.datetime.now().strftime('%Y-%m-%d'),
                     help="Timestamp to use in the output directory name")
 parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
@@ -81,7 +85,7 @@ args = parser.parse_args()
 print("TIMESTAMP:", args.timestamp)
 
 
-for key in "hg38_reference_fasta", "gencode_gtf", "variation_clusters_tsv", "tenk10k_annotations", "hprc256_annotations", "aou1027_annotations":
+for key in "hg38_reference_fasta", "gencode_gtf", "extended_loci_catalog", "variation_clusters_tsv", "tenk10k_annotations", "hprc256_annotations", "aou1027_annotations":
     if (key == "variation_clusters_tsv" and args.skip_variation_cluster_annotations
         ) or (key == "tenk10k_annotations" and args.skip_tenk10k_annotations
         ) or (key == "hprc256_annotations" and args.skip_hprc256_annotations
@@ -372,6 +376,60 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
         --output-prefix {output_prefix}.final_merged \
         {source_catalog_paths_for_final_merge_command}""", step_number=14)
 
+    # Add the extended-boundary loci. These are a separate source of loci rather than something this
+    # pipeline computes: extended_loci/generate_extended_loci_catalog.sh runs the gap-purity rule over
+    # the finished v2 catalog once, by hand, and keeps only the wider definitions it produced. They
+    # are appended rather than merged because a locus and the wider definition that grew out of it
+    # necessarily overlap, and merge_loci would discard one of the two. The rule already dropped any
+    # definition that v2 described, so nothing appended here duplicates what is already present.
+    # Sorting matters: the annotation steps below group overlapping loci and reject a catalog whose
+    # coordinates ever decrease, and an extended definition can start before the locus it grew from.
+    #
+    # Known trade-off, accepted rather than overlooked. These definitions carry locus ids generated
+    # from their own coordinates, so none of them appears in the variation clusters TSV, which was
+    # computed against v2's ids. They therefore get no VariationCluster annotations at the step
+    # below, and the TRGT variation-cluster catalog writes each as its own row. Of the 58,135, only
+    # 7,844 sit wholly inside a cluster row that already covers them; 22,089 overlap a cluster but
+    # reach past its boundary, and 28,202 fall outside every cluster. This is the same path every
+    # locus takes when its source postdates the cluster table: all 56,846 TRExplorerV2:VamosV3 loci
+    # in v2 are already in exactly this position. Fixing it properly means either regenerating the
+    # variation clusters against this catalog, or teaching the TRGT catalog script to skip loci
+    # whose Source is TRExplorerV2.1:ExtendedLocusBoundaries when restoring what the TSV lacks.
+    run(f"""python3 -u << EOF
+from str_analysis.extend_str_catalog_boundaries import sort_catalog_records
+from str_analysis.utils.eh_catalog_utils import get_variant_catalog_iterator
+from str_analysis.utils.export_json import export_json
+
+records = list(get_variant_catalog_iterator("{output_prefix}.final_merged.json.gz"))
+print(f"Read {{len(records):,d}} loci from {output_prefix}.final_merged.json.gz")
+
+extended_records = list(get_variant_catalog_iterator("{args.extended_loci_catalog}"))
+print(f"Read {{len(extended_records):,d}} extended loci from {args.extended_loci_catalog}")
+
+already_in_catalog = {{
+    (r["ReferenceRegion"], r["LocusStructure"]) for r in records
+}}
+new_records = [
+    r for r in extended_records
+    if (r["ReferenceRegion"], r["LocusStructure"]) not in already_in_catalog
+]
+if len(new_records) < len(extended_records):
+    print(f"Skipped {{len(extended_records) - len(new_records):,d}} extended loci already defined in "
+          f"the catalog")
+
+# Name them as their own source. Without this they reach the sources-stats table as "Unknown", since
+# it reads record["Source"], and the catalog would not say where a fifth of its widest definitions
+# came from.
+for record in new_records:
+    record["Source"] = "TRExplorerV2.1:ExtendedLocusBoundaries"
+    record["FoundInTRExplorerV2.1:ExtendedLocusBoundaries"] = True
+
+export_json(sort_catalog_records(records + new_records),
+            "{output_prefix}.final_merged.with_extended_loci.json.gz")
+print(f"Wrote {{len(records) + len(new_records):,d}} loci")
+EOF
+""", step_number=15)
+
     annotated_catalog_path = f"{output_prefix}.EH.with_annotations.json.gz"
     run(f"""python3 -u -m str_analysis.annotate_and_filter_str_catalog --verbose \
         --reference-fasta {args.hg38_reference_fasta} \
@@ -383,7 +441,7 @@ for motif_size_label, min_motif_size, max_motif_size, release_tar_gz_path in [
         --max-motif-size {max_motif_size} \
         --min-interval-size-bp 1 \
         --output-path {annotated_catalog_path} \
-        {output_prefix}.final_merged.json.gz""", step_number=15)
+        {output_prefix}.final_merged.with_extended_loci.json.gz""", step_number=16)
 
     # create a version of the ExpansionHunter catalog without extra annotations
     run(f"""python3 << EOF
@@ -409,14 +467,14 @@ for record in ijson.items(f, "item", use_float=True):
 out.write("]")
 print(f"Wrote {{i:,d}} out of {{total:,d}} ({{i/total:0.1%}}%) loci to {output_prefix}.EH.json.gz")
 EOF
-""", step_number=16)
+""", step_number=17)
 
     run(f"python3 -m str_analysis.filter_out_loci_with_Ns_in_flanks "
         f"-R {args.hg38_reference_fasta} "
         f"-o {output_prefix}.EH.without_loci_with_Ns_in_flanks.json.gz "
         f"--output-list-of-filtered-loci {output_prefix}.loci_with_Ns_in_flanks.txt "
-        f"{output_prefix}.EH.json.gz", step_number=17)
-    run(f"mv {output_prefix}.EH.without_loci_with_Ns_in_flanks.json.gz {output_prefix}.EH.json.gz", step_number=18)
+        f"{output_prefix}.EH.json.gz", step_number=18)
+    run(f"mv {output_prefix}.EH.without_loci_with_Ns_in_flanks.json.gz {output_prefix}.EH.json.gz", step_number=19)
 
     release_files = [
         f"{output_prefix}.bed.gz",
@@ -437,21 +495,20 @@ EOF
         run(f"""python3 {base_dir}/scripts/add_variation_cluster_annotations_to_catalog.py \
             --verbose \
             --output-catalog-json-path {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz \
-            --known-pathogenic-loci-json-path {source_catalog_paths['TRExplorerV1:KnownDiseaseAssociatedLoci']} \
             {args.variation_clusters_tsv} \
-            {annotated_catalog_path}""", step_number=19)
+            {annotated_catalog_path}""", step_number=20)
 
-        run(f"mv {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz {annotated_catalog_path}", step_number=20)
+        run(f"mv {output_prefix}.EH.with_annotations.with_variation_clusters.json.gz {annotated_catalog_path}", step_number=21)
 
         run(f"""python3 {base_dir}/scripts/generate_TRGT_catalog_with_isolated_repeats_and_variation_clusters.py \
             -o {variation_clusters_and_isolated_TRs_release_filename} \
             {args.variation_clusters_tsv} \
-            {annotated_catalog_path}""", step_number=21)
+            {annotated_catalog_path}""", step_number=22)
 
         release_files.append(variation_clusters_and_isolated_TRs_release_filename)
 
         run(f"python3 {base_dir}/scripts/convert_trgt_catalog_to_longtr_format.py {variation_clusters_and_isolated_TRs_release_filename}",
-            step_number=22)
+            step_number=23)
 
         release_files.append(variation_clusters_and_isolated_TRs_release_filename.replace(".TRGT.bed.gz", ".LongTR.bed.gz"))
 
@@ -459,39 +516,39 @@ EOF
     run(f"""python3 {base_dir}/scripts/annotate_overlapping_loci_and_output_merged_tandem_repeat_regions.py \
         --verbose \
         -o {annotated_catalog_path}.with_overlap_annotations.json.gz \
-        {annotated_catalog_path}""", step_number=23)
-    run(f"mv {annotated_catalog_path}.with_overlap_annotations.json.gz {annotated_catalog_path}", step_number=24)
+        {annotated_catalog_path}""", step_number=24)
+    run(f"mv {annotated_catalog_path}.with_overlap_annotations.json.gz {annotated_catalog_path}", step_number=25)
 
     # add allele frequencies to the catalog
     run(f"""python3 -u {base_dir}/scripts/add_allele_frequency_annotations.py \
             --add-t2t-assembly-frequencies-to-overlapping-loci \
-            -o {annotated_catalog_path}.with_allele_frequencies.json.gz  {annotated_catalog_path}""", step_number=25)
+            -o {annotated_catalog_path}.with_allele_frequencies.json.gz  {annotated_catalog_path}""", step_number=26)
 
-    run(f"mv {annotated_catalog_path}.with_allele_frequencies.json.gz {annotated_catalog_path}", step_number=26)
+    run(f"mv {annotated_catalog_path}.with_allele_frequencies.json.gz {annotated_catalog_path}", step_number=27)
 
     # Add TenK10K population statistics annotations
     if args.tenk10k_annotations:
         run(f"""python3 {base_dir}/scripts/add_TenK10K_annotations_to_catalog.py \
             --tsv-path {args.tenk10k_annotations} \
             -o {annotated_catalog_path}.with_TenK10K_annotations.json.gz \
-            {annotated_catalog_path}""", step_number=27)
-        run(f"mv {annotated_catalog_path}.with_TenK10K_annotations.json.gz {annotated_catalog_path}", step_number=28)
+            {annotated_catalog_path}""", step_number=28)
+        run(f"mv {annotated_catalog_path}.with_TenK10K_annotations.json.gz {annotated_catalog_path}", step_number=29)
 
     # Add HPRC256 population statistics annotations
     if args.hprc256_annotations:
         run(f"""python3 {base_dir}/scripts/add_HPRC256_annotations_to_catalog.py \
             --tsv-path {args.hprc256_annotations} \
             -o {annotated_catalog_path}.with_HPRC256_annotations.json.gz \
-            {annotated_catalog_path}""", step_number=29)
-        run(f"mv {annotated_catalog_path}.with_HPRC256_annotations.json.gz {annotated_catalog_path}", step_number=30)
+            {annotated_catalog_path}""", step_number=30)
+        run(f"mv {annotated_catalog_path}.with_HPRC256_annotations.json.gz {annotated_catalog_path}", step_number=31)
 
     # Add AoU1027 population statistics annotations
     if args.aou1027_annotations:
         run(f"""python3 {base_dir}/scripts/add_AoU_annotations_to_catalog.py \
             --tsv-path {args.aou1027_annotations} \
             -o {annotated_catalog_path}.with_AoU1027_annotations.json.gz \
-            {annotated_catalog_path}""", step_number=31)
-        run(f"mv {annotated_catalog_path}.with_AoU1027_annotations.json.gz {annotated_catalog_path}", step_number=32)
+            {annotated_catalog_path}""", step_number=32)
+        run(f"mv {annotated_catalog_path}.with_AoU1027_annotations.json.gz {annotated_catalog_path}", step_number=33)
 
     # annotate with "TRsInRegion" based on adjacent loci
     if motif_size_label == "1_to_1000bp_motifs":
@@ -499,7 +556,7 @@ EOF
 
     # convert to BED
     run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_bed --split-adjacent-repeats "
-        f"{annotated_catalog_path}  --output-file {output_prefix}.bed.gz", step_number=33)
+        f"{annotated_catalog_path}  --output-file {output_prefix}.bed.gz", step_number=34)
 
     run(f"python3 -m str_analysis.add_adjacent_loci_to_expansion_hunter_catalog "
         f"--ref-fasta {args.hg38_reference_fasta} "
@@ -507,9 +564,9 @@ EOF
         f"--add-extra-field TRsInRegion "
         f"--only-add-extra-fields "
         f"-o {annotated_catalog_path}.with_adjacent_loci_annotation.json.gz "
-        f"{annotated_catalog_path}", step_number=34)
+        f"{annotated_catalog_path}", step_number=35)
 
-    run(f"mv {annotated_catalog_path}.with_adjacent_loci_annotation.json.gz {annotated_catalog_path}", step_number=35)
+    run(f"mv {annotated_catalog_path}.with_adjacent_loci_annotation.json.gz {annotated_catalog_path}", step_number=36)
 
 
     # convert to TSV
@@ -548,25 +605,25 @@ output_tsv_path = "{annotated_catalog_path.replace('.json.gz', '') + '.tsv.gz'}"
 df.to_csv(output_tsv_path, sep="\\t", index=False)
 print(f"Wrote {{len(df):,d}} rows to {{output_tsv_path}} with columns: {{pformat(list(df.columns))}}")
 EOF
-""", step_number=36)
+""", step_number=37)
 
     # convert the catalog from ExpansionHunter catalog format to TRGT, LongTR, HipSTR, and GangSTR formats
-    run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_trgt_catalog -R {args.hg38_reference_fasta} --split-adjacent-repeats {annotated_catalog_path}  --output-file {output_prefix}.TRGT.bed", step_number=37)
-    run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_longtr_format  {annotated_catalog_path}  --output-file {output_prefix}.LongTR.bed", step_number=38)
-    run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_hipstr_format  {annotated_catalog_path}  --output-file {output_prefix}.HipSTR.bed", step_number=39)
-    run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_gangstr_spec   {annotated_catalog_path}  --output-file {output_prefix}.GangSTR.bed", step_number=40)
+    run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_trgt_catalog -R {args.hg38_reference_fasta} --split-adjacent-repeats {annotated_catalog_path}  --output-file {output_prefix}.TRGT.bed", step_number=38)
+    run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_longtr_format  {annotated_catalog_path}  --output-file {output_prefix}.LongTR.bed", step_number=39)
+    run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_hipstr_format  {annotated_catalog_path}  --output-file {output_prefix}.HipSTR.bed", step_number=40)
+    run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_gangstr_spec   {annotated_catalog_path}  --output-file {output_prefix}.GangSTR.bed", step_number=41)
 
     # Confirm that the TRGT catalog passes 'trgt validate'
-    run(f"trgt validate --genome {args.hg38_reference_fasta}  --repeats {output_prefix}.TRGT.bed", step_number=41)
+    run(f"trgt validate --genome {args.hg38_reference_fasta}  --repeats {output_prefix}.TRGT.bed", step_number=42)
 
     # Print missing values
-    run(f"python3 {base_dir}/scripts/print_missing_values_percentages_in_json_or_tsv.py  {annotated_catalog_path}", step_number=42)
+    run(f"python3 {base_dir}/scripts/print_missing_values_percentages_in_json_or_tsv.py  {annotated_catalog_path}", step_number=43)
 
     # Perform basic internal consistency checks on the JSON catalog
     run(f"python3 {base_dir}/scripts/validate_catalog.py " +
         f"--known-pathogenic-loci-json-path {source_catalog_paths['TRExplorerV1:KnownDiseaseAssociatedLoci']} " +
         ("--check-for-presence-of-annotations --check-for-presence-of-all-known-loci --check-for-presence-of-all-loci-from-v1 " if motif_size_label == "1_to_1000bp_motifs" else "") +
-        f"{annotated_catalog_path}", step_number=43)
+        f"{annotated_catalog_path}", step_number=44)
 
     # copy files to the release_draft folder and compute catalog stats
     updated_release_files = []
@@ -574,26 +631,26 @@ EOF
         if path.endswith(".bed"):
             if not os.path.isfile(f"{path}.gz"):
                 if path.endswith(".TRGT.bed"):
-                    run(f"gzip -f {path}", step_number=44)  # TRGT v1.1.1 and lower only works with gzip, not bgzip
+                    run(f"gzip -f {path}", step_number=45)  # TRGT v1.1.1 and lower only works with gzip, not bgzip
                 else:
-                    run(f"bgzip -f {path}", step_number=45)
+                    run(f"bgzip -f {path}", step_number=46)
             updated_release_files.append(f"{path}.gz")
         else:
             if path.endswith(".json") or path.endswith(".json.gz") and ".EH." in path:
-                run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=46)
+                run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=47)
             updated_release_files.append(path)
 
     if release_tar_gz_path is None:
         for path in updated_release_files:
-            run(f"cp {path} {release_draft_folder}", step_number=47)
+            run(f"cp {path} {release_draft_folder}", step_number=48)
     else:
-        run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in updated_release_files]), step_number=48)
-        run(f"cp {release_tar_gz_path} {release_draft_folder}", step_number=49)
+        run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in updated_release_files]), step_number=49)
+        run(f"cp {release_tar_gz_path} {release_draft_folder}", step_number=50)
 
-    run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {annotated_catalog_path}", step_number=50)
+    run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {annotated_catalog_path}", step_number=51)
 
     # Print source statistics table
-    run(f"python3 {base_dir}/scripts/generate_catalog_sources_stats_table.py {release_draft_folder}/{os.path.basename(annotated_catalog_path)}", step_number=51)
+    run(f"python3 {base_dir}/scripts/generate_catalog_sources_stats_table.py {release_draft_folder}/{os.path.basename(annotated_catalog_path)}", step_number=52)
 
     # report hours, minutes, seconds relative to script_start_time
     diff = time.time() - script_start_time
@@ -615,7 +672,7 @@ EOF
         comparison_catalog_paths[catalog_name] = os.path.abspath(os.path.basename(url))
 
     path_after_conversion = comparison_catalog_paths["GangSTR_v17"].replace(".bed.gz", ".json.gz")
-    run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose {comparison_catalog_paths['GangSTR_v17']} -o {path_after_conversion}", step_number=52)
+    run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose {comparison_catalog_paths['GangSTR_v17']} -o {path_after_conversion}", step_number=53)
     comparison_catalog_paths["GangSTR_v17"] = path_after_conversion
 
     # compare catalog to other catalogs
@@ -633,9 +690,9 @@ EOF
             --max-motif-size {max_motif_size} \
             --output-path {filtered_comparison_catalog_path} \
             --verbose \
-            {path}""", step_number=53)
+            {path}""", step_number=54)
 
-        run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {filtered_comparison_catalog_path}", step_number=54)
+        run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {filtered_comparison_catalog_path}", step_number=55)
 
         run(f"""python3 -u -m str_analysis.merge_loci \
             --output-prefix {catalog_name} \
@@ -644,7 +701,7 @@ EOF
             --verbose \
             --write-merge-stats-tsv \
             {annotated_catalog_path} \
-            {filtered_comparison_catalog_path}""", step_number=55)
+            {filtered_comparison_catalog_path}""", step_number=56)
 
     diff = time.time() - start_time
     print(f"Done with comparisons. Took {diff//3600:.0f}h, {(diff%3600)//60:.0f}m, {diff%60:.0f}s")

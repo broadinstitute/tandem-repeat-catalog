@@ -1,0 +1,7 @@
+generated_by:            extended_loci/generate_extended_loci_catalog.sh
+output:                  TRExplorer.extended_loci_v2.1.hg38.bed.gz
+input_catalog:           https://storage.googleapis.com/tandem-repeat-catalog/v2.0/TRExplorer.repeat_catalog_v2.hg38.1_to_1000bp_motifs.bed.gz
+str_analysis_dir:        /Users/weisburd/code/str-analysis
+str_analysis_revision:   b73cbe38a0edfcbd12e70b8edad3af70a63863f6
+str_analysis_uncommitted: 59 file(s)
+rule_parameters:         defaults (--max-repeats-in-gap 2, --min-purity-of-new-sequence 0.9, --min-reference-purity 0.9)
