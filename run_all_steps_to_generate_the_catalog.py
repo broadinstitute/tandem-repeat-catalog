@@ -72,10 +72,12 @@ parser.add_argument("--variation-clusters-tsv", default="gs://tandem-repeat-cata
                     help="Variation clusters TSV file shared by Egor Dolzhenko")
 parser.add_argument("--skip-variation-cluster-annotations", action="store_true",
                     help="Skip adding variation cluster annotations to the catalog")
-parser.add_argument("--extended-loci-catalog", default="extended_loci/TRExplorer.extended_loci_v2.1.hg38.bed.gz",
+parser.add_argument("--extended-loci-catalog",
+                    default="gs://tandem-repeat-catalog/v2.1/TRExplorer.extended_loci_v2.1.hg38.bed.gz",
                     help="Catalog of wider locus definitions produced by running the gap-purity "
                          "extension rule over the v2 catalog. Generated once, by hand, by "
-                         "extended_loci/generate_extended_loci_catalog.sh")
+                         "extended_loci/generate_extended_loci_catalog.sh, and published alongside "
+                         "the release so this pipeline is reproducible without regenerating it")
 parser.add_argument("--timestamp", default=datetime.datetime.now().strftime('%Y-%m-%d'),
                     help="Timestamp to use in the output directory name")
 parser.add_argument("--dry-run", action="store_true", help="Print commands without running them")
