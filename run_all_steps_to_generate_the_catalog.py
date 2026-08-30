@@ -487,6 +487,8 @@ EOF
         f"{output_prefix}.LongTR.bed",
         f"{output_prefix}.HipSTR.bed",
         f"{output_prefix}.GangSTR.bed",
+        f"{output_prefix}.ATaRVa.bed.gz",
+        f"{output_prefix}.ATaRVa.bed.gz.tbi",
     ]
 
 
@@ -615,17 +617,24 @@ EOF
     run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_hipstr_format  {annotated_catalog_path}  --output-file {output_prefix}.HipSTR.bed", step_number=40)
     run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_gangstr_spec   {annotated_catalog_path}  --output-file {output_prefix}.GangSTR.bed", step_number=41)
 
+    # ATaRVa (https://github.com/SowpatiLab/ATaRVa) reads a 5-column BED: chromosome, start, end,
+    # motif, motif length. It reads one motif per row, hence --split-adjacent-repeats, and requires
+    # the file to be bgzipped and tabix-indexed, which the converter does for a .gz output path.
+    run(f"python3 -m str_analysis.convert_expansion_hunter_catalog_to_bed --split-adjacent-repeats "
+        f"--motif-size-column {annotated_catalog_path}  --output-file {output_prefix}.ATaRVa.bed.gz",
+        step_number=42)
+
     # Confirm that the TRGT catalog passes 'trgt validate'
-    run(f"trgt validate --genome {args.hg38_reference_fasta}  --repeats {output_prefix}.TRGT.bed", step_number=42)
+    run(f"trgt validate --genome {args.hg38_reference_fasta}  --repeats {output_prefix}.TRGT.bed", step_number=43)
 
     # Print missing values
-    run(f"python3 {base_dir}/scripts/print_missing_values_percentages_in_json_or_tsv.py  {annotated_catalog_path}", step_number=43)
+    run(f"python3 {base_dir}/scripts/print_missing_values_percentages_in_json_or_tsv.py  {annotated_catalog_path}", step_number=44)
 
     # Perform basic internal consistency checks on the JSON catalog
     run(f"python3 {base_dir}/scripts/validate_catalog.py " +
         f"--known-pathogenic-loci-json-path {source_catalog_paths['TRExplorerV1:KnownDiseaseAssociatedLoci']} " +
         ("--check-for-presence-of-annotations --check-for-presence-of-all-known-loci --check-for-presence-of-all-loci-from-v1 " if motif_size_label == "1_to_1000bp_motifs" else "") +
-        f"{annotated_catalog_path}", step_number=44)
+        f"{annotated_catalog_path}", step_number=45)
 
     # copy files to the release_draft folder and compute catalog stats
     updated_release_files = []
@@ -633,26 +642,26 @@ EOF
         if path.endswith(".bed"):
             if not os.path.isfile(f"{path}.gz"):
                 if path.endswith(".TRGT.bed"):
-                    run(f"gzip -f {path}", step_number=45)  # TRGT v1.1.1 and lower only works with gzip, not bgzip
+                    run(f"gzip -f {path}", step_number=46)  # TRGT v1.1.1 and lower only works with gzip, not bgzip
                 else:
-                    run(f"bgzip -f {path}", step_number=46)
+                    run(f"bgzip -f {path}", step_number=47)
             updated_release_files.append(f"{path}.gz")
         else:
             if path.endswith(".json") or path.endswith(".json.gz") and ".EH." in path:
-                run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=47)
+                run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=48)
             updated_release_files.append(path)
 
     if release_tar_gz_path is None:
         for path in updated_release_files:
-            run(f"cp {path} {release_draft_folder}", step_number=48)
+            run(f"cp {path} {release_draft_folder}", step_number=49)
     else:
-        run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in updated_release_files]), step_number=49)
-        run(f"cp {release_tar_gz_path} {release_draft_folder}", step_number=50)
+        run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in updated_release_files]), step_number=50)
+        run(f"cp {release_tar_gz_path} {release_draft_folder}", step_number=51)
 
-    run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {annotated_catalog_path}", step_number=51)
+    run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {annotated_catalog_path}", step_number=52)
 
     # Print source statistics table
-    run(f"python3 {base_dir}/scripts/generate_catalog_sources_stats_table.py {release_draft_folder}/{os.path.basename(annotated_catalog_path)}", step_number=52)
+    run(f"python3 {base_dir}/scripts/generate_catalog_sources_stats_table.py {release_draft_folder}/{os.path.basename(annotated_catalog_path)}", step_number=53)
 
     # report hours, minutes, seconds relative to script_start_time
     diff = time.time() - script_start_time
@@ -674,7 +683,7 @@ EOF
         comparison_catalog_paths[catalog_name] = os.path.abspath(os.path.basename(url))
 
     path_after_conversion = comparison_catalog_paths["GangSTR_v17"].replace(".bed.gz", ".json.gz")
-    run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose {comparison_catalog_paths['GangSTR_v17']} -o {path_after_conversion}", step_number=53)
+    run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose {comparison_catalog_paths['GangSTR_v17']} -o {path_after_conversion}", step_number=54)
     comparison_catalog_paths["GangSTR_v17"] = path_after_conversion
 
     # compare catalog to other catalogs
@@ -692,9 +701,9 @@ EOF
             --max-motif-size {max_motif_size} \
             --output-path {filtered_comparison_catalog_path} \
             --verbose \
-            {path}""", step_number=54)
+            {path}""", step_number=55)
 
-        run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {filtered_comparison_catalog_path}", step_number=55)
+        run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {filtered_comparison_catalog_path}", step_number=56)
 
         run(f"""python3 -u -m str_analysis.merge_loci \
             --output-prefix {catalog_name} \
@@ -703,7 +712,7 @@ EOF
             --verbose \
             --write-merge-stats-tsv \
             {annotated_catalog_path} \
-            {filtered_comparison_catalog_path}""", step_number=56)
+            {filtered_comparison_catalog_path}""", step_number=57)
 
     diff = time.time() - start_time
     print(f"Done with comparisons. Took {diff//3600:.0f}h, {(diff%3600)//60:.0f}m, {diff%60:.0f}s")
