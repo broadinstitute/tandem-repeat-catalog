@@ -45,6 +45,26 @@ def chdir(d):
     print(f"cd {d}")
     os.chdir(d)
 
+def is_bgzipped(path):
+    """Returns True if path is bgzipped, and so can be tabix-indexed, rather than plain gzipped.
+
+    A bgzipped file starts with a gzip header that sets the FEXTRA flag and carries a "BC"
+    extra subfield. Checking the bytes means this works for a file that a previous run
+    already compressed, where the branch that compressed it is no longer known.
+    """
+    with open(path, "rb") as f:
+        header = f.read(14)
+    return header[:4] == b"\x1f\x8b\x08\x04" and header[12:14] == b"BC"
+
+# The LongTR, HipSTR and GangSTR converters in str-analysis write start_0based + 1, so those three
+# formats are 1-based rather than true BED. Indexing them with "-p bed", which means "-s1 -b2 -e3 -0",
+# shifts every record one base to the right and makes tabix miss it at the left edge of a query.
+ONE_BASED_BED_SUFFIXES = (".LongTR.bed.gz", ".HipSTR.bed.gz", ".GangSTR.bed.gz")
+
+def tabix_coordinate_flags(path):
+    """Returns the tabix flags describing path's coordinate convention."""
+    return "-s1 -b2 -e3" if path.endswith(ONE_BASED_BED_SUFFIXES) else "-p bed"
+
 
 
 parser = argparse.ArgumentParser()
@@ -640,28 +660,45 @@ EOF
     updated_release_files = []
     for path in release_files:
         if path.endswith(".bed"):
-            if not os.path.isfile(f"{path}.gz"):
-                if path.endswith(".TRGT.bed"):
-                    run(f"gzip -f {path}", step_number=46)  # TRGT v1.1.1 and lower only works with gzip, not bgzip
-                else:
-                    run(f"bgzip -f {path}", step_number=47)
             updated_release_files.append(f"{path}.gz")
         else:
             if path.endswith(".json") or path.endswith(".json.gz") and ".EH." in path:
-                run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=48)
+                run(f"python3 {base_dir}/scripts/validate_json.py -k LocusId -k LocusStructure -k ReferenceRegion -k VariantType {path}", step_number=46)
             updated_release_files.append(path)
+
+    # Compress and tabix-index the release BEDs so users can query them by region. Compression and
+    # indexing are one step on purpose: as separate steps, resuming with --only-step could index an
+    # archive without first rebuilding it from the .bed the conversion steps just wrote, and publish
+    # stale contents. The plain BED and the ATaRVa BED arrive already compressed and indexed.
+    for path in list(updated_release_files):
+        if not path.endswith(".bed.gz") or f"{path}.tbi" in updated_release_files:
+            continue
+        uncompressed = path[:-len(".gz")]
+        if os.path.isfile(uncompressed):
+            # Always rebuild from the .bed an earlier step wrote, so the published archive can
+            # never be a leftover from a previous run into this output directory.
+            prepare = f"bgzip -f {uncompressed} && "
+        elif os.path.isfile(path) and not is_bgzipped(path):
+            # Only an older run's archive survives, compressed with gzip rather than bgzip, which
+            # tabix cannot index. "bgzip -d" reads plain gzip too, and unlike "gzcat | bgzip" it
+            # fails loudly on a truncated input instead of quietly writing a short file.
+            prepare = f"bgzip -f -d {path} && bgzip -f {uncompressed} && "
+        else:
+            prepare = ""
+        run(f"{prepare}tabix -f {tabix_coordinate_flags(path)} {path}", step_number=47)
+        updated_release_files.append(f"{path}.tbi")
 
     if release_tar_gz_path is None:
         for path in updated_release_files:
-            run(f"cp {path} {release_draft_folder}", step_number=49)
+            run(f"cp {path} {release_draft_folder}", step_number=48)
     else:
-        run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in updated_release_files]), step_number=50)
-        run(f"cp {release_tar_gz_path} {release_draft_folder}", step_number=51)
+        run(f"tar czf {release_tar_gz_path} -C {os.path.dirname(output_prefix)} " + " ".join([os.path.basename(p) for p in updated_release_files]), step_number=49)
+        run(f"cp {release_tar_gz_path} {release_draft_folder}", step_number=50)
 
-    run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {annotated_catalog_path}", step_number=52)
+    run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {annotated_catalog_path}", step_number=51)
 
     # Print source statistics table
-    run(f"python3 {base_dir}/scripts/generate_catalog_sources_stats_table.py {release_draft_folder}/{os.path.basename(annotated_catalog_path)}", step_number=53)
+    run(f"python3 {base_dir}/scripts/generate_catalog_sources_stats_table.py {release_draft_folder}/{os.path.basename(annotated_catalog_path)}", step_number=52)
 
     # report hours, minutes, seconds relative to script_start_time
     diff = time.time() - script_start_time
@@ -683,7 +720,7 @@ EOF
         comparison_catalog_paths[catalog_name] = os.path.abspath(os.path.basename(url))
 
     path_after_conversion = comparison_catalog_paths["GangSTR_v17"].replace(".bed.gz", ".json.gz")
-    run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose {comparison_catalog_paths['GangSTR_v17']} -o {path_after_conversion}", step_number=54)
+    run(f"python3 -u -m str_analysis.convert_gangstr_spec_to_expansion_hunter_catalog --verbose {comparison_catalog_paths['GangSTR_v17']} -o {path_after_conversion}", step_number=53)
     comparison_catalog_paths["GangSTR_v17"] = path_after_conversion
 
     # compare catalog to other catalogs
@@ -701,9 +738,9 @@ EOF
             --max-motif-size {max_motif_size} \
             --output-path {filtered_comparison_catalog_path} \
             --verbose \
-            {path}""", step_number=55)
+            {path}""", step_number=54)
 
-        run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {filtered_comparison_catalog_path}", step_number=56)
+        run(f"python3 -m str_analysis.compute_catalog_stats --reference-fasta {args.hg38_reference_fasta} --verbose {filtered_comparison_catalog_path}", step_number=55)
 
         run(f"""python3 -u -m str_analysis.merge_loci \
             --output-prefix {catalog_name} \
@@ -712,7 +749,7 @@ EOF
             --verbose \
             --write-merge-stats-tsv \
             {annotated_catalog_path} \
-            {filtered_comparison_catalog_path}""", step_number=57)
+            {filtered_comparison_catalog_path}""", step_number=56)
 
     diff = time.time() - start_time
     print(f"Done with comparisons. Took {diff//3600:.0f}h, {(diff%3600)//60:.0f}m, {diff%60:.0f}s")
