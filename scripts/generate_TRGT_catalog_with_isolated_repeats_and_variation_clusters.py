@@ -176,16 +176,20 @@ def main():
     locus_ids_missing_from_tsv = set()
     all_locus_ids_in_catalog = set()
 
-    filtered_tr_counter = 0
+    restored_tr_counter = 0
     for record_i, record in enumerate(get_variant_catalog_iterator(
             args.input_repeat_catalog, show_progress_bar=args.show_progress_bar)):
         all_locus_ids_in_catalog.add(record["LocusId"])
         if record["LocusId"] not in all_locus_ids_in_tsv and record["LocusId"] not in locus_ids_filtered:
             locus_ids_missing_from_tsv.add(record["LocusId"])
             for output_row in convert_expansion_hunter_record_to_trgt_rows(record_i, record):
-                filtered_tr_counter += 1
+                restored_tr_counter += 1
                 info_field_dict = parse_info_field(output_row[3])
-                info_field_dict["STRUC"] = f"<TR:FILTERED{filtered_tr_counter}>"
+                # The converter writes a TRGT structure expression such as "(AG)n", but the rest of
+                # this catalog labels each row with <TR:{locus id}> or <VC:{...}>, which is what
+                # trgt-lps and the downstream tooling read to tell an isolated repeat from a
+                # variation cluster. Use the same label here so every restored row names its locus.
+                info_field_dict["STRUC"] = f"<TR:{info_field_dict['ID']}>"
                 output_row[3] = ";".join(f"{key}={value}" for key, value in info_field_dict.items())
                 output_bed_file.write("\t".join(map(str, output_row)) + "\n")
                 output_row_counter += 1
@@ -206,7 +210,7 @@ def main():
 
     total_unique_locus_ids = len(all_locus_ids_in_tsv | locus_ids_missing_from_tsv)
     print(f"Wrote {output_row_counter:,d} rows ({vc_counter:,d} VCs + {len(isolated_repeats):,d} isolated TRs + "
-          f"{filtered_tr_counter:,d} restored) covering {total_unique_locus_ids:,d} unique LocusIds to {args.output_bed_path}.gz")
+          f"{restored_tr_counter:,d} restored) covering {total_unique_locus_ids:,d} unique LocusIds to {args.output_bed_path}.gz")
 
 
 if __name__ == "__main__":
